@@ -31,7 +31,7 @@ test.group('Services / FolderService', (group) => {
     fs.rmSync(dir, { recursive: true, force: true });
   });
 
-  test('it extends the abstract Service class', async ({ assert }) => {
+  test('it extends the Service class', async ({ assert }) => {
     const service: FolderService = new FolderService();
     assert.instanceOf(service, BaseService);
   });
