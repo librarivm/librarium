@@ -45,6 +45,7 @@
     "@japa/plugin-adonisjs": "^3.0.1",
     "@japa/runner": "^3.1.4",
     "@swc/core": "^1.6.5",
+    "@types/lodash": "^4.17.6",
     "@types/luxon": "^3.4.2",
     "@types/node": "^20.14.9",
     "eslint": "^8.57.0",
@@ -61,6 +62,7 @@
     "@adonisjs/lucid": "^21.1.0",
     "@vinejs/vine": "^2.1.0",
     "better-sqlite3": "^11.0.0",
+    "lodash": "^4.17.21",
     "luxon": "^3.4.4",
     "reflect-metadata": "^0.2.2"
   },
