@@ -1,6 +1,6 @@
-export class Service {
-  page: number = 1;
-  pageCount: number = 15;
+export abstract class Service {
+  private page: number = 1;
+  private pageCount: number = 15;
 
   setPage(page: number): void {
     this.page = page;
