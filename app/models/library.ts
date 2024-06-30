@@ -1,5 +1,8 @@
+import Type from '#models/type';
+import User from '#models/user';
+import type { BelongsTo } from '@adonisjs/lucid/types/relations';
+import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm';
 import { DateTime } from 'luxon';
-import { BaseModel, column } from '@adonisjs/lucid/orm';
 
 export default class Library extends BaseModel {
   @column({ isPrimary: true })
@@ -12,11 +15,26 @@ export default class Library extends BaseModel {
   declare slug: string;
 
   @column()
-  declare description: string;
+  declare description: string | undefined;
+
+  @column()
+  declare metadata: string | null | undefined;
+
+  @column()
+  declare user_id: number;
+
+  @column()
+  declare type_id: number;
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime;
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime;
+
+  @belongsTo(() => User)
+  declare user: BelongsTo<typeof User>;
+
+  @belongsTo(() => Type)
+  declare type: BelongsTo<typeof Type>;
 }

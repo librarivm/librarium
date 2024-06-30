@@ -1,15 +1,19 @@
 import { Service } from '#services/service';
 import Library from '#models/library';
 import { ModelPaginatorContract } from '@adonisjs/lucid/types/model';
+import kebabCase from 'lodash/kebabCase.js';
+import isObject from 'lodash/isObject.js';
+import User from '#models/user';
+import Type from '#models/type';
 
 export interface LibraryAttributes {
   name: string;
-  slug: string;
-  description: string;
-  metadata: JSON;
+  slug?: string;
+  description?: string;
+  metadata?: JSON | null;
   is_private: boolean;
-  user_id: bigint;
-  type_id: bigint;
+  user_id: number;
+  type_id: number;
 }
 
 export default class LibraryService extends Service {
@@ -33,15 +37,43 @@ export default class LibraryService extends Service {
   }
 
   /**
-   * Create a new resource.
+   * Create or update a resource.
    *
+   * @param {Library} model - The model to use to save the resource.
    * @param {LibraryAttributes} attributes - The attributes for the new resource.
    * @returns {Promise<Library>} The created resource.
    */
-  async save(attributes: LibraryAttributes): Promise<Library> {
-    // Implementation here
-    console.log(attributes);
-    return Promise.resolve(new Library());
+  async save(model: Library, attributes: LibraryAttributes): Promise<Library> {
+    const library: Library = model;
+
+    library.name = attributes.name;
+    library.slug = attributes.slug ? attributes.slug : kebabCase(attributes.name);
+    library.description = attributes.description;
+    library.metadata = isObject(attributes.metadata)
+      ? JSON.stringify(attributes.metadata)
+      : attributes.metadata;
+    library.user_id = attributes.user_id;
+    library.type_id = attributes.type_id;
+
+    const user: User | null = await User.find(attributes.user_id);
+    user && (await library.related('user').associate(user));
+
+    const type: Type | null = await Type.find(attributes.type_id);
+    type && (await library.related('type').associate(type));
+
+    await library.save();
+
+    return library;
+  }
+
+  /**
+   * Create an existing resource.
+   *
+   * @param {LibraryAttributes} attributes - The new attributes for the resource.
+   * @returns {Promise<Library>} The updated resource.
+   */
+  async store(attributes: LibraryAttributes): Promise<Library> {
+    return this.save(this.model, attributes);
   }
 
   /**
