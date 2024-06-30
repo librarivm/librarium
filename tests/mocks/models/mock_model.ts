@@ -1,7 +1,10 @@
 import sinon from 'sinon';
+import isNil from 'lodash/isNil.js';
 
 export const FakeModel = {
   query: sinon.stub().returnsThis(),
+  apply: sinon.stub().returnsThis(),
+  where: sinon.stub().returnsThis(),
 
   items: [],
   attributes: {},
@@ -33,10 +36,24 @@ export const FakeModel = {
 
   find: sinon.stub().callsFake(function (id: number) {
     // @ts-ignore
+    const item = this.items
+      .filter((attribute: any) => isNil(attribute.deleted_at))
+      .find((attribute: any) => attribute.id === id);
+
+    if (isNil(item)) {
+      return null;
+    }
+
+    // @ts-ignore
+    return Object.assign(this, { ...item });
+  }),
+
+  findOrFail: sinon.stub().callsFake(function (id: number) {
+    // @ts-ignore
     const item = this.items.find((attribute: any) => attribute.id === id);
 
-    if (!item) {
-      return null;
+    if (isNil(item)) {
+      throw new Error('Model Resource not found.');
     }
 
     // @ts-ignore
@@ -50,7 +67,10 @@ export const FakeModel = {
 
   create: sinon.stub().callsFake(function (attributes: object) {
     // @ts-ignore
-    return { ...attributes, id: this.count() + 1 };
+    const item = { ...attributes, id: this.count() + 1 };
+    // @ts-ignore
+    this.items = this.items.concat([item]);
+    return item;
   }),
 
   save: sinon.stub().callsFake(function () {
@@ -58,6 +78,17 @@ export const FakeModel = {
     Object.assign(this, { ...this.attributes, id: this.count() + 1 });
 
     // @ts-ignore
-    return { ...this.attributes, id: this.count() + 1 };
+    return this;
+  }),
+
+  delete: sinon.stub().callsFake(function () {
+    // @ts-ignore
+    this.items = this.items.filter((item) => item.id !== this.id);
+
+    // @ts-ignore
+    Object.assign(this, { items: this.items });
+
+    // @ts-ignore
+    return this;
   }),
 };

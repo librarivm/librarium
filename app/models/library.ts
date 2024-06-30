@@ -1,7 +1,7 @@
 import Type from '#models/type';
 import User from '#models/user';
 import type { BelongsTo } from '@adonisjs/lucid/types/relations';
-import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm';
+import { BaseModel, belongsTo, column, scope } from '@adonisjs/lucid/orm';
 import { DateTime } from 'luxon';
 
 export default class Library extends BaseModel {
@@ -32,9 +32,16 @@ export default class Library extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime;
 
+  @column.dateTime()
+  declare deletedAt: DateTime | null;
+
   @belongsTo(() => User)
   declare user: BelongsTo<typeof User>;
 
   @belongsTo(() => Type)
   declare type: BelongsTo<typeof Type>;
+
+  static notDeleted = scope((query) => {
+    query.whereNull('deleted_at');
+  });
 }

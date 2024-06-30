@@ -8,8 +8,14 @@ import { test } from '@japa/runner';
 import { faker } from '@faker-js/faker';
 import startCase from 'lodash/startCase.js';
 import kebabCase from 'lodash/kebabCase.js';
+import { LibraryFactory } from '#database/factories/library_factory';
 
-test.group('Services / LibraryService', () => {
+test.group('Services / LibraryService', (group) => {
+  group.each.teardown(() => {
+    MockLibrary.find.resetHistory();
+    MockLibrary.save.resetHistory();
+  });
+
   test('it extends the Service class', async ({ assert }) => {
     const $service: LibraryService = new LibraryService({ model: MockLibrary });
     assert.isTrue($service instanceof Service, 'LibraryService should extend Service');
@@ -80,6 +86,7 @@ test.group('Services / LibraryService', () => {
     };
 
     // Assertions
+    assert.isTrue(MockLibrary.save.calledOnce);
     assert.equal(item.id, library.id);
     assert.equal(item.name, library.name);
     assert.equal(item.slug, library.slug);
@@ -103,7 +110,40 @@ test.group('Services / LibraryService', () => {
 
     // Assertions
     assert.isObject(library);
+    assert.isTrue(MockLibrary.save.calledOnce);
     assert.equal(attributes.name, library.name);
     assert.equal(attributes.metadata, library.metadata);
+  });
+
+  test('it should archive a library', async ({ assert }) => {
+    // Arrangements
+    const $service: LibraryService = new LibraryService({ model: MockLibrary });
+    const item = MockLibrary.mockAttributes({
+      ...MockLibrary.first(),
+    }) as Library;
+
+    // Actions
+    await $service.archive(item.id);
+    const library = MockLibrary.find(item.id);
+
+    // Assertions
+    assert.isTrue(MockLibrary.save.calledOnce);
+    assert.equal(library?.id, item.id);
+    assert.isNotNull(library.deletedAt);
+  });
+
+  test('it should delete a library permanently', async ({ assert }) => {
+    // Arrangements
+    const $service: LibraryService = new LibraryService({ model: MockLibrary });
+    const item = await LibraryFactory.make();
+    const library = MockLibrary.create(item.toJSON());
+
+    // Actions
+    await $service.delete(library.id);
+    const deleted = await $service.find(library.id);
+
+    // Assertions
+    assert.isTrue(MockLibrary.delete.calledOnce);
+    assert.isNull(deleted);
   });
 });

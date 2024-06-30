@@ -5,6 +5,7 @@ import kebabCase from 'lodash/kebabCase.js';
 import isObject from 'lodash/isObject.js';
 import User from '#models/user';
 import Type from '#models/type';
+import { DateTime } from 'luxon';
 
 export interface LibraryAttributes {
   name: string;
@@ -23,7 +24,10 @@ export default class LibraryService extends Service {
    * @returns {Promise<ModelPaginatorContract<Library>>} Paginated results.
    */
   async list(): Promise<ModelPaginatorContract<Library>> {
-    return this.model.query().paginate(this.getPage(), this.getPageCount());
+    return this.model
+      .query()
+      .apply((scopes: { notDeleted: () => any }) => scopes.notDeleted())
+      .paginate(this.getPage(), this.getPageCount());
   }
 
   /**
@@ -33,7 +37,7 @@ export default class LibraryService extends Service {
    * @returns {Promise<Library|null>} The resource if found, otherwise null.
    */
   async find(id: number): Promise<Library | null> {
-    return this.model.find(id);
+    return await this.model.find(id);
   }
 
   /**
@@ -96,8 +100,11 @@ export default class LibraryService extends Service {
    * @returns {Promise<void>}
    */
   async archive(id: number): Promise<void> {
-    // Implementation here
-    console.log(id);
+    const library: Library = this.model.findOrFail(id);
+
+    library.deletedAt = DateTime.local();
+
+    await library.save();
   }
 
   /**
@@ -107,7 +114,7 @@ export default class LibraryService extends Service {
    * @returns {Promise<void>}
    */
   async delete(id: number): Promise<void> {
-    // Implementation here
-    console.log(id);
+    const library = await this.model.findOrFail(id);
+    await library.delete();
   }
 }
