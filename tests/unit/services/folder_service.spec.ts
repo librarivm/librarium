@@ -4,6 +4,7 @@ import { test } from '@japa/runner';
 import path from 'node:path';
 import fs from 'node:fs';
 import { faker } from '@faker-js/faker';
+import { FakeModel } from '#tests/mocks/models/mock_model';
 
 type File = {
   dir: string;
@@ -32,12 +33,12 @@ test.group('Services / FolderService', (group) => {
   });
 
   test('it extends the Service class', async ({ assert }) => {
-    const service: FolderService = new FolderService();
+    const service: FolderService = new FolderService({ model: FakeModel });
     assert.isTrue(service instanceof BaseService, 'FolderService should extend Service');
   });
 
   test('it should return an array of files from a given directory path', async ({ assert }) => {
-    const service: FolderService = new FolderService();
+    const service: FolderService = new FolderService({ model: FakeModel });
     const items: string[] | Buffer[] = await service.scan(dir);
 
     assert.isArray(items);
