@@ -26,7 +26,7 @@ export default class LibraryService extends Service {
   async list(): Promise<ModelPaginatorContract<Library>> {
     return this.model
       .query()
-      .apply((scopes: { notDeleted: () => any }) => scopes.notDeleted())
+      .apply((scopes: { notSoftDeleted: () => any }) => scopes.notSoftDeleted())
       .paginate(this.getPage(), this.getPageCount());
   }
 

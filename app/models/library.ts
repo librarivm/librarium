@@ -41,7 +41,7 @@ export default class Library extends BaseModel {
   @belongsTo(() => Type)
   declare type: BelongsTo<typeof Type>;
 
-  static notDeleted = scope((query) => {
+  static notSoftDeleted = scope((query) => {
     query.whereNull('deleted_at');
   });
 }
