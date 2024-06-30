@@ -29,9 +29,7 @@ export default class LibraryService extends Service {
    * @returns {Promise<Library|null>} The resource if found, otherwise null.
    */
   async find(id: number): Promise<Library | null> {
-    // Implementation here
-    console.log(id);
-    return null;
+    return this.model.find(id);
   }
 
   /**

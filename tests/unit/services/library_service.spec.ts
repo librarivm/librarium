@@ -28,4 +28,29 @@ test.group('Services / LibraryService', () => {
       assert.isTrue(Object.hasOwn(library.toObject(), 'description'));
     });
   });
+
+  test('it should find a library by id', async ({ assert }) => {
+    // Arrangements
+    const $service: LibraryService = new LibraryService({ model: MockLibrary });
+    const item = MockLibrary.first();
+
+    // Actions
+    const library = await $service.find(item.id);
+
+    // Assertions
+    assert.equal(library && library.id, item.id);
+    assert.equal(library && library.name, item.name);
+  });
+
+  test('it should return null if library is not found by id', async ({ assert }) => {
+    // Arrangements
+    const $service: LibraryService = new LibraryService({ model: MockLibrary });
+    const itemId = 9999;
+
+    // Actions
+    const library: Library | null = await $service.find(itemId);
+
+    // Assertions
+    assert.isNull(library);
+  });
 });

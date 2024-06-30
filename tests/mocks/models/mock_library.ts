@@ -3,7 +3,10 @@ import { LibraryFactory } from '#database/factories/library_factory';
 import { FakeModel } from '#tests/mocks/models/mock_model';
 import Library from '#models/library';
 
-const libraries = await LibraryFactory.makeMany(20);
+const libraries = (await LibraryFactory.makeMany(20)).map((item, i) => ({
+  ...item,
+  id: i + 1,
+}));
 
 export const MockLibrary: typeof FakeModel = {
   ...sinon.mock(Library),
@@ -30,6 +33,10 @@ export const MockLibrary: typeof FakeModel = {
   }),
 
   find: sinon.stub().callsFake((id: number) => {
-    return id && null;
+    return libraries.find((item) => item.id === id) || null;
+  }),
+
+  first: sinon.stub().callsFake(() => {
+    return libraries?.[0] || null;
   }),
 };

@@ -21,4 +21,8 @@ export const FakeModel = {
   find: sinon.stub().callsFake((id: number) => {
     return id && null;
   }),
+
+  first: sinon.stub().callsFake(() => {
+    return {};
+  }),
 };
