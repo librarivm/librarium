@@ -3,7 +3,12 @@ import { Service } from '#services/service';
 import { faker } from '@faker-js/faker';
 import { FakeModel } from '#tests/mocks/models/mock_model';
 
-class TestService extends Service {}
+class TestService extends Service {
+  // @ts-ignore
+  async save(model: any, attributes: any) {
+    return Promise.resolve({ model, attributes });
+  }
+}
 
 test.group('Services', (group) => {
   let $service: TestService;

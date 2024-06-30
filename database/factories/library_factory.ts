@@ -10,6 +10,8 @@ export const LibraryFactory = factory
       name: startCase(name),
       description: faker.lorem.sentences(),
       slug: kebabCase(name),
+      user_id: 1,
+      type_id: 1,
     };
   })
   .build();

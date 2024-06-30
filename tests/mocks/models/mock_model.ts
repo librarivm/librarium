@@ -31,12 +31,21 @@ export const FakeModel = {
     };
   }),
 
-  find: sinon.stub().callsFake((id: number) => {
-    return id && null;
+  find: sinon.stub().callsFake(function (id: number) {
+    // @ts-ignore
+    const item = this.items.find((attribute: any) => attribute.id === id);
+
+    if (!item) {
+      return null;
+    }
+
+    // @ts-ignore
+    return Object.assign(this, { ...item });
   }),
 
-  first: sinon.stub().callsFake(() => {
-    return {};
+  first: sinon.stub().callsFake(function () {
+    // @ts-ignore
+    return this.items?.[0];
   }),
 
   create: sinon.stub().callsFake(function (attributes: object) {

@@ -87,4 +87,23 @@ test.group('Services / LibraryService', () => {
     assert.equal(item.user_id, library.user_id);
     assert.equal(item.type_id, library.type_id);
   });
+
+  test('it should update a library and return the updated instance', async ({ assert }) => {
+    // Arrangements
+    const $service: LibraryService = new LibraryService({ model: MockLibrary });
+    const item = MockLibrary.first();
+    const attributes: LibraryAttributes = MockLibrary.mockAttributes({
+      ...item,
+      name: startCase(faker.lorem.sentence()),
+      metadata: { [faker.lorem.word()]: faker.lorem.words() },
+    }) as LibraryAttributes;
+
+    // Actions
+    const library = await $service.update(item.id, attributes);
+
+    // Assertions
+    assert.isObject(library);
+    assert.equal(attributes.name, library.name);
+    assert.equal(attributes.metadata, library.metadata);
+  });
 });

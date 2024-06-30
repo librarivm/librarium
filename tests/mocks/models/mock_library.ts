@@ -12,7 +12,7 @@ const libraries = items.map((item, i) => ({
 // @ts-ignore
 export const MockLibrary: typeof FakeModel = {
   ...FakeModel,
-  ...sinon.mock(Library),
+  ...sinon.mock(new Library()),
 
   // @ts-ignore
   items: libraries,
@@ -36,13 +36,5 @@ export const MockLibrary: typeof FakeModel = {
       meta,
       ...meta,
     };
-  }),
-
-  find: sinon.stub().callsFake((id: number) => {
-    return libraries.find((item) => item.id === id) || null;
-  }),
-
-  first: sinon.stub().callsFake(() => {
-    return libraries?.[0] || null;
   }),
 };

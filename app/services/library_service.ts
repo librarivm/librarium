@@ -84,9 +84,9 @@ export default class LibraryService extends Service {
    * @returns {Promise<Library>} The updated resource.
    */
   async update(id: number, attributes: LibraryAttributes): Promise<Library> {
-    // Implementation here
-    console.log(id, attributes);
-    return Promise.resolve(new Library());
+    const library: Library = this.model.find(id);
+
+    return this.save(library, attributes);
   }
 
   /**
