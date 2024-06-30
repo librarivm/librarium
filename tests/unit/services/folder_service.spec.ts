@@ -33,7 +33,7 @@ test.group('Services / FolderService', (group) => {
 
   test('it extends the Service class', async ({ assert }) => {
     const service: FolderService = new FolderService();
-    assert.instanceOf(service, BaseService);
+    assert.isTrue(service instanceof BaseService, 'FolderService should extend Service');
   });
 
   test('it should return an array of files from a given directory path', async ({ assert }) => {

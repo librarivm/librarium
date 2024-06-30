@@ -10,7 +10,7 @@ test.group('Services / LibraryService', (group) => {
 
   test('it extends the Service class', async ({ assert }) => {
     const service: LibraryService = new LibraryService();
-    assert.instanceOf(service, Service);
+    assert.isTrue(service instanceof Service, 'LibraryService should extend Service');
   });
 
   test('it should return a paginated list of libraries', async ({ assert }) => {
