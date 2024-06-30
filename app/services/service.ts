@@ -41,4 +41,13 @@ export abstract class Service {
   mergeQueries(queries: object): void {
     this.queries = Object.assign({}, this.queries, queries);
   }
+
+  /**
+   * Create or update a resource.
+   *
+   * @param {any} model - The model to use to save the resource.
+   * @param {any} attributes - The attributes for the new resource.
+   * @returns {Promise<any>} The created resource.
+   */
+  abstract save(model: any, attributes: any): Promise<any>;
 }

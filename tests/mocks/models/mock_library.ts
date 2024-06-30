@@ -9,8 +9,13 @@ const libraries = items.map((item, i) => ({
   id: i + 1,
 }));
 
+// @ts-ignore
 export const MockLibrary: typeof FakeModel = {
+  ...FakeModel,
   ...sinon.mock(Library),
+
+  // @ts-ignore
+  items: libraries,
 
   query: sinon.stub().returnsThis(),
 
