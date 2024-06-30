@@ -1,3 +1,5 @@
+// noinspection SuspiciousTypeOfGuard
+
 import Library from '#models/library';
 import LibraryService from '#services/library_service';
 import { MockLibrary } from '#tests/mocks/models/mock_library';
@@ -6,13 +8,13 @@ import { test } from '@japa/runner';
 
 test.group('Services / LibraryService', () => {
   test('it extends the Service class', async ({ assert }) => {
-    const $service = new LibraryService({ model: MockLibrary });
+    const $service: LibraryService = new LibraryService({ model: MockLibrary });
     assert.isTrue($service instanceof Service, 'LibraryService should extend Service');
   });
 
   test('it should return a paginated list of libraries', async ({ assert }) => {
     // Arrangements
-    const $service = new LibraryService({ model: MockLibrary });
+    const $service: LibraryService = new LibraryService({ model: MockLibrary });
     const pageCount: number = 10;
 
     // Actions
