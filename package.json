@@ -48,6 +48,7 @@
     "@types/lodash": "^4.17.6",
     "@types/luxon": "^3.4.2",
     "@types/node": "^20.14.9",
+    "@types/sinon": "^17.0.3",
     "eslint": "^8.57.0",
     "hot-hook": "^0.2.6",
     "pino-pretty": "^11.2.1",
@@ -64,7 +65,8 @@
     "better-sqlite3": "^11.0.0",
     "lodash": "^4.17.21",
     "luxon": "^3.4.4",
-    "reflect-metadata": "^0.2.2"
+    "reflect-metadata": "^0.2.2",
+    "sinon": "^18.0.0"
   },
   "hotHook": {
     "boundaries": [
