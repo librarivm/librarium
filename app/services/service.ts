@@ -1,27 +1,45 @@
 import { BaseModel } from '@adonisjs/lucid/orm';
-import { HttpContext } from '@adonisjs/core/http';
+import { HttpContext, Request } from '@adonisjs/core/http';
 import { inject } from '@adonisjs/core';
+import isNil from 'lodash/isNil.js';
 
 export type ServiceContext = {
   model?: typeof BaseModel | any;
   ctx?: HttpContext;
 };
 
+export type HttpQueries = {
+  page?: number | string | any;
+  per_page?: number | string | any;
+  order_by?: string;
+  q?: string;
+  [key: string]: any;
+};
+
 @inject()
 export abstract class Service {
-  private page: number = 1;
-  private pageCount: number = 15;
-  private queries: object = {};
+  protected declare request: Request | any;
+  protected declare qs: HttpQueries | null;
   protected declare model: typeof BaseModel | any;
-  protected declare ctx: typeof HttpContext | any;
+  private page?: number | string = 1;
+  private pageCount?: number | string = 15;
 
-  constructor({ model, ctx }: ServiceContext = {}) {
-    if (model) {
-      this.model = model;
-    }
+  constructor(protected ctx?: HttpContext) {
+    this.setUpRequest(ctx?.request);
+  }
 
-    if (ctx) {
-      this.ctx = ctx;
+  setUpRequest(request: Request | undefined) {
+    this.request = request;
+    const input: { [key: string]: any } | null = this.request && this.request.qs();
+
+    if (input) {
+      this.qs = {
+        ...input,
+        page: input.page ?? this.page,
+        per_page: input.per_page ?? this.pageCount,
+      };
+      this.setPage(this.qs.page);
+      this.setPageCount(this.qs.per_page);
     }
   }
 
@@ -37,7 +55,7 @@ export abstract class Service {
     this.page = page;
   }
 
-  getPage(): number {
+  getPage(): number | string | any {
     return this.page;
   }
 
@@ -45,20 +63,36 @@ export abstract class Service {
     this.pageCount = pageCount;
   }
 
-  getPageCount(): number {
+  getPageCount(): number | string | any {
     return this.pageCount;
   }
 
-  setQueries(queries: object): void {
-    this.queries = queries;
+  setQueries(qs: HttpQueries): void {
+    this.qs = qs;
   }
 
-  getQueries(): object {
-    return this.queries;
+  getQueries(): HttpQueries | null {
+    return this.qs;
   }
 
-  mergeQueries(queries: object): void {
-    this.queries = Object.assign({}, this.queries, queries);
+  mergeQueries(qs: HttpQueries): void {
+    this.qs = Object.assign({}, this.qs, qs);
+  }
+
+  hasSearch(): boolean {
+    return !isNil(this.qs?.q);
+  }
+
+  getSearch(): string | any {
+    return this.qs?.q;
+  }
+
+  hasOrderBy(): boolean {
+    return !isNil(this.qs?.order_by);
+  }
+
+  getOrderBy(): string | any {
+    return this.qs?.order_by;
   }
 
   /**
