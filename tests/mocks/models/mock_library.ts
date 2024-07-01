@@ -3,8 +3,8 @@ import { LibraryFactory } from '#database/factories/library_factory';
 import { FakeModel } from '#tests/mocks/models/mock_model';
 import Library from '#models/library';
 
-const items = await LibraryFactory.with('type').makeMany(20);
-const libraries = items.map((item, i) => ({
+const items: Library[] = await LibraryFactory.makeMany(20);
+const libraries = items.map((item: Library, i: number) => ({
   ...item,
   id: i + 1,
   userId: 1,
