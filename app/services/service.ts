@@ -1,9 +1,9 @@
+import { inject } from '@adonisjs/core';
+import { HttpContext, Request } from '@adonisjs/core/http';
+import { BaseModel, ModelQueryBuilder } from '@adonisjs/lucid/orm';
 import isArray from 'lodash/isArray.js';
 import isNil from 'lodash/isNil.js';
 import isString from 'lodash/isString.js';
-import { BaseModel, ModelQueryBuilder } from '@adonisjs/lucid/orm';
-import { HttpContext, Request } from '@adonisjs/core/http';
-import { inject } from '@adonisjs/core';
 
 export type ServiceContext = {
   model?: typeof BaseModel | any;
@@ -25,8 +25,8 @@ export abstract class Service {
   protected declare request: Request | any;
   protected declare qs: HttpQueries | null;
   protected declare model: typeof BaseModel | any;
-  private page?: number | string = 1;
-  private pageCount?: number | string = 15;
+  #page?: number | string = 1;
+  #pageCount?: number | string = 15;
 
   constructor(protected ctx?: HttpContext) {
     this.setUpRequest(ctx?.request);
@@ -39,8 +39,8 @@ export abstract class Service {
     if (input) {
       this.qs = {
         ...input,
-        page: input.page ?? this.page,
-        per_page: input.per_page ?? this.pageCount,
+        page: input.page ?? this.#page,
+        per_page: input.per_page ?? this.#pageCount,
       };
       this.setPage(this.qs.page);
       this.setPageCount(this.qs.per_page);
@@ -56,19 +56,19 @@ export abstract class Service {
   }
 
   setPage(page: number): void {
-    this.page = page;
+    this.#page = page;
   }
 
   getPage(): number | string | any {
-    return this.page;
+    return this.#page;
   }
 
   setPageCount(pageCount: number): void {
-    this.pageCount = pageCount;
+    this.#pageCount = pageCount;
   }
 
   getPageCount(): number | string | any {
-    return this.pageCount;
+    return this.#pageCount;
   }
 
   setQueries(qs: HttpQueries): void {
