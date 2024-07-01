@@ -11,19 +11,23 @@ import kebabCase from 'lodash/kebabCase.js';
 import { LibraryFactory } from '#database/factories/library_factory';
 
 test.group('Services / LibraryService', (group) => {
+  let $service: LibraryService;
+
   group.each.teardown(() => {
     MockLibrary.find.resetHistory();
     MockLibrary.save.resetHistory();
+
+    $service = new LibraryService();
+    $service.setModel(MockLibrary);
   });
 
   test('it extends the Service class', async ({ assert }) => {
-    const $service: LibraryService = new LibraryService();
-    assert.isTrue($service instanceof Service, 'LibraryService should extend Service');
+    const service: LibraryService = new LibraryService();
+    assert.isTrue(service instanceof Service, 'LibraryService should extend Service');
   });
 
   test('it should return a paginated list of libraries', async ({ assert }) => {
     // Arrangements
-    const $service: LibraryService = new LibraryService({ model: MockLibrary });
     const pageCount: number = 10;
 
     // Actions
@@ -42,7 +46,6 @@ test.group('Services / LibraryService', (group) => {
 
   test('it should find a library by id', async ({ assert }) => {
     // Arrangements
-    const $service: LibraryService = new LibraryService({ model: MockLibrary });
     const item = MockLibrary.first();
 
     // Actions
@@ -55,7 +58,6 @@ test.group('Services / LibraryService', (group) => {
 
   test('it should return null if library is not found by id', async ({ assert }) => {
     // Arrangements
-    const $service: LibraryService = new LibraryService({ model: MockLibrary });
     const itemId = 9999;
 
     // Actions
@@ -67,7 +69,6 @@ test.group('Services / LibraryService', (group) => {
 
   test('it should store a library and return the created instance', async ({ assert }) => {
     // Arrangements
-    const $service: LibraryService = new LibraryService({ model: MockLibrary });
     const attributes: LibraryAttributes = MockLibrary.mockAttributes({
       name: startCase(faker.lorem.sentence()),
       description: faker.lorem.sentences(),
@@ -97,7 +98,7 @@ test.group('Services / LibraryService', (group) => {
 
   test('it should update a library and return the updated instance', async ({ assert }) => {
     // Arrangements
-    const $service: LibraryService = new LibraryService({ model: MockLibrary });
+    $service.setModel(MockLibrary);
     const item = MockLibrary.first();
     const attributes: LibraryAttributes = MockLibrary.mockAttributes({
       ...item,
@@ -117,7 +118,6 @@ test.group('Services / LibraryService', (group) => {
 
   test('it should archive a library', async ({ assert }) => {
     // Arrangements
-    const $service: LibraryService = new LibraryService({ model: MockLibrary });
     const item = MockLibrary.mockAttributes({
       ...MockLibrary.first(),
     }) as Library;
@@ -134,7 +134,6 @@ test.group('Services / LibraryService', (group) => {
 
   test('it should delete a library permanently', async ({ assert }) => {
     // Arrangements
-    const $service: LibraryService = new LibraryService({ model: MockLibrary });
     const item = await LibraryFactory.make();
     const library = MockLibrary.create(item.toJSON());
 

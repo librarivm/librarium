@@ -6,6 +6,8 @@ import isObject from 'lodash/isObject.js';
 import User from '#models/user';
 import Type from '#models/type';
 import { DateTime } from 'luxon';
+import { inject } from '@adonisjs/core';
+import { HttpContext } from '@adonisjs/core/http';
 
 export interface LibraryAttributes {
   name: string;
@@ -17,17 +19,32 @@ export interface LibraryAttributes {
   typeId: number;
 }
 
+@inject()
 export default class LibraryService extends Service {
+  constructor(ctx?: HttpContext) {
+    super(ctx);
+    this.setModel(Library);
+  }
+
   /**
    * List resources with pagination.
    *
    * @returns {Promise<ModelPaginatorContract<Library>>} Paginated results.
    */
   async list(): Promise<ModelPaginatorContract<Library>> {
-    return this.model
+    let query = this.model
       .query()
-      .apply((scopes: { notSoftDeleted: () => any }) => scopes.notSoftDeleted())
-      .paginate(this.getPage(), this.getPageCount());
+      .apply((scopes: { notSoftDeleted: () => any }) => scopes.notSoftDeleted());
+
+    if (this.hasSearch()) {
+      query.where('slug', 'LIKE', `%${this.getSearch()}%`);
+    }
+
+    if (this.hasOrderBy()) {
+      query.orderBy(this.getOrderBy());
+    }
+
+    return query.paginate(this.getPage(), this.getPageCount());
   }
 
   /**
