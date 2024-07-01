@@ -9,8 +9,10 @@
 
 import router from '@adonisjs/core/services/router';
 
-router.get('/', async () => {
-  return {
-    hello: 'world',
-  };
-});
+const LibrariesController = () => import('#controllers/v1/libraries_controller');
+
+router
+  .group(() => {
+    router.resource('libraries', LibrariesController);
+  })
+  .prefix('api/v1');
