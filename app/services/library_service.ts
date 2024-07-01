@@ -32,19 +32,16 @@ export default class LibraryService extends Service {
    * @returns {Promise<ModelPaginatorContract<Library>>} Paginated results.
    */
   async list(): Promise<ModelPaginatorContract<Library>> {
-    let query = this.model
+    return this.model
       .query()
-      .apply((scopes: { notSoftDeleted: () => any }) => scopes.notSoftDeleted());
-
-    if (this.hasSearch()) {
-      query.where('slug', 'LIKE', `%${this.getSearch()}%`);
-    }
-
-    if (this.hasOrderBy()) {
-      query.orderBy(this.getOrderBy());
-    }
-
-    return query.paginate(this.getPage(), this.getPageCount());
+      .apply((scopes: { notSoftDeleted: () => any }) => scopes.notSoftDeleted())
+      .if(this.hasSearch(), (query: any) => {
+        query.where('slug', 'LIKE', `%${this.getSearch()}%`);
+      })
+      .if(this.hasOrderBy(), (query: any) => {
+        query.orderBy(this.getOrderBy());
+      })
+      .paginate(this.getPage(), this.getPageCount());
   }
 
   /**

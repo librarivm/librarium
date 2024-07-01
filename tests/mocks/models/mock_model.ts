@@ -5,6 +5,7 @@ export const FakeModel = {
   query: sinon.stub().returnsThis(),
   apply: sinon.stub().returnsThis(),
   where: sinon.stub().returnsThis(),
+  if: sinon.stub().returnsThis(),
 
   items: [],
   attributes: {},
