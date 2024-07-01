@@ -13,6 +13,6 @@ const LibrariesController = () => import('#controllers/v1/libraries_controller')
 
 router
   .group(() => {
-    router.resource('libraries', LibrariesController);
+    router.api('libraries', LibrariesController);
   })
   .prefix('api/v1');
