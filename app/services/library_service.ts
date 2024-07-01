@@ -1,13 +1,13 @@
 import Library from '#models/library';
 import Type from '#models/type';
 import User from '#models/user';
+import { Service } from '#services/service';
+import { inject } from '@adonisjs/core';
+import { HttpContext } from '@adonisjs/core/http';
+import { ModelPaginatorContract } from '@adonisjs/lucid/types/model';
 import isObject from 'lodash/isObject.js';
 import kebabCase from 'lodash/kebabCase.js';
 import { DateTime } from 'luxon';
-import { HttpContext } from '@adonisjs/core/http';
-import { Service } from '#services/service';
-import { ModelPaginatorContract } from '@adonisjs/lucid/types/model';
-import { inject } from '@adonisjs/core';
 
 export interface LibraryAttributes {
   name: string;
@@ -45,6 +45,16 @@ export default class LibraryService extends Service {
    */
   async find(id: number): Promise<Library | null> {
     return await this.model.find(id);
+  }
+
+  /**
+   * Find a resource by ID.
+   *
+   * @param {number} id - The ID of the resource.
+   * @returns {Promise<Library|null>} The resource if found, otherwise null.
+   */
+  async findOrFail(id: number): Promise<Library | any> {
+    return this.withPreload(this.model.query().where('id', id)).firstOrFail();
   }
 
   /**

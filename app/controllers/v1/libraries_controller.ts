@@ -16,12 +16,15 @@ export default class LibrariesController {
   /**
    * Handle form submission for the create action
    */
+
   // async store({ request }: HttpContext) {}
 
   /**
    * Show individual record
    */
-  // async show({ params }: HttpContext) {}
+  async show({ response, params }: HttpContext) {
+    return response.json(await this.$service.findOrFail(params.id));
+  }
 
   /**
    * Handle form submission for the edit action
