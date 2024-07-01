@@ -1,17 +1,36 @@
 import { BaseModel } from '@adonisjs/lucid/orm';
+import { HttpContext } from '@adonisjs/core/http';
+import { inject } from '@adonisjs/core';
 
-type ServiceContext = {
-  model: typeof BaseModel | any;
+export type ServiceContext = {
+  model?: typeof BaseModel | any;
+  ctx?: HttpContext;
 };
 
+@inject()
 export abstract class Service {
   private page: number = 1;
   private pageCount: number = 15;
   private queries: object = {};
-  model: typeof BaseModel | any;
+  protected declare model: typeof BaseModel | any;
+  protected declare ctx: typeof HttpContext | any;
 
-  constructor({ model }: ServiceContext) {
+  constructor({ model, ctx }: ServiceContext = {}) {
+    if (model) {
+      this.model = model;
+    }
+
+    if (ctx) {
+      this.ctx = ctx;
+    }
+  }
+
+  setModel(model: typeof BaseModel | any): void {
     this.model = model;
+  }
+
+  getModel(): typeof BaseModel {
+    return this.model;
   }
 
   setPage(page: number): void {

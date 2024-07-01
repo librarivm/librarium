@@ -21,10 +21,10 @@ export default class Library extends BaseModel {
   declare metadata: string | null | undefined;
 
   @column()
-  declare user_id: number;
+  declare userId: number;
 
   @column()
-  declare type_id: number;
+  declare typeId: number;
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime;

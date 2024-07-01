@@ -17,7 +17,7 @@ test.group('Services / LibraryService', (group) => {
   });
 
   test('it extends the Service class', async ({ assert }) => {
-    const $service: LibraryService = new LibraryService({ model: MockLibrary });
+    const $service: LibraryService = new LibraryService();
     assert.isTrue($service instanceof Service, 'LibraryService should extend Service');
   });
 
@@ -73,8 +73,8 @@ test.group('Services / LibraryService', (group) => {
       description: faker.lorem.sentences(),
       metadata: null,
       is_private: faker.datatype.boolean(),
-      user_id: 1,
-      type_id: 1,
+      userId: 1,
+      typeId: 1,
     }) as LibraryAttributes;
 
     // Actions
@@ -91,8 +91,8 @@ test.group('Services / LibraryService', (group) => {
     assert.equal(item.name, library.name);
     assert.equal(item.slug, library.slug);
     assert.equal(item.description, library.description);
-    assert.equal(item.user_id, library.user_id);
-    assert.equal(item.type_id, library.type_id);
+    assert.equal(item.userId, library.userId);
+    assert.equal(item.typeId, library.typeId);
   });
 
   test('it should update a library and return the updated instance', async ({ assert }) => {

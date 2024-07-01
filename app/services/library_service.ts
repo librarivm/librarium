@@ -13,8 +13,8 @@ export interface LibraryAttributes {
   description?: string;
   metadata?: JSON | null;
   is_private: boolean;
-  user_id: number;
-  type_id: number;
+  userId: number;
+  typeId: number;
 }
 
 export default class LibraryService extends Service {
@@ -56,13 +56,11 @@ export default class LibraryService extends Service {
     library.metadata = isObject(attributes.metadata)
       ? JSON.stringify(attributes.metadata)
       : attributes.metadata;
-    library.user_id = attributes.user_id;
-    library.type_id = attributes.type_id;
 
-    const user: User | null = await User.find(attributes.user_id);
+    const user: User | null = await User.find(attributes.userId);
     user && (await library.related('user').associate(user));
 
-    const type: Type | null = await Type.find(attributes.type_id);
+    const type: Type | null = await Type.find(attributes.typeId);
     type && (await library.related('type').associate(type));
 
     await library.save();
