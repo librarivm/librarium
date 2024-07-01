@@ -1,7 +1,7 @@
-import { test } from '@japa/runner';
 import { HttpQueries, Service } from '#services/service';
-import { faker } from '@faker-js/faker';
 import { FakeModel } from '#tests/mocks/models/mock_model';
+import { faker } from '@faker-js/faker';
+import { test } from '@japa/runner';
 
 class TestService extends Service {
   // @ts-ignore
@@ -121,6 +121,20 @@ test.group('Services', (group) => {
     assert.equal($service.getOrderBy(), queries.order_by);
   });
 
+  test('it should get and check withPreload query parameter', async ({ assert }) => {
+    // Arrangements
+    const queries: HttpQueries = {
+      with: [faker.lorem.word(), faker.lorem.word()],
+    };
+
+    // Actions
+    $service.setQueries(queries);
+
+    // Assertions
+    assert.isTrue($service.hasWithPreload());
+    assert.equal($service.getWithPreload(), queries.with);
+  });
+
   test('it should accept and return the model when invoking withQueryAware', async ({ assert }) => {
     // Arrangements
     $service.setModel(FakeModel);
@@ -128,6 +142,18 @@ test.group('Services', (group) => {
 
     // Actions
     const query = $service.withQueryAware(model.query());
+
+    // Assertions
+    assert.equal(query, FakeModel);
+  });
+
+  test('it should accept and return the model when invoking withPreload', async ({ assert }) => {
+    // Arrangements
+    $service.setModel(FakeModel);
+    const model: typeof FakeModel | any = $service.getModel();
+
+    // Actions
+    const query = $service.withPreload(model.query());
 
     // Assertions
     assert.equal(query, FakeModel);

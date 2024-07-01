@@ -17,6 +17,7 @@ export type HttpQueries = {
   per_page?: number | string | any;
   order_by?: string | { [key: number]: HttpQueriesOrderBy };
   q?: string;
+  with?: string | string[];
   [key: string]: any;
 };
 
@@ -99,6 +100,14 @@ export abstract class Service {
     return this.qs?.order_by;
   }
 
+  hasWithPreload(): boolean {
+    return !isNil(this.qs?.with);
+  }
+
+  getWithPreload(): string | string[] | any {
+    return this.qs?.with;
+  }
+
   /**
    * Enhances the provided model query builder with search and ordering capabilities.
    *
@@ -118,20 +127,42 @@ export abstract class Service {
    * @returns {typeof BaseModel | any} - The enhanced model query builder with search and ordering applied.
    */
   withQueryAware(builder: ModelQueryBuilder): typeof BaseModel | any {
-    return builder
-      .if(this.hasSearch(), (query: any): void => {
-        // TODO: write better search/scout
-        query.where('slug', 'LIKE', `%${this.getSearch()}%`);
-      })
-      .if(this.hasOrderBy(), (query: any): void => {
-        if (isArray(this.getOrderBy())) {
-          this.getOrderBy().forEach(([column, order]: HttpQueriesOrderBy) => {
-            query.orderBy(column, order);
-          });
-        } else if (isString(this.getOrderBy())) {
-          query.orderBy(this.getOrderBy());
-        }
+    return this.withPreload(
+      builder
+        .if(this.hasSearch(), (query: ModelQueryBuilder): void => {
+          // TODO: write better search/scout
+          query.where('slug', 'LIKE', `%${this.getSearch()}%`);
+        })
+        .if(this.hasOrderBy(), (query: ModelQueryBuilder): void => {
+          if (isArray(this.getOrderBy())) {
+            this.getOrderBy().forEach(([column, order]: HttpQueriesOrderBy) => {
+              query.orderBy(column, order);
+            });
+          } else if (isString(this.getOrderBy())) {
+            query.orderBy(this.getOrderBy());
+          }
+        })
+    );
+  }
+
+  /**
+   * This method modifies the query builder to include related models (preload)
+   * if the condition specified by `this.hasWithPreload()` is true. It supports
+   * both single preload and multiple preloads.
+   *
+   * @param {ModelQueryBuilder} builder - The model query builder instance to enhance.
+   * @returns {typeof BaseModel | any} - The enhanced model query builder with search and ordering applied.
+   */
+  withPreload(builder: ModelQueryBuilder): typeof BaseModel | any {
+    return builder.if(this.hasWithPreload(), async (query: ModelQueryBuilder): Promise<void> => {
+      const preloads: string[] = isString(this.getWithPreload())
+        ? [this.getWithPreload()]
+        : [...this.getWithPreload()];
+
+      preloads.map(async (preload: string) => {
+        query.preload(preload);
       });
+    });
   }
 
   /**
