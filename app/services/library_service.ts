@@ -1,13 +1,13 @@
-import { Service } from '#services/service';
 import Library from '#models/library';
-import { ModelPaginatorContract } from '@adonisjs/lucid/types/model';
-import kebabCase from 'lodash/kebabCase.js';
-import isObject from 'lodash/isObject.js';
-import User from '#models/user';
 import Type from '#models/type';
+import User from '#models/user';
+import isObject from 'lodash/isObject.js';
+import kebabCase from 'lodash/kebabCase.js';
 import { DateTime } from 'luxon';
-import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
+import { Service } from '#services/service';
+import { ModelPaginatorContract } from '@adonisjs/lucid/types/model';
+import { inject } from '@adonisjs/core';
 
 export interface LibraryAttributes {
   name: string;
@@ -32,16 +32,9 @@ export default class LibraryService extends Service {
    * @returns {Promise<ModelPaginatorContract<Library>>} Paginated results.
    */
   async list(): Promise<ModelPaginatorContract<Library>> {
-    return this.model
-      .query()
-      .apply((scopes: { notSoftDeleted: () => any }) => scopes.notSoftDeleted())
-      .if(this.hasSearch(), (query: any) => {
-        query.where('slug', 'LIKE', `%${this.getSearch()}%`);
-      })
-      .if(this.hasOrderBy(), (query: any) => {
-        query.orderBy(this.getOrderBy());
-      })
-      .paginate(this.getPage(), this.getPageCount());
+    return this.withQueryAware(
+      this.model.query().apply((scopes: { notSoftDeleted: () => any }) => scopes.notSoftDeleted())
+    ).paginate(this.getPage(), this.getPageCount());
   }
 
   /**

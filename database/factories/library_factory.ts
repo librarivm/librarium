@@ -12,6 +12,7 @@ export const LibraryFactory = factory
       name: startCase(name),
       description: faker.lorem.sentences(),
       slug: kebabCase(name),
+      isPrivate: faker.datatype.boolean(),
     };
   })
   .relation('user', () => UserFactory)

@@ -21,6 +21,9 @@ export default class Library extends BaseModel {
   declare metadata: string | null | undefined;
 
   @column()
+  declare isPrivate: boolean;
+
+  @column()
   declare userId: number;
 
   @column()
