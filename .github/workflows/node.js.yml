@@ -23,6 +23,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Copy environment variables file
         run: cp .env.example .env
+      - name: Create tmp folder
+        run: mkdir tmp
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
