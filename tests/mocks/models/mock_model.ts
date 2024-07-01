@@ -1,5 +1,5 @@
-import sinon from 'sinon';
 import isNil from 'lodash/isNil.js';
+import sinon from 'sinon';
 
 export const FakeModel = {
   query: sinon.stub().returnsThis(),
