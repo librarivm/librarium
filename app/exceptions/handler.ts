@@ -1,5 +1,6 @@
+import env from '#start/env';
+import { ExceptionHandler, HttpContext } from '@adonisjs/core/http';
 import app from '@adonisjs/core/services/app';
-import { HttpContext, ExceptionHandler } from '@adonisjs/core/http';
 
 export default class HttpExceptionHandler extends ExceptionHandler {
   /**
@@ -23,6 +24,10 @@ export default class HttpExceptionHandler extends ExceptionHandler {
    * @note You should not attempt to send a response from this method.
    */
   async report(error: unknown, ctx: HttpContext) {
+    if (env.get('NODE_ENV') === 'test') {
+      return;
+    }
+
     return super.report(error, ctx);
   }
 }
