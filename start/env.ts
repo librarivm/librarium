@@ -19,4 +19,6 @@ export default await Env.create(new URL('../', import.meta.url), {
   LOG_LEVEL: Env.schema.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']),
 
   DB_DATABASE: Env.schema.string(),
+
+  DB_CONNECTION: Env.schema.enum(['sqlite', 'test']),
 });
