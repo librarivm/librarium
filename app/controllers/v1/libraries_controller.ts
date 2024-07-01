@@ -1,11 +1,9 @@
-import { HttpContext } from '@adonisjs/core/http';
 import LibraryService from '#services/library_service';
 import { inject } from '@adonisjs/core';
+import { HttpContext } from '@adonisjs/core/http';
 
 @inject()
 export default class LibrariesController {
-  // protected $service: LibraryService;
-
   constructor(protected $service: LibraryService) {}
 
   /**
@@ -14,11 +12,6 @@ export default class LibrariesController {
   async index({ response }: HttpContext) {
     return response.json(await this.$service.list());
   }
-
-  /**
-   * Display form to create a new record
-   */
-  // async create({}: HttpContext) {}
 
   /**
    * Handle form submission for the create action
@@ -31,14 +24,14 @@ export default class LibrariesController {
   // async show({ params }: HttpContext) {}
 
   /**
-   * Edit individual record
-   */
-  // async edit({ params }: HttpContext) {}
-
-  /**
    * Handle form submission for the edit action
    */
   // async update({ params, request }: HttpContext) {}
+
+  /**
+   * Soft delete record
+   */
+  // async archive({ params }: HttpContext) {}
 
   /**
    * Delete record
