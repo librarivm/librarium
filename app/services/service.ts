@@ -1,17 +1,21 @@
-import { BaseModel } from '@adonisjs/lucid/orm';
+import isArray from 'lodash/isArray.js';
+import isNil from 'lodash/isNil.js';
+import isString from 'lodash/isString.js';
+import { BaseModel, ModelQueryBuilder } from '@adonisjs/lucid/orm';
 import { HttpContext, Request } from '@adonisjs/core/http';
 import { inject } from '@adonisjs/core';
-import isNil from 'lodash/isNil.js';
 
 export type ServiceContext = {
   model?: typeof BaseModel | any;
   ctx?: HttpContext;
 };
 
+export type HttpQueriesOrderBy = [column: string, order: 'asc' | 'desc'];
+
 export type HttpQueries = {
   page?: number | string | any;
   per_page?: number | string | any;
-  order_by?: string;
+  order_by?: string | { [key: number]: HttpQueriesOrderBy };
   q?: string;
   [key: string]: any;
 };
@@ -93,6 +97,41 @@ export abstract class Service {
 
   getOrderBy(): string | any {
     return this.qs?.order_by;
+  }
+
+  /**
+   * Enhances the provided model query builder with search and ordering capabilities.
+   *
+   * This method takes a ModelQueryBuilder instance and conditionally applies search and ordering
+   * logic based on the presence of search and order-by parameters.
+   *
+   * - If a search term is provided (via `this.hasSearch()`), it adds a `WHERE` clause to search for
+   *   the term within the `slug` field using a `LIKE` condition.
+   *
+   * - If ordering parameters are present (via `this.hasOrderBy()`), it adds `ORDER BY` clauses to
+   *   the query:
+   *     - If `orderBy` is an array, it iterates through the array and adds each column-order pair
+   *       to the query.
+   *     - If `orderBy` is a string, it adds a single `ORDER BY` clause using the string value.
+   *
+   * @param {ModelQueryBuilder} builder - The model query builder instance to enhance.
+   * @returns {typeof BaseModel | any} - The enhanced model query builder with search and ordering applied.
+   */
+  withQueryAware(builder: ModelQueryBuilder): typeof BaseModel | any {
+    return builder
+      .if(this.hasSearch(), (query: any): void => {
+        // TODO: write better search/scout
+        query.where('slug', 'LIKE', `%${this.getSearch()}%`);
+      })
+      .if(this.hasOrderBy(), (query: any): void => {
+        if (isArray(this.getOrderBy())) {
+          this.getOrderBy().forEach(([column, order]: HttpQueriesOrderBy) => {
+            query.orderBy(column, order);
+          });
+        } else if (isString(this.getOrderBy())) {
+          query.orderBy(this.getOrderBy());
+        }
+      });
   }
 
   /**

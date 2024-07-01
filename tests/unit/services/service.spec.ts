@@ -17,6 +17,15 @@ test.group('Services', (group) => {
     $service = new TestService();
   });
 
+  test('it should initialize with default values', async ({ assert }) => {
+    // Assertions
+    assert.isTrue(Number.isInteger($service.getPage()));
+    assert.isTrue(Number.isInteger($service.getPageCount()));
+
+    assert.isTrue($service.getPage() >= 1);
+    assert.isTrue($service.getPageCount() >= 1);
+  });
+
   test('it should get and set pageCount', async ({ assert }) => {
     // Arrangements
     const pageCount: number = 10;
@@ -112,12 +121,15 @@ test.group('Services', (group) => {
     assert.equal($service.getOrderBy(), queries.order_by);
   });
 
-  test('it should initialize with default values', async ({ assert }) => {
-    // Assertions
-    assert.isTrue(Number.isInteger($service.getPage()));
-    assert.isTrue(Number.isInteger($service.getPageCount()));
+  test('it should accept and return the model when invoking withQueryAware', async ({ assert }) => {
+    // Arrangements
+    $service.setModel(FakeModel);
+    const model: typeof FakeModel | any = $service.getModel();
 
-    assert.isTrue($service.getPage() >= 1);
-    assert.isTrue($service.getPageCount() >= 1);
+    // Actions
+    const query = $service.withQueryAware(model.query());
+
+    // Assertions
+    assert.equal(query, FakeModel);
   });
 });
