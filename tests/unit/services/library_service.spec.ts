@@ -29,7 +29,7 @@ test.group('Services / LibraryService', (group) => {
   });
 
   test('it extends the Service class', async ({ assert }) => {
-    const service: LibraryService = new LibraryService();
+    const service: LibraryService | any = new LibraryService();
     assert.isTrue(service instanceof Service, 'LibraryService should extend Service');
   });
 

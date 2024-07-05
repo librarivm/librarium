@@ -2,10 +2,10 @@
 
 import FolderService from '#services/folder_service';
 import { Service as BaseService } from '#services/service';
-import { test } from '@japa/runner';
-import path from 'node:path';
-import fs from 'node:fs';
 import { faker } from '@faker-js/faker';
+import { test } from '@japa/runner';
+import fs from 'node:fs';
+import path from 'node:path';
 
 type File = {
   dir: string;
@@ -34,7 +34,7 @@ test.group('Services / FolderService', (group) => {
   });
 
   test('it extends the Service class', async ({ assert }) => {
-    const service: FolderService = new FolderService();
+    const service: FolderService | any = new FolderService();
     assert.isTrue(service instanceof BaseService, 'FolderService should extend Service');
   });
 
