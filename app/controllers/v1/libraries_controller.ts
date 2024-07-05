@@ -1,4 +1,4 @@
-import LibraryService from '#services/library_service';
+import LibraryService, { LibraryAttributes } from '#services/library_service';
 import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
 
@@ -17,7 +17,9 @@ export default class LibrariesController {
    * Handle form submission for the create action
    */
 
-  // async store({ request }: HttpContext) {}
+  async store({ request, response }: HttpContext) {
+    return response.status(201).json(await this.$service.store(request.all() as LibraryAttributes));
+  }
 
   /**
    * Show individual record

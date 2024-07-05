@@ -72,9 +72,7 @@ export default class LibraryService extends Service {
     library.typeId = attributes.typeId;
     library.metadata = attributes.metadata;
 
-    const item: Library = await library.save();
-
-    return item;
+    return await library.save();
   }
 
   /**
