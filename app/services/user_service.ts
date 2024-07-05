@@ -73,6 +73,10 @@ export default class UserService extends Service {
       attributes = Object.assign(attributes, { username: attributes.email });
     }
 
+    if (!attributes.hasOwnProperty('email')) {
+      attributes = Object.assign(attributes, { email: attributes.username });
+    }
+
     return attributes;
   }
 }
