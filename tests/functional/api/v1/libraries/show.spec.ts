@@ -11,6 +11,7 @@ test.group(API_URL_NAME, (group) => {
   let $libraries: Library[] = [];
 
   group.setup(async () => {
+    await Library.truncate();
     $libraries = await LibraryFactory.with('user').with('type').createMany(10);
   });
 
