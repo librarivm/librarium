@@ -1,13 +1,15 @@
 import { UserFactory } from '#database/factories/user_factory';
 import User from '#models/user';
 import { Service } from '#services/service';
-import UserService, { UserAuthAttributes } from '#services/user_service';
+import UserService, { UserAuthAttributes, UserCredentialsAttributes } from '#services/user_service';
 import SandboxModel from '#tests/mocks/models/sandbox_model';
+import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens';
 import { faker } from '@faker-js/faker';
 import { test } from '@japa/runner';
+import sample from 'lodash/sample.js';
 import { SinonStub } from 'sinon';
 
-test.group('Services / UserService / Authentication / Registration', (group) => {
+test.group('Services / UserService', (group) => {
   let $service: UserService;
   let $users: User[];
   let $sandbox: SandboxModel;
@@ -23,6 +25,13 @@ test.group('Services / UserService / Authentication / Registration', (group) => 
     $sandbox.restore();
   });
 
+  // Base
+  test('it extends the Service class', async ({ assert }) => {
+    const service: UserService | any = new UserService();
+    assert.isTrue(service instanceof Service, 'UserService should extend Service');
+  });
+
+  // Authentication
   test('it should register a new user successfully', async ({ assert }) => {
     // Arrangements
     const attributes: UserAuthAttributes = {
@@ -51,26 +60,72 @@ test.group('Services / UserService / Authentication / Registration', (group) => 
     assert.exists(registered.id, 'User ID must be set in the stub');
     assert.isTrue(stub.calledOnceWithExactly(attributes));
   });
-});
 
-test.group('Services / UserService', (group) => {
-  let $service: UserService;
-  let $users: User[];
-  let $sandbox: SandboxModel;
+  test('it should verify the credentials of an existing user', async ({ assert }) => {
+    // Arrangements
+    const user: User & { id: number } = {
+      ...(sample($users) as User),
+      id: $users.length,
+    };
 
-  group.each.setup(async () => {
-    $users = await UserFactory.makeMany(10);
-    $service = new UserService();
-    $sandbox = new SandboxModel();
+    const credentials: UserCredentialsAttributes = {
+      email: user.email,
+      password: 'password',
+    };
+
+    const stub: SinonStub<any, any> = $sandbox
+      .stub(User, 'verifyCredentials')
+      .withArgs(credentials)
+      .resolves(user);
+
+    // Actions
+    const logged: User = await $service.verifyCredentials(credentials);
+
+    // Assertions
+    assert.isTrue(stub.calledOnceWithExactly(credentials));
+    assert.equal(logged.id, user.id);
   });
 
-  group.each.teardown(() => {
-    $users = [];
-    $sandbox.restore();
+  test('it should throw E_INVALID_CREDENTIALS if credentials are invalid', async ({ assert }) => {
+    // Arrangements
+    const credentials: UserCredentialsAttributes = {
+      username: faker.internet.email(),
+      password: 'password',
+    };
+
+    try {
+      // Actions
+      await $service.verifyCredentials(credentials);
+    } catch (e) {
+      // Assertions
+      assert.equal(e.code, 'E_INVALID_CREDENTIALS');
+    }
   });
 
-  test('it extends the Service class', async ({ assert }) => {
-    const service: UserService = new UserService();
-    assert.isTrue(service instanceof Service, 'UserService should extend Service');
+  test('it should return access token provider when invoking tokens method', async ({ assert }) => {
+    // Actions
+    const tokens: DbAccessTokensProvider<typeof User> = $service.tokens();
+    // Assertions
+    assert.instanceOf(tokens, DbAccessTokensProvider);
   });
+
+  test('it should delete current access token', async ({ assert }) => {
+    // Arrangements
+    const user: { [key: string]: any } = {
+      currentAccessToken: {
+        identifier: faker.lorem.words(),
+      },
+    };
+
+    const stub: SinonStub<any, any> = $sandbox.stub(User.accessTokens, 'delete').resolves();
+
+    // Actions
+    await $service.removeCurrentToken(user);
+
+    // Assertions
+    assert.isTrue(stub.calledOnce);
+    assert.isTrue(stub.calledWithExactly(user, user.currentAccessToken.identifier));
+  });
+
+  // Model
 });
