@@ -1,7 +1,10 @@
 import { HttpQueries, Service } from '#services/service';
-import { FakeModel } from '#tests/mocks/models/mock_model';
+import Test from '#tests/mocks/models/mock_model';
+import SandboxModel from '#tests/mocks/models/sandbox_model';
+import { ModelQueryBuilder } from '@adonisjs/lucid/orm';
 import { faker } from '@faker-js/faker';
 import { test } from '@japa/runner';
+import { SinonStub } from 'sinon';
 
 class TestService extends Service {
   // @ts-ignore
@@ -12,9 +15,15 @@ class TestService extends Service {
 
 test.group('Services', (group) => {
   let $service: TestService;
+  let $sandbox: SandboxModel;
 
   group.each.setup(async () => {
     $service = new TestService();
+    $sandbox = new SandboxModel();
+  });
+
+  group.each.teardown(async () => {
+    $sandbox.restore();
   });
 
   test('it should initialize with default values', async ({ assert }) => {
@@ -50,7 +59,7 @@ test.group('Services', (group) => {
 
   test('it should get and set model', async ({ assert }) => {
     // Arrangements
-    const model: typeof FakeModel = FakeModel;
+    const model: typeof Test = Test;
 
     // Actions
     $service.setModel(model);
@@ -135,27 +144,39 @@ test.group('Services', (group) => {
     assert.equal($service.getWithPreload(), queries.with);
   });
 
-  test('it should accept and return the model when invoking withQueryAware', async ({ assert }) => {
+  test('it should accept and return the query builder when invoking withQueryAware', async ({
+    assert,
+  }) => {
     // Arrangements
-    $service.setModel(FakeModel);
-    const model: typeof FakeModel | any = $service.getModel();
+    $service.setModel(Test);
+    const model: typeof Test | any = $service.getModel();
 
     // Actions
     const query = $service.withQueryAware(model.query());
 
     // Assertions
-    assert.equal(query, FakeModel);
+    assert.isTrue(query instanceof ModelQueryBuilder);
   });
 
-  test('it should accept and return the model when invoking withPreload', async ({ assert }) => {
+  test('it should accept and return the query builder when invoking withPreload', async ({
+    assert,
+  }) => {
     // Arrangements
-    $service.setModel(FakeModel);
-    const model: typeof FakeModel | any = $service.getModel();
+    $service.setModel(Test);
+    const model: typeof Test | any = $service.getModel();
+    const hasWithPreloadStub: SinonStub<any, any> = $sandbox
+      .stub($service, 'hasWithPreload')
+      .returns(false);
+    $sandbox.stub(model, 'query').returns({
+      if: $sandbox.getInstance().stub().resolves(ModelQueryBuilder),
+    });
 
     // Actions
-    const query = $service.withPreload(model.query());
+    const query = await $service.withPreload(model.query());
 
     // Assertions
-    assert.equal(query, FakeModel);
+    assert.isTrue(model.query().if.calledOnce);
+    assert.isTrue(hasWithPreloadStub.calledOnce);
+    assert.equal(query, ModelQueryBuilder);
   });
 });
