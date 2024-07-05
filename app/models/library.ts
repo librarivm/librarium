@@ -1,7 +1,17 @@
 import Type from '#models/type';
 import User from '#models/user';
+import {
+  afterFetch,
+  afterFind,
+  BaseModel,
+  beforeFind,
+  beforeSave,
+  belongsTo,
+  column,
+  scope,
+} from '@adonisjs/lucid/orm';
+import type { LucidModel, ModelQueryBuilderContract } from '@adonisjs/lucid/types/model';
 import type { BelongsTo } from '@adonisjs/lucid/types/relations';
-import { BaseModel, belongsTo, column, scope } from '@adonisjs/lucid/orm';
 import { DateTime } from 'luxon';
 
 export default class Library extends BaseModel {
@@ -17,8 +27,9 @@ export default class Library extends BaseModel {
   @column()
   declare description: string | undefined;
 
-  @column()
-  declare metadata: string | null | undefined;
+  static notSoftDeleted = scope((query: ModelQueryBuilderContract<LucidModel>): void => {
+    query.whereNull('deleted_at');
+  });
 
   @column()
   declare isPrivate: boolean;
@@ -43,8 +54,26 @@ export default class Library extends BaseModel {
 
   @belongsTo(() => Type)
   declare type: BelongsTo<typeof Type>;
+  @column()
+  declare metadata: string | { [key: string]: any } | null | undefined;
 
-  static notSoftDeleted = scope((query) => {
+  @beforeFind()
+  static withoutSoftDeletes(query: ModelQueryBuilderContract<typeof Library>): void {
     query.whereNull('deleted_at');
-  });
+  }
+
+  @beforeSave()
+  static async stringifyMetadata(library: Library): Promise<void> {
+    if (library.$dirty.metadata && typeof library.metadata !== 'string') {
+      library.metadata = JSON.stringify(library.metadata);
+    }
+  }
+
+  @afterFind()
+  @afterFetch()
+  static async parseMetadata(library: Library): Promise<void> {
+    if (typeof library.metadata === 'string') {
+      library.metadata = JSON.parse(library.metadata);
+    }
+  }
 }
