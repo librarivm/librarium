@@ -1,11 +1,8 @@
 import Library from '#models/library';
-import Type from '#models/type';
-import User from '#models/user';
 import { Service } from '#services/service';
 import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
 import { ModelPaginatorContract } from '@adonisjs/lucid/types/model';
-import isObject from 'lodash/isObject.js';
 import kebabCase from 'lodash/kebabCase.js';
 import { DateTime } from 'luxon';
 
@@ -13,8 +10,8 @@ export interface LibraryAttributes {
   name: string;
   slug?: string;
   description?: string;
-  metadata?: JSON | null;
-  is_private: boolean;
+  metadata?: JSON | { [key: string]: any } | null;
+  isPrivate: boolean;
   userId: number;
   typeId: number;
 }
@@ -70,19 +67,14 @@ export default class LibraryService extends Service {
     library.name = attributes.name;
     library.slug = attributes.slug ? attributes.slug : kebabCase(attributes.name);
     library.description = attributes.description;
-    library.metadata = isObject(attributes.metadata)
-      ? JSON.stringify(attributes.metadata)
-      : attributes.metadata;
+    library.isPrivate = attributes.isPrivate;
+    library.userId = attributes.userId;
+    library.typeId = attributes.typeId;
+    library.metadata = attributes.metadata;
 
-    const user: User | null = await User.find(attributes.userId);
-    user && (await library.related('user').associate(user));
+    const item: Library = await library.save();
 
-    const type: Type | null = await Type.find(attributes.typeId);
-    type && (await library.related('type').associate(type));
-
-    await library.save();
-
-    return library;
+    return item;
   }
 
   /**
@@ -92,7 +84,7 @@ export default class LibraryService extends Service {
    * @returns {Promise<Library>} The updated resource.
    */
   async store(attributes: LibraryAttributes): Promise<Library> {
-    return this.save(this.model, attributes);
+    return this.save(new this.model(), attributes);
   }
 
   /**
@@ -103,7 +95,7 @@ export default class LibraryService extends Service {
    * @returns {Promise<Library>} The updated resource.
    */
   async update(id: number, attributes: LibraryAttributes): Promise<Library> {
-    const library: Library = this.model.find(id);
+    const library: Library = await this.model.find(id);
 
     return this.save(library, attributes);
   }
@@ -115,7 +107,7 @@ export default class LibraryService extends Service {
    * @returns {Promise<void>}
    */
   async archive(id: number): Promise<void> {
-    const library: Library = this.model.findOrFail(id);
+    const library: Library = await this.model.findOrFail(id);
 
     library.deletedAt = DateTime.local();
 
