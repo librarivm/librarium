@@ -30,9 +30,7 @@ export default class UserService extends Service {
    * @returns {Promise<User>} The newly created user
    */
   async register(attributes: UserAuthAttributes): Promise<User> {
-    const user: User = await this.model.create(this.mergeAttributes(attributes));
-
-    return user;
+    return await this.model.create(this.mergeAttributes(attributes));
   }
 
   /**
@@ -41,9 +39,7 @@ export default class UserService extends Service {
    * @returns {Promise<User>} The user if the credentials are valid
    */
   async verifyCredentials(credentials: UserCredentialsAttributes): Promise<User> {
-    const user: User = await this.model.verifyCredentials(credentials);
-
-    return user;
+    return await this.model.verifyCredentials(credentials);
   }
 
   /**
@@ -64,7 +60,7 @@ export default class UserService extends Service {
   }
 
   save(model: any, attributes: any): Promise<any> {
-    return Promise.resolve(undefined);
+    return Promise.resolve({ model, attributes });
   }
 
   /**
