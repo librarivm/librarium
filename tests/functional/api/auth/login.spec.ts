@@ -23,7 +23,6 @@ test.group(API_URL_NAME, (group) => {
     // Actions
     const response: ApiResponse = await client.post(route(API_URL_NAME)).json(credentials);
     const data = response.body();
-    console.log(12, data);
 
     // Assertions
     response.assertStatus(200);
