@@ -75,14 +75,14 @@ test.group('Services / UserService', (group) => {
 
     const stub: SinonStub<any, any> = $sandbox
       .stub(User, 'verifyCredentials')
-      .withArgs(credentials)
+      .withArgs(credentials.email, credentials.password)
       .resolves(user);
 
     // Actions
     const logged: User = await $service.verifyCredentials(credentials);
 
     // Assertions
-    assert.isTrue(stub.calledOnceWithExactly(credentials));
+    assert.isTrue(stub.calledOnceWithExactly(credentials.email, credentials.password));
     assert.equal(logged.id, user.id);
   });
 
