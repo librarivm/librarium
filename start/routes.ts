@@ -9,6 +9,7 @@
 
 const RegisterController = () => import('#controllers/auth/register_controller');
 const LoginController = () => import('#controllers/auth/login_controller');
+import { middleware } from '#start/kernel';
 import router from '@adonisjs/core/services/router';
 
 const LibrariesController = () => import('#controllers/v1/libraries_controller');
@@ -27,7 +28,7 @@ router
   .group(() => {
     router.post('/register', [RegisterController]).as('auth.register');
     router.post('/login', [LoginController, 'login']).as('auth.login');
-    // router.delete('/logout', [LoginController, 'logout']).as('auth.logout').use(middleware.auth());
+    router.delete('/logout', [LoginController, 'logout']).as('auth.logout').use(middleware.auth());
     // router.get('/me', [MeController, 'handle']).as('auth.me');
   })
   .prefix('api/v1/auth');

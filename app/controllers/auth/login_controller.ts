@@ -26,9 +26,9 @@ export default class LoginController {
     }
   }
 
-  async logout({ auth }: HttpContext) {
+  async logout({ auth, response }: HttpContext) {
     const user = auth.user!;
-    await $service.accessTokens().delete(user, user.currentAccessToken.identifier);
-    return { message: 'success' };
+    await this.$service.tokens().delete(user, user.currentAccessToken.identifier);
+    return response.status(204);
   }
 }
