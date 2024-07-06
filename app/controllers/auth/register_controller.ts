@@ -1,5 +1,5 @@
 import User from '#models/user';
-import UserService, { UserCredentialsAttributes } from '#services/user_service';
+import UserService, { CredentialsAttributes } from '#services/user_service';
 import { registerValidator } from '#validators/auth';
 import { AccessToken } from '@adonisjs/auth/access_tokens';
 import { inject } from '@adonisjs/core';
@@ -10,7 +10,7 @@ export default class RegisterController {
   constructor(protected $service: UserService) {}
 
   async handle({ request, response }: HttpContext) {
-    const data: UserCredentialsAttributes = await request.validateUsing(registerValidator);
+    const data: CredentialsAttributes = await request.validateUsing(registerValidator);
     const user: User = await this.$service.register(data);
     const token: AccessToken = await this.$service.tokens().create(user);
 

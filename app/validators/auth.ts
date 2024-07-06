@@ -1,7 +1,9 @@
 import { Database } from '@adonisjs/lucid/database';
 import vine from '@vinejs/vine';
 
-const password = vine.string().minLength(8);
+const passwordSchema = vine.object({
+  password: vine.string().minLength(8),
+});
 
 export const registerValidator = vine.compile(
   vine.object({
@@ -13,13 +15,13 @@ export const registerValidator = vine.compile(
         const matched = await db.from('users').select('id').where('email', value).first();
         return !matched;
       }),
-    password: password.confirmed(),
+    password: passwordSchema.getProperties().password.confirmed(),
   })
 );
 
 export const loginValidator = vine.compile(
   vine.object({
     email: vine.string().email().normalizeEmail(),
-    password,
+    password: passwordSchema.getProperties().password,
   })
 );

@@ -13,7 +13,7 @@ export type UserAuthAttributes = {
   username?: string;
 };
 
-export type UserCredentialsAttributes =
+export type CredentialsAttributes =
   | { email: string; password: string; username?: never }
   | { username: string; password: string; email?: never };
 
@@ -35,11 +35,11 @@ export default class UserService extends Service {
 
   /**
    * Verifies user credentials and returns the user if valid
-   * @param {UserCredentialsAttributes} credentials - The credentials to verify
+   * @param {CredentialsAttributes} credentials - The credentials to verify
    * @returns {Promise<User>} The user if the credentials are valid
    */
-  async verifyCredentials(credentials: UserCredentialsAttributes): Promise<User> {
-    return await this.model.verifyCredentials(credentials);
+  async verifyCredentials(credentials: CredentialsAttributes): Promise<User> {
+    return await this.model.verifyCredentials(credentials.email, credentials.password);
   }
 
   /**

@@ -1,6 +1,6 @@
 import { UserFactory } from '#database/factories/user_factory';
 import User from '#models/user';
-import { UserCredentialsAttributes } from '#services/user_service';
+import { CredentialsAttributes } from '#services/user_service';
 import { faker } from '@faker-js/faker';
 import { ApiResponse } from '@japa/api-client';
 import { test } from '@japa/runner';
@@ -15,7 +15,7 @@ test.group(API_URL_NAME, (group) => {
   test('it should register a new user successfully', async ({ assert, client, route }) => {
     // Arrangements
     const user: User = await UserFactory.make();
-    const credentials: UserCredentialsAttributes & { password_confirmation: string } = {
+    const credentials: CredentialsAttributes & { password_confirmation: string } = {
       email: user.email,
       password: 'password',
       password_confirmation: 'password',
@@ -35,7 +35,7 @@ test.group(API_URL_NAME, (group) => {
   test('it should throw 422 error when password mismatched', async ({ assert, client, route }) => {
     // Arrangements
     const user: User = await UserFactory.make();
-    const credentials: UserCredentialsAttributes & { password_confirmation: string } = {
+    const credentials: CredentialsAttributes & { password_confirmation: string } = {
       email: user.email,
       password: 'password',
       password_confirmation: 'mismatched',
@@ -56,7 +56,7 @@ test.group(API_URL_NAME, (group) => {
       email: faker.internet.email().toLowerCase(),
     }).create();
 
-    const credentials: UserCredentialsAttributes & { password_confirmation: string } = {
+    const credentials: CredentialsAttributes & { password_confirmation: string } = {
       password: 'password',
       password_confirmation: 'password',
       email: user.email,

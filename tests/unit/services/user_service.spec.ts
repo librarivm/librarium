@@ -1,7 +1,7 @@
 import { UserFactory } from '#database/factories/user_factory';
 import User from '#models/user';
 import { Service } from '#services/service';
-import UserService, { UserAuthAttributes, UserCredentialsAttributes } from '#services/user_service';
+import UserService, { CredentialsAttributes, UserAuthAttributes } from '#services/user_service';
 import SandboxModel from '#tests/mocks/models/sandbox_model';
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens';
 import { faker } from '@faker-js/faker';
@@ -68,7 +68,7 @@ test.group('Services / UserService', (group) => {
       id: $users.length,
     };
 
-    const credentials: UserCredentialsAttributes = {
+    const credentials: CredentialsAttributes = {
       email: user.email,
       password: 'password',
     };
@@ -88,7 +88,7 @@ test.group('Services / UserService', (group) => {
 
   test('it should throw E_INVALID_CREDENTIALS if credentials are invalid', async ({ assert }) => {
     // Arrangements
-    const credentials: UserCredentialsAttributes = {
+    const credentials: CredentialsAttributes = {
       username: faker.internet.email(),
       password: 'password',
     };
