@@ -1,5 +1,5 @@
 import LibraryService, { LibraryAttributes } from '#services/library_service';
-import { createLibraryValidator, updateLibraryValidator } from '#validators/library';
+import { createLibraryValidator, updateLibraryValidator } from '#validators/library_validator';
 import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
 
@@ -41,7 +41,9 @@ export default class LibrariesController {
   /**
    * Soft delete record
    */
-  // async archive({ params }: HttpContext) {}
+  async archive({ params, response }: HttpContext) {
+    return response.json(await this.$service.archive(params.id));
+  }
 
   /**
    * Delete record

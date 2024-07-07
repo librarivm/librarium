@@ -40,12 +40,17 @@
 * Added login feature and its unit + functional tests
 * Added logout feature and its functional test
 * Refactored some types for registration classes
-* Added auth.me feature and its functional tests
+* Added `auth.me` feature and its functional tests
 * Decided to just add the Journal.md in the project itself; is the best way to back up, and easy access
+* Added auth middleware to libraries routes
+* Added validation functional test to `libraries.store`
+* Added `libraries.update` feature and its functional tests
 
 **TO DO**:
 
-* Journal.md: set up a backup system
-* Add auth middleware route for libraries
-  * revisit any potential test breakages
-* Continue developing the tests for `libraries.store`
+* Start developing tests for `libraries.update`
+* validating slug uniqueness for `librarues.{store,update}`
+* Integrate RBAC and Authorizations (roles, permissions)
+* Create README.md
+* Setup initial `librarivm/ui` repository. Decided to have the front-end to a separate repository.
+  * They'd just be deployed and set up from one installer.  

@@ -19,6 +19,10 @@ export default class Library extends BaseModel {
     query.whereNull('deleted_at');
   });
 
+  static softDeleted = scope((query: ModelQueryBuilderContract<LucidModel>): void => {
+    query.whereNotNull('deleted_at');
+  });
+
   @column({ isPrimary: true })
   declare id: number;
 

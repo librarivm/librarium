@@ -2,7 +2,7 @@ import Library from '#models/library';
 import { Service } from '#services/service';
 import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
-import { ModelPaginatorContract } from '@adonisjs/lucid/types/model';
+import { ExtractScopes, ModelPaginatorContract } from '@adonisjs/lucid/types/model';
 import kebabCase from 'lodash/kebabCase.js';
 import { DateTime } from 'luxon';
 
@@ -30,7 +30,7 @@ export default class LibraryService extends Service {
    */
   async list(): Promise<ModelPaginatorContract<Library>> {
     return this.withQueryAware(
-      this.model.query().apply((scopes: { notSoftDeleted: () => any }) => scopes.notSoftDeleted())
+      this.model.query().apply((scopes: ExtractScopes<typeof Library>) => scopes.notSoftDeleted())
     ).paginate(this.getPage(), this.getPageCount());
   }
 
