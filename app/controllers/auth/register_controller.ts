@@ -1,6 +1,6 @@
 import User from '#models/user';
 import UserService, { CredentialsAttributes } from '#services/user_service';
-import { registerValidator } from '#validators/auth';
+import { registerValidator } from '#validators/auth_validator';
 import { AccessToken } from '@adonisjs/auth/access_tokens';
 import { inject } from '@adonisjs/core';
 import type { HttpContext } from '@adonisjs/core/http';
