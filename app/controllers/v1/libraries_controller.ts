@@ -50,5 +50,9 @@ export default class LibrariesController {
   /**
    * Delete record
    */
-  // async destroy({ params }: HttpContext) {}
+  async delete({ params, response }: HttpContext) {
+    await this.$service.delete(params.id);
+
+    return response.noContent();
+  }
 }
