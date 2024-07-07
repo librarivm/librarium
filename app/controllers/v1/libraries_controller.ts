@@ -1,5 +1,5 @@
 import LibraryService, { LibraryAttributes } from '#services/library_service';
-import { createLibraryValidator } from '#validators/library';
+import { createLibraryValidator, updateLibraryValidator } from '#validators/library';
 import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
 
@@ -33,7 +33,10 @@ export default class LibrariesController {
   /**
    * Handle form submission for the edit action
    */
-  // async update({ params, request }: HttpContext) {}
+  async update({ params, request, response }: HttpContext) {
+    const attributes: LibraryAttributes = await request.validateUsing(updateLibraryValidator);
+    return response.json(await this.$service.update(params.id, attributes));
+  }
 
   /**
    * Soft delete record

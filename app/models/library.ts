@@ -15,6 +15,10 @@ import type { BelongsTo } from '@adonisjs/lucid/types/relations';
 import { DateTime } from 'luxon';
 
 export default class Library extends BaseModel {
+  static notSoftDeleted = scope((query: ModelQueryBuilderContract<LucidModel>): void => {
+    query.whereNull('deleted_at');
+  });
+
   @column({ isPrimary: true })
   declare id: number;
 
@@ -26,10 +30,6 @@ export default class Library extends BaseModel {
 
   @column()
   declare description: string | undefined;
-
-  static notSoftDeleted = scope((query: ModelQueryBuilderContract<LucidModel>): void => {
-    query.whereNull('deleted_at');
-  });
 
   @column()
   declare isPrivate: boolean;

@@ -65,7 +65,7 @@ export default class LibraryService extends Service {
     const library: Library = model;
 
     library.name = attributes.name;
-    library.slug = attributes.slug ? attributes.slug : kebabCase(attributes.name);
+    library.slug = kebabCase(attributes.name);
     library.description = attributes.description;
     library.isPrivate = attributes.isPrivate;
     library.userId = attributes.userId;
