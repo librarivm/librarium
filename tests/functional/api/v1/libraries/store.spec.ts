@@ -4,6 +4,7 @@ import { UserFactory } from '#database/factories/user_factory';
 import Library from '#models/library';
 import Type from '#models/type';
 import User from '#models/user';
+import { LibraryAttributes } from '#services/library_service';
 import { ApiResponse } from '@japa/api-client';
 import { test } from '@japa/runner';
 
@@ -61,5 +62,32 @@ test.group(API_URL_NAME, (group) => {
     response.assertStatus(422);
     response.assertBodyContains({ errors: [] });
     assert.exists(response.body().errors.find((error: any) => error.rule === 'required'));
+  });
+
+  test('it should return 422 if slug already exists', async ({ client, route }) => {
+    // Arrangements
+    const type: Type = await TypeFactory.create();
+    const library: Library = await LibraryFactory.merge({
+      userId: $user.id,
+      typeId: type.id,
+    }).create();
+
+    const attributes: LibraryAttributes = await LibraryFactory.merge({
+      userId: $user.id,
+      typeId: type.id,
+      name: library.name,
+    }).make();
+
+    // Actions
+    const response: ApiResponse = await client
+      .post(route(API_URL_NAME))
+      .json(attributes)
+      .loginAs($user);
+
+    // Assertions
+    response.assertStatus(422);
+    response.assertBodyContains({
+      errors: [{ rule: 'database.unique', field: 'slug' }],
+    });
   });
 });

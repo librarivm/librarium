@@ -34,7 +34,9 @@ export default class LibrariesController {
    * Handle form submission for the edit action
    */
   async update({ params, request, response }: HttpContext) {
-    const attributes: LibraryAttributes = await request.validateUsing(updateLibraryValidator);
+    const attributes: LibraryAttributes = await request.validateUsing(
+      updateLibraryValidator(params.id)
+    );
     return response.json(await this.$service.update(params.id, attributes));
   }
 

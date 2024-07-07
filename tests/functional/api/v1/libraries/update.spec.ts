@@ -22,7 +22,7 @@ test.group(API_URL_NAME, (group) => {
     // Arrangements
     const library: Library = await LibraryFactory.merge({ userId: $user.id }).with('type').create();
     const attributes: LibraryAttributes | any = {
-      ...library.toJSON(),
+      ...library.$attributes,
       name: faker.lorem.words(),
     };
 
@@ -44,7 +44,7 @@ test.group(API_URL_NAME, (group) => {
     // Arrangements
     const library: Library = await LibraryFactory.merge({ userId: $user.id }).with('type').create();
     const attributes: LibraryAttributes | any = {
-      ...library.toJSON(),
+      ...library.$attributes,
       name: '',
     };
 
@@ -56,5 +56,29 @@ test.group(API_URL_NAME, (group) => {
 
     // Assertions
     response.assertStatus(422);
+  });
+
+  test('it should update successfully if slug not modified', async ({ client, route }) => {
+    // Arrangements
+    const library: Library = await LibraryFactory.merge({ userId: $user.id }).with('type').create();
+
+    const attributes: LibraryAttributes = await LibraryFactory.merge({
+      userId: $user.id,
+      typeId: library.id,
+      name: library.name,
+      metadata: JSON.stringify({ key: 'updated' }),
+    }).make();
+
+    // Actions
+    const response: ApiResponse = await client
+      .put(route(API_URL_NAME, { id: library.id }))
+      .json(attributes)
+      .loginAs($user);
+
+    // Assertions
+    response.assertStatus(200);
+    response.assertBodyContains({
+      slug: library.slug,
+    });
   });
 });

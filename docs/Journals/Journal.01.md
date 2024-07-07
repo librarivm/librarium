@@ -45,12 +45,30 @@
 * Added auth middleware to libraries routes
 * Added validation functional test to `libraries.store`
 * Added `libraries.update` feature and its functional tests
+* Added `libraries.archive` feature and its functional tests
 
 **TO DO**:
 
-* Start developing tests for `libraries.update`
-* validating slug uniqueness for `librarues.{store,update}`
+* Add `libraries.delete` feature and its functional tests
+* Fix ts type issues
 * Integrate RBAC and Authorizations (roles, permissions)
 * Create README.md
-* Setup initial `librarivm/ui` repository. Decided to have the front-end to a separate repository.
+* Setup initial `librarivm/ui` repository.
+  * Decided to have the front-end to a separate repository.
+  * They'd just be deployed and set up from one installer.
+
+## Jul, 8 2024
+
+**DONE**:
+
+* Added validating of slug uniqueness for `librarues.{store,update}`
+
+**TO DO**:
+
+* Add `libraries.delete` feature and its functional tests
+* Fix ts type issues
+* Integrate RBAC and Authorizations (roles, permissions)
+* Create README.md
+* Setup initial `librarivm/ui` repository.
+  * Decided to have the front-end to a separate repository.
   * They'd just be deployed and set up from one installer.  
