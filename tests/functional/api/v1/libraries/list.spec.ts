@@ -1,5 +1,7 @@
 import { LibraryFactory } from '#database/factories/library_factory';
+import { UserFactory } from '#database/factories/user_factory';
 import Library from '#models/library';
+import User from '#models/user';
 import { HttpQueries } from '#services/service';
 import { ApiResponse } from '@japa/api-client';
 import { test } from '@japa/runner';
@@ -13,14 +15,16 @@ const API_URL_NAME: string = 'libraries.index';
 
 test.group(API_URL_NAME, (group) => {
   let $libraries: Library[] = [];
+  let $user: User;
 
   group.setup(async () => {
     await Library.truncate();
     $libraries = await LibraryFactory.with('user').with('type').createMany(10);
+    $user = await UserFactory.create();
   });
 
   test('it should return a paginated list of libraries', async ({ client, route }) => {
-    const response: ApiResponse = await client.get(route(API_URL_NAME));
+    const response: ApiResponse = await client.get(route(API_URL_NAME)).loginAs($user);
     const library: Library = $libraries?.[0];
 
     response.assertStatus(200);
@@ -31,7 +35,7 @@ test.group(API_URL_NAME, (group) => {
 
   test('it should return a sorted list of libraries', async ({ client, route }) => {
     const queries: HttpQueries = { page: 1, per_page: 3, order_by: 'slug' };
-    const response: ApiResponse = await client.get(route(API_URL_NAME)).qs(queries);
+    const response: ApiResponse = await client.get(route(API_URL_NAME)).qs(queries).loginAs($user);
     const items: Library[] = sortBy($libraries, queries.order_by as string).slice(
       0,
       queries.per_page
@@ -53,7 +57,7 @@ test.group(API_URL_NAME, (group) => {
         1: ['slug', 'asc'],
       },
     };
-    const response: ApiResponse = await client.get(route(API_URL_NAME)).qs(queries);
+    const response: ApiResponse = await client.get(route(API_URL_NAME)).qs(queries).loginAs($user);
     const [columns, orders] = unzip(Object.values(queries.order_by as {}));
 
     const items: { [key: string]: any }[] = orderBy(
@@ -78,7 +82,7 @@ test.group(API_URL_NAME, (group) => {
   test('it should return a filtered list of libraries', async ({ client, route }) => {
     const item: Library = sample($libraries) as Library;
     const queries: HttpQueries = { page: 1, per_page: 3, q: item.slug };
-    const response: ApiResponse = await client.get(route(API_URL_NAME)).qs(queries);
+    const response: ApiResponse = await client.get(route(API_URL_NAME)).qs(queries).loginAs($user);
 
     response.assertStatus(200);
     response.assertBodyContains({

@@ -10,7 +10,10 @@ import { test } from '@japa/runner';
 const API_URL_NAME: string = 'libraries.store';
 
 test.group(API_URL_NAME, (group) => {
+  let $user: User;
+
   group.setup(async () => {
+    $user = await UserFactory.create();
     await Library.truncate();
   });
 
@@ -24,7 +27,10 @@ test.group(API_URL_NAME, (group) => {
     }).make();
 
     // Actions
-    const response: ApiResponse = await client.post(route(API_URL_NAME)).json(attributes.toJSON());
+    const response: ApiResponse = await client
+      .post(route(API_URL_NAME))
+      .json(attributes.toJSON())
+      .loginAs($user);
 
     // Assertions
     assert.equal(response.body().id, 1);
@@ -34,5 +40,26 @@ test.group(API_URL_NAME, (group) => {
       name: attributes.name,
       slug: attributes.slug,
     });
+  });
+
+  test('it should return 422 error for incorrect data', async ({ client, route, assert }) => {
+    // Arrangements
+    const type: Type = await TypeFactory.create();
+    const attributes: Library = await LibraryFactory.merge({
+      userId: $user.id,
+      typeId: type.id,
+      name: '',
+    }).make();
+
+    // Actions
+    const response: ApiResponse = await client
+      .post(route(API_URL_NAME))
+      .json(attributes.toJSON())
+      .loginAs($user);
+
+    // Assertions
+    response.assertStatus(422);
+    response.assertBodyContains({ errors: [] });
+    assert.exists(response.body().errors.find((error: any) => error.rule === 'required'));
   });
 });

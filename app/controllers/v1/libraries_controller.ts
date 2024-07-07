@@ -1,4 +1,5 @@
 import LibraryService, { LibraryAttributes } from '#services/library_service';
+import { createLibraryValidator } from '#validators/library';
 import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
 
@@ -18,7 +19,8 @@ export default class LibrariesController {
    */
 
   async store({ request, response }: HttpContext) {
-    return response.status(201).json(await this.$service.store(request.all() as LibraryAttributes));
+    const attributes: LibraryAttributes = await request.validateUsing(createLibraryValidator);
+    return response.status(201).json(await this.$service.store(attributes));
   }
 
   /**

@@ -10,7 +10,7 @@ export interface LibraryAttributes {
   name: string;
   slug?: string;
   description?: string;
-  metadata?: JSON | { [key: string]: any } | null;
+  metadata?: JSON | { [key: string]: any } | string | null;
   isPrivate: boolean;
   userId: number;
   typeId: number;

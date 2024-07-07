@@ -1,5 +1,7 @@
 import { LibraryFactory } from '#database/factories/library_factory';
+import { UserFactory } from '#database/factories/user_factory';
 import Library from '#models/library';
+import User from '#models/user';
 import { HttpQueries } from '#services/service';
 import { ApiResponse } from '@japa/api-client';
 import { test } from '@japa/runner';
@@ -9,15 +11,19 @@ const API_URL_NAME: string = 'libraries.show';
 
 test.group(API_URL_NAME, (group) => {
   let $libraries: Library[] = [];
+  let $user: User;
 
   group.setup(async () => {
     await Library.truncate();
     $libraries = await LibraryFactory.with('user').with('type').createMany(10);
+    $user = await UserFactory.create();
   });
 
   test('it should find and return a library by id', async ({ client, route }) => {
     const library: Library = sample($libraries) as Library;
-    const response: ApiResponse = await client.get(route(API_URL_NAME, { id: library.id }));
+    const response: ApiResponse = await client
+      .get(route(API_URL_NAME, { id: library.id }))
+      .loginAs($user);
 
     response.assertStatus(200);
     response.assertBodyContains({
@@ -32,7 +38,9 @@ test.group(API_URL_NAME, (group) => {
     route,
     assert,
   }) => {
-    const response: ApiResponse = await client.get(route(API_URL_NAME, { id: 9999 }));
+    const response: ApiResponse = await client
+      .get(route(API_URL_NAME, { id: 9999 }))
+      .loginAs($user);
 
     assert.isTrue(response.hasError());
     response.assertStatus(404);
@@ -50,7 +58,8 @@ test.group(API_URL_NAME, (group) => {
 
     const response: ApiResponse = await client
       .get(route(API_URL_NAME, { id: library.id }))
-      .qs(queries);
+      .qs(queries)
+      .loginAs($user);
 
     const { user, type } = response.body();
 

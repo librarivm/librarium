@@ -38,4 +38,5 @@ router
   .group(() => {
     router.api('libraries', LibrariesController);
   })
+  .use(middleware.auth())
   .prefix('api/v1');
