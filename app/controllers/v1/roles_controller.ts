@@ -39,7 +39,19 @@ export default class RolesController {
   }
 
   /**
+   * Soft delete record
+   */
+  async archive({ params, response }: HttpContext) {
+    await this.$service.archive(params.id);
+    return response.noContent();
+  }
+
+  /**
    * Delete record
    */
-  // async destroy({ params }: HttpContext) {}
+  async destroy({ params, response }: HttpContext) {
+    await this.$service.delete(params.id);
+
+    return response.noContent();
+  }
 }

@@ -1,7 +1,7 @@
 import Permission from '#models/permission';
 import User from '#models/user';
-import { BaseModel, column, manyToMany, scope } from '@adonisjs/lucid/orm';
-import { LucidModel, ModelQueryBuilderContract } from '@adonisjs/lucid/types/model';
+import { BaseModel, beforeFind, column, manyToMany, scope } from '@adonisjs/lucid/orm';
+import type { LucidModel, ModelQueryBuilderContract } from '@adonisjs/lucid/types/model';
 import type { ManyToMany } from '@adonisjs/lucid/types/relations';
 import { DateTime } from 'luxon';
 
@@ -40,4 +40,9 @@ export default class Role extends BaseModel {
 
   @manyToMany(() => Permission)
   declare permissions: ManyToMany<typeof Permission>;
+
+  @beforeFind()
+  static withoutSoftDeletes(query: ModelQueryBuilderContract<typeof Role>): void {
+    query.whereNull('deleted_at');
+  }
 }

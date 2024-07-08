@@ -71,10 +71,14 @@
   * Added `roles.users` and `roles.permissions` relations
 * Added `roles.store` endpoint and its functional tests
 * Added `roles.update` endpoint and its functional tests
+* Added `roles.archive` endpoint and its functional tests
+* Added `roles.destroy` endpoint and its functional tests
 
 **TO DO**:
 
 * Integrate RBAC and Authorizations (roles, permissions)
+  * revisit `*.{list,store,show}` if `role.permissions` is allowed for the route.
+  * revisit `*.{update,archive,destroy}` as `auth.id` in `users.each.id`
 * Create README.md
 * Setup initial `librarivm/ui` repository.
   * Decided to have the front-end to a separate repository.
