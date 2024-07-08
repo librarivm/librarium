@@ -1,5 +1,5 @@
-import factory from '@adonisjs/lucid/factories';
 import User from '#models/user';
+import factory from '@adonisjs/lucid/factories';
 
 export const UserFactory = factory
   .define(User, async ({ faker }) => {
@@ -7,8 +7,8 @@ export const UserFactory = factory
     const lastName = faker.person.lastName();
     return {
       first_name: firstName,
-      middle_name: lastName,
-      last_name: faker.person.lastName(),
+      middle_name: faker.person.middleName(),
+      last_name: lastName,
       email: `fake.${faker.number.int()}.${faker.internet.email({
         firstName,
         lastName,

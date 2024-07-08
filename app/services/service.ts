@@ -5,11 +5,6 @@ import isArray from 'lodash/isArray.js';
 import isNil from 'lodash/isNil.js';
 import isString from 'lodash/isString.js';
 
-export type ServiceContext = {
-  model?: typeof BaseModel | any;
-  ctx?: HttpContext;
-};
-
 export type HttpQueriesOrderBy = [column: string, order: 'asc' | 'desc'];
 
 export type HttpQueries = {
@@ -164,13 +159,4 @@ export abstract class Service {
       });
     });
   }
-
-  /**
-   * Create or update a resource.
-   *
-   * @param {any} model - The model to use to save the resource.
-   * @param {any} attributes - The attributes for the new resource.
-   * @returns {Promise<any>} The created resource.
-   */
-  abstract save(model: any, attributes: any): Promise<any>;
 }

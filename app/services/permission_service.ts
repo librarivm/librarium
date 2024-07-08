@@ -67,6 +67,7 @@ export default class PermissionService extends Service {
       const exists = await this.model.query().where('code', permission.code).first();
 
       if (!exists) {
+        console.log('  ✔ Installing permission:', permission.code);
         await this.model.create(permission);
       }
     }
