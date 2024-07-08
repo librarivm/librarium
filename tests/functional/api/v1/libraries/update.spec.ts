@@ -40,7 +40,7 @@ test.group(API_URL_NAME, (group) => {
     });
   });
 
-  test('it should update an existing library successfully', async ({ client, route }) => {
+  test('it should return 422 error for incorrect data', async ({ client, route }) => {
     // Arrangements
     const library: Library = await LibraryFactory.merge({ userId: $user.id }).with('type').create();
     const attributes: LibraryAttributes | any = {
@@ -58,7 +58,7 @@ test.group(API_URL_NAME, (group) => {
     response.assertStatus(422);
   });
 
-  test('it should update successfully if slug not modified', async ({ client, route }) => {
+  test('it should update successfully if library.slug not modified', async ({ client, route }) => {
     // Arrangements
     const library: Library = await LibraryFactory.merge({ userId: $user.id }).with('type').create();
 
