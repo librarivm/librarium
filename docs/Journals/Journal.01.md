@@ -71,4 +71,5 @@
 * Create README.md
 * Setup initial `librarivm/ui` repository.
   * Decided to have the front-end to a separate repository.
-  * They'd just be deployed and set up from one installer.  
+  * They'd just be deployed and set up from one installer.
+* Add plugins support?
