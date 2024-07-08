@@ -89,8 +89,12 @@
 
 **DONE**:
 
+* Refactored services interfaces to be types
+* Added unit tests for RolService install methods
+
 **TO DO**:
 
+* Add unit test for `RolService.install` method
 * Integrate RBAC and Authorizations (roles, permissions)
   * revisit `*.{list,store,show}` if `role.permissions` is allowed for the route.
   * revisit `*.{update,archive,destroy}` as `auth.id` in `users.each.id`

@@ -76,7 +76,7 @@ test.group(API_URL_NAME, (group) => {
     const attributes: RoleAttributes | any = {
       name: role.name,
       slug: role.slug,
-      description: faker.lorem.sentence(),
+      description: faker.lorem.sentences(),
       permissions: $permissions.map((permission: Permission) => permission.id),
     };
 
