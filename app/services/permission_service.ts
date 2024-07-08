@@ -5,7 +5,7 @@ import { HttpContext } from '@adonisjs/core/http';
 import fs from 'node:fs';
 import path from 'node:path';
 
-export type PermissionAttribute = {
+export type PermissionAttributes = {
   code: string;
   group: string;
 };
@@ -32,11 +32,11 @@ export default class PermissionService extends Service {
    * Reads permission enum files from the specified directory
    * and returns an array of permission attributes.
    *
-   * @returns {Promise<PermissionAttribute[]>} A promise that resolves to an array of permission attributes,
+   * @returns {Promise<PermissionAttributes[]>} A promise that resolves to an array of permission attributes,
    *                                           each containing a 'code' and a 'group'.
    */
-  async permissions(): Promise<PermissionAttribute[]> {
-    let permissions: PermissionAttribute[] = [];
+  async permissions(): Promise<PermissionAttributes[]> {
+    let permissions: PermissionAttributes[] = [];
     const files: string[] = fs
       .readdirSync(this.path())
       .filter((file: string) => file.endsWith('_permission.ts'));
@@ -61,7 +61,7 @@ export default class PermissionService extends Service {
    * @returns {Promise<void>} A promise that resolves when the permissions have been created.
    */
   async install(): Promise<void> {
-    const permissions: PermissionAttribute[] = await this.permissions();
+    const permissions: PermissionAttributes[] = await this.permissions();
 
     for (const permission of permissions) {
       const exists = await this.model.query().where('code', permission.code).first();

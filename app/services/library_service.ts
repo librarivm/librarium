@@ -6,7 +6,7 @@ import { ExtractScopes, ModelPaginatorContract } from '@adonisjs/lucid/types/mod
 import kebabCase from 'lodash/kebabCase.js';
 import { DateTime } from 'luxon';
 
-export interface LibraryAttributes {
+export type LibraryAttributes = {
   name: string;
   slug?: string;
   description?: string;
@@ -14,7 +14,7 @@ export interface LibraryAttributes {
   isPrivate: boolean;
   userId: number;
   typeId: number;
-}
+};
 
 @inject()
 export default class LibraryService extends Service {
