@@ -1,4 +1,4 @@
-import { RoleContract } from './roles.js';
+import { RoleContract } from '#roles/roles';
 
 export const SuperadminRole: RoleContract = {
   NAME: 'Super Administrator',

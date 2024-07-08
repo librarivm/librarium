@@ -1,5 +1,5 @@
 import { UserPermission } from '#permissions/user_permission';
-import { RoleContract } from './roles.js';
+import { RoleContract } from '#roles/roles';
 
 export const AdminRole: RoleContract = {
   NAME: 'Administrator',
