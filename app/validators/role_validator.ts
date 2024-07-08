@@ -29,3 +29,5 @@ const roleValidator = (id?: number) =>
   });
 
 export const createRoleValidator = vine.compile(roleValidator());
+
+export const updateRoleValidator = (id: number) => vine.compile(roleValidator(id).clone());

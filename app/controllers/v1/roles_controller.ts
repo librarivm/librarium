@@ -1,5 +1,5 @@
 import RoleService, { RoleAttributes } from '#services/role_service';
-import { createRoleValidator } from '#validators/role_validator';
+import { createRoleValidator, updateRoleValidator } from '#validators/role_validator';
 import { inject } from '@adonisjs/core';
 import type { HttpContext } from '@adonisjs/core/http';
 
@@ -33,7 +33,10 @@ export default class RolesController {
   /**
    * Handle form submission for the edit action
    */
-  // async update({ params, request }: HttpContext) {}
+  async update({ params, request, response }: HttpContext) {
+    const attributes: RoleAttributes = await request.validateUsing(updateRoleValidator(params.id));
+    return response.ok(await this.$service.update(params.id, attributes));
+  }
 
   /**
    * Delete record

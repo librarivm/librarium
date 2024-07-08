@@ -70,6 +70,7 @@
 * Added `roles.show` endpoint and its functional tests
   * Added `roles.users` and `roles.permissions` relations
 * Added `roles.store` endpoint and its functional tests
+* Added `roles.update` endpoint and its functional tests
 
 **TO DO**:
 
