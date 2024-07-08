@@ -4,7 +4,9 @@ import Role from '#models/role';
 import factory from '@adonisjs/lucid/factories';
 import kebabCase from 'lodash/kebabCase.js';
 import startCase from 'lodash/startCase.js';
-import { UserRole, UserRoleDescription } from '../../app/enums/user_role.js';
+import { AdminRole } from '../../app/roles/admin_role.js';
+import { SubscriberRole } from '../../app/roles/subscriber_role.js';
+import { SuperadminRole } from '../../app/roles/superadmin_role.js';
 
 export const RoleFactory = factory
   .define(Role, async ({ faker }) => {
@@ -15,20 +17,20 @@ export const RoleFactory = factory
       description: faker.lorem.sentence(),
     };
   })
-  .state(UserRole.SUPERADMIN, (role: Role) => {
-    role.name = startCase(UserRole.SUPERADMIN);
-    role.slug = kebabCase(UserRole.SUPERADMIN);
-    role.description = UserRoleDescription.SUPERADMIN;
+  .state(SuperadminRole.CODE, (role: Role) => {
+    role.name = startCase(SuperadminRole.NAME);
+    role.slug = kebabCase(SuperadminRole.CODE);
+    role.description = SuperadminRole.DESCRIPTION;
   })
-  .state(UserRole.ADMIN, (role: Role) => {
-    role.name = startCase(UserRole.ADMIN);
-    role.slug = kebabCase(UserRole.ADMIN);
-    role.description = UserRoleDescription.ADMIN;
+  .state(AdminRole.CODE, (role: Role) => {
+    role.name = startCase(AdminRole.NAME);
+    role.slug = kebabCase(AdminRole.CODE);
+    role.description = AdminRole.DESCRIPTION;
   })
-  .state(UserRole.SUBSCRIBER, (role: Role) => {
-    role.name = startCase(UserRole.SUBSCRIBER);
-    role.slug = kebabCase(UserRole.SUBSCRIBER);
-    role.description = UserRoleDescription.SUBSCRIBER;
+  .state(SubscriberRole.CODE, (role: Role) => {
+    role.name = startCase(SubscriberRole.NAME);
+    role.slug = kebabCase(SubscriberRole.CODE);
+    role.description = SubscriberRole.DESCRIPTION;
   })
   .relation('users', () => UserFactory)
   .relation('permissions', () => PermissionFactory)
