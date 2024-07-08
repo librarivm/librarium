@@ -65,7 +65,10 @@
 * Added `libraries.delete` feature and its functional tests
 * Fixed ts type issues
 * Added permissions feature with installation method and its unit tests
-* Added roles feature and its unit tests
+* Added role service and its unit tests
+* Added `roles.index` endpoint and its functional tests
+* Added `roles.show` endpoint and its functional tests
+  * Added `roles.users` and `roles.permissions` relations
 
 **TO DO**:
 

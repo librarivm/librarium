@@ -41,6 +41,16 @@ export default class RoleService extends Service {
   }
 
   /**
+   * Find a resource by ID.
+   *
+   * @param {number} id - The ID of the resource.
+   * @returns {Promise<Role|null>} The resource if found, otherwise null.
+   */
+  async findOrFail(id: number): Promise<Role | any> {
+    return this.withPreload(this.model.query().where('id', id)).firstOrFail();
+  }
+
+  /**
    * Create or update a resource.
    *
    * @param {Role} model - The model to use to save the resource.

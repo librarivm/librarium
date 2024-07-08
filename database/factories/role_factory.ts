@@ -1,3 +1,5 @@
+import { PermissionFactory } from '#database/factories/permission_factory';
+import { UserFactory } from '#database/factories/user_factory';
 import Role from '#models/role';
 import factory from '@adonisjs/lucid/factories';
 import kebabCase from 'lodash/kebabCase.js';
@@ -28,4 +30,6 @@ export const RoleFactory = factory
     role.slug = kebabCase(UserRole.SUBSCRIBER);
     role.description = UserRoleDescription.SUBSCRIBER;
   })
+  .relation('users', () => UserFactory)
+  .relation('permissions', () => PermissionFactory)
   .build();
