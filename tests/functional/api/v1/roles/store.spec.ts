@@ -40,6 +40,12 @@ test.group(API_URL_NAME, (group) => {
       .json(attributes)
       .loginAs($user);
 
+    const role: Role | null = await Role.query()
+      .preload('permissions')
+      .where('id', response.body().id)
+      .first();
+    const permissions: any = role?.permissions.map((i: Permission) => i.toObject());
+
     // Assertions
     assert.equal(response.body().id, 1);
     response.assertStatus(201);
@@ -48,6 +54,8 @@ test.group(API_URL_NAME, (group) => {
       name: attributes.name,
       slug: attributes.slug,
     });
+    assert.isNotEmpty(permissions);
+    assert.containsSubset(permissions, [{ code: $permissions?.[0].code }]);
   });
 
   test('it should return 422 error for incorrect data', async ({ client, route, assert }) => {

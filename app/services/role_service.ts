@@ -60,13 +60,17 @@ export default class RoleService extends Service {
    * @returns {Promise<Role>} The created resource.
    */
   async save(model: Role, attributes: RoleAttributes): Promise<Role> {
-    const role: Role = model;
+    let role: Role = model;
 
     role.name = attributes.name;
     role.slug = kebabCase(attributes.name);
     role.description = attributes.description;
 
-    return await role.save();
+    role = await role.save();
+
+    role.related('permissions').sync(attributes.permissions as (string | number)[]);
+
+    return role;
   }
 
   /**

@@ -84,3 +84,18 @@
   * Decided to have the front-end to a separate repository.
   * They'd just be deployed and set up from one installer.
 * Add plugins support?
+
+## Jul 9, 2024
+
+**DONE**:
+
+**TO DO**:
+
+* Integrate RBAC and Authorizations (roles, permissions)
+  * revisit `*.{list,store,show}` if `role.permissions` is allowed for the route.
+  * revisit `*.{update,archive,destroy}` as `auth.id` in `users.each.id`
+* Create README.md
+* Setup initial `librarivm/ui` repository.
+  * Decided to have the front-end to a separate repository.
+  * They'd just be deployed and set up from one installer.
+* Add plugins support?
