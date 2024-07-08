@@ -62,8 +62,10 @@
 **DONE**:
 
 * Added validating of slug uniqueness for `librarues.{store,update}`
-* Add `libraries.delete` feature and its functional tests
-* Fix ts type issues
+* Added `libraries.delete` feature and its functional tests
+* Fixed ts type issues
+* Added permissions feature with installation method and its unit tests
+* Added roles feature and its unit tests
 
 **TO DO**:
 
