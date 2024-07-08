@@ -11,7 +11,7 @@ export default class LibrariesController {
    * Display a list of resource
    */
   async index({ response }: HttpContext) {
-    return response.json(await this.$service.list());
+    return response.ok(await this.$service.list());
   }
 
   /**
@@ -20,14 +20,14 @@ export default class LibrariesController {
 
   async store({ request, response }: HttpContext) {
     const attributes: LibraryAttributes = await request.validateUsing(createLibraryValidator);
-    return response.status(201).json(await this.$service.store(attributes));
+    return response.created(await this.$service.store(attributes));
   }
 
   /**
    * Show individual record
    */
   async show({ response, params }: HttpContext) {
-    return response.json(await this.$service.findOrFail(params.id));
+    return response.ok(await this.$service.findOrFail(params.id));
   }
 
   /**
@@ -37,20 +37,21 @@ export default class LibrariesController {
     const attributes: LibraryAttributes = await request.validateUsing(
       updateLibraryValidator(params.id)
     );
-    return response.json(await this.$service.update(params.id, attributes));
+    return response.ok(await this.$service.update(params.id, attributes));
   }
 
   /**
    * Soft delete record
    */
   async archive({ params, response }: HttpContext) {
-    return response.json(await this.$service.archive(params.id));
+    await this.$service.archive(params.id);
+    return response.noContent();
   }
 
   /**
    * Delete record
    */
-  async delete({ params, response }: HttpContext) {
+  async destroy({ params, response }: HttpContext) {
     await this.$service.delete(params.id);
 
     return response.noContent();

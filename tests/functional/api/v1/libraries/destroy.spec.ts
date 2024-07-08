@@ -5,7 +5,7 @@ import User from '#models/user';
 import { ApiResponse } from '@japa/api-client';
 import { test } from '@japa/runner';
 
-const API_URL_NAME: string = 'libraries.delete';
+const API_URL_NAME: string = 'libraries.destroy';
 
 test.group(API_URL_NAME, (group) => {
   let $user: User;

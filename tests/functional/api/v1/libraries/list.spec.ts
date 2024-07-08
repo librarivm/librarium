@@ -81,7 +81,7 @@ test.group(API_URL_NAME, (group) => {
 
   test('it should return a filtered list of libraries', async ({ client, route }) => {
     const item: Library = sample($libraries) as Library;
-    const queries: HttpQueries = { page: 1, per_page: 3, q: item.slug };
+    const queries: HttpQueries = { per_page: 4, page: 1, q: item.slug };
     const response: ApiResponse = await client.get(route(API_URL_NAME)).qs(queries).loginAs($user);
 
     response.assertStatus(200);

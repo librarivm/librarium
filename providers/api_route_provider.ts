@@ -22,7 +22,7 @@ export default class ApiRouteProvider {
         router.get(`${name}/:id`, [controller, 'show']).as(`${name}.show`);
         router.put(`${name}/:id`, [controller, 'update']).as(`${name}.update`);
         router.patch(`${name}/:id`, [controller, 'update']).as(`${name}.patch`);
-        router.delete(`${name}/:id`, [controller, 'delete']).as(`${name}.delete`);
+        router.delete(`${name}/:id`, [controller, 'destroy']).as(`${name}.destroy`);
         router.delete(`${name}/:id/archive`, [controller, 'archive']).as(`${name}.archive`);
       });
     });
