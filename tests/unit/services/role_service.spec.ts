@@ -166,4 +166,23 @@ test.group('Services / RoleService', (group) => {
     assert.isTrue(role.delete.calledOnce);
     assert.isNull(deleted);
   });
+
+  test('it retrieves the roles path of roles', async ({ assert }) => {
+    const path: string = $service.path();
+    assert.isString(path);
+  });
+
+  test('it retrieves the list of roles from disk', async ({ assert }) => {
+    // Actions
+    const roles: RoleAttributes[] = await $service.roles();
+
+    // Assertions
+    assert.isArray(roles);
+    roles.forEach((role: RoleAttributes) => {
+      assert.isTrue(role.hasOwnProperty('name'));
+      assert.isTrue(role.hasOwnProperty('slug'));
+      assert.isTrue(role.hasOwnProperty('description'));
+      assert.isTrue(role.hasOwnProperty('permissions'));
+    });
+  });
 });

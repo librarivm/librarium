@@ -1,18 +1,24 @@
 import Role from '#models/role';
+import { RoleContract } from '#roles/roles';
 import { Service } from '#services/service';
 import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
 import { ExtractScopes, ModelPaginatorContract } from '@adonisjs/lucid/types/model';
+import isArray from 'lodash/isArray.js';
 import kebabCase from 'lodash/kebabCase.js';
 import { DateTime } from 'luxon';
+import fs from 'node:fs';
+import path from 'node:path';
 
-export interface RoleAttributes {
+export type RoleAttributes = {
   name: string;
   slug?: string;
   description?: string;
   permissions?: number[] | any[];
   users?: number[] | any[];
-}
+};
+
+export const ROLES_PATH: string = path.resolve('app', 'roles');
 
 @inject()
 export default class RoleService extends Service {
@@ -68,7 +74,9 @@ export default class RoleService extends Service {
 
     role = await role.save();
 
-    role.related('permissions').sync(attributes.permissions as (string | number)[]);
+    if (isArray(attributes.permissions)) {
+      role.related('permissions').sync(attributes.permissions as (string | number)[]);
+    }
 
     return role;
   }
@@ -120,4 +128,49 @@ export default class RoleService extends Service {
     const role = await this.model.findOrFail(id);
     await role.delete();
   }
+
+  /**
+   * Returns the path to the roles enum files.
+   *
+   * @returns {string} The path to the roles enum files.
+   */
+  path(): string {
+    return ROLES_PATH;
+  }
+
+  /**
+   * Reads role enum files from the specified directory
+   * and returns an array of role attributes.
+   *
+   * @returns {Promise<RoleAttributes[]>} A promise that resolves to an array of role attributes,
+   *                                           each containing a 'code' and a 'group'.
+   */
+  async roles(): Promise<RoleAttributes[]> {
+    let roles: RoleAttributes[] = [];
+    const files: string[] = fs
+      .readdirSync(this.path())
+      .filter((file: string) => file.endsWith('_role.ts'));
+
+    for (const file of files) {
+      const module = await import(path.resolve(this.path(), file));
+      const ROLE: RoleContract = Object.values(module)?.[0] as RoleContract;
+
+      roles.push({
+        name: ROLE.NAME,
+        slug: ROLE.CODE,
+        description: ROLE.DESCRIPTION,
+        permissions: ROLE.PERMISSIONS,
+      } as RoleAttributes);
+    }
+
+    return roles;
+  }
+
+  /**
+   * Installs the roles by reading the
+   * roles from disk and creating them in the model.
+   *
+   * @returns {Promise<void>} A promise that resolves when the roles have been created.
+   */
+  async install(): Promise<void> {}
 }

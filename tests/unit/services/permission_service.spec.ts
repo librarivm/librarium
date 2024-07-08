@@ -1,6 +1,6 @@
 import { PermissionFactory } from '#database/factories/permission_factory';
 import Permission from '#models/permission';
-import PermissionService, { PermissionAttribute } from '#services/permission_service';
+import PermissionService, { PermissionAttributes } from '#services/permission_service';
 import { Service } from '#services/service';
 import SandboxModel from '#tests/mocks/models/sandbox_model';
 import { test } from '@japa/runner';
@@ -31,11 +31,11 @@ test.group('Services / PermissionService', (group) => {
 
   test('it retrieves the list of permissions from disk', async ({ assert }) => {
     // Actions
-    const permissions: PermissionAttribute[] = await $service.permissions();
+    const permissions: PermissionAttributes[] = await $service.permissions();
 
     // Assertions
     assert.isArray(permissions);
-    permissions.forEach((permission: PermissionAttribute) => {
+    permissions.forEach((permission: PermissionAttributes) => {
       assert.isTrue(permission.hasOwnProperty('code'));
       assert.isTrue(permission.hasOwnProperty('group'));
     });
