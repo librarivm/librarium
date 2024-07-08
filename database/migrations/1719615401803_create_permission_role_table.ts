@@ -11,8 +11,16 @@ export default class extends BaseSchema {
         .index()
         .unsigned()
         .references('id')
-        .inTable('permissions');
-      table.integer('role_id').notNullable().index().unsigned().references('id').inTable('roles');
+        .inTable('permissions')
+        .onDelete('CASCADE');
+      table
+        .integer('role_id')
+        .notNullable()
+        .index()
+        .unsigned()
+        .references('id')
+        .inTable('roles')
+        .onDelete('CASCADE');
     });
   }
 

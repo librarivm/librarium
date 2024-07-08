@@ -10,6 +10,8 @@ export interface RoleAttributes {
   name: string;
   slug?: string;
   description?: string;
+  permissions?: number[] | any[];
+  users?: number[] | any[];
 }
 
 @inject()

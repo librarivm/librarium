@@ -1,4 +1,5 @@
-import RoleService from '#services/role_service';
+import RoleService, { RoleAttributes } from '#services/role_service';
+import { createRoleValidator } from '#validators/role_validator';
 import { inject } from '@adonisjs/core';
 import type { HttpContext } from '@adonisjs/core/http';
 
@@ -17,7 +18,10 @@ export default class RolesController {
    * Handle form submission for the create action
    */
 
-  // async store({ request }: HttpContext) {}
+  async store({ request, response }: HttpContext) {
+    const attributes: RoleAttributes = await request.validateUsing(createRoleValidator);
+    return response.created(await this.$service.store(attributes));
+  }
 
   /**
    * Show individual record

@@ -5,8 +5,22 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.integer('role_id').notNullable().index().unsigned().references('id').inTable('roles');
-      table.integer('user_id').notNullable().index().unsigned().references('id').inTable('users');
+      table
+        .integer('role_id')
+        .notNullable()
+        .index()
+        .unsigned()
+        .references('id')
+        .inTable('roles')
+        .onDelete('CASCADE');
+      table
+        .integer('user_id')
+        .notNullable()
+        .index()
+        .unsigned()
+        .references('id')
+        .inTable('users')
+        .onDelete('CASCADE');
     });
   }
 
