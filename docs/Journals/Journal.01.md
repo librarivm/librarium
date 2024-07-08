@@ -62,11 +62,11 @@
 **DONE**:
 
 * Added validating of slug uniqueness for `librarues.{store,update}`
+* Add `libraries.delete` feature and its functional tests
+* Fix ts type issues
 
 **TO DO**:
 
-* Add `libraries.delete` feature and its functional tests
-* Fix ts type issues
 * Integrate RBAC and Authorizations (roles, permissions)
 * Create README.md
 * Setup initial `librarivm/ui` repository.
