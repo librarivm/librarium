@@ -172,5 +172,16 @@ export default class RoleService extends Service {
    *
    * @returns {Promise<void>} A promise that resolves when the roles have been created.
    */
-  async install(): Promise<void> {}
+  async install(): Promise<void> {
+    const roles: RoleAttributes[] = await this.roles();
+
+    for (const role of roles) {
+      const exists = await this.model.query().where('slug', role.slug).first();
+
+      if (!exists) {
+        console.log('  ✔ Installing role:', role.slug);
+        await this.save(new this.model(), role);
+      }
+    }
+  }
 }

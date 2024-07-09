@@ -91,10 +91,12 @@
 
 * Refactored services interfaces to be types
 * Added unit tests for RolService install methods
+* Test flukes: sometimes a file will fail a test on CI but not on local
+  * What seemed to work: touch the file and send it to CI again. Will miraculously work again 🤷.
+* Added unit test for `RolService.install` method
 
 **TO DO**:
 
-* Add unit test for `RolService.install` method
 * Integrate RBAC and Authorizations (roles, permissions)
   * revisit `*.{list,store,show}` if `role.permissions` is allowed for the route.
   * revisit `*.{update,archive,destroy}` as `auth.id` in `users.each.id`

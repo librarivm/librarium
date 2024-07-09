@@ -185,4 +185,18 @@ test.group('Services / RoleService', (group) => {
       assert.isTrue(role.hasOwnProperty('permissions'));
     });
   });
+
+  test('it installs the retrieved roles list', async ({ assert }) => {
+    // Arrangements
+    const roles: Role[] = await RoleFactory.makeMany(10);
+
+    $sandbox.stub(RoleService.prototype, 'roles').resolves(roles);
+    const stub: SinonStub<any, any> = $sandbox.stub(Role.prototype, 'save').resolvesThis();
+
+    // Actions
+    await $service.install();
+
+    // Assertions
+    assert.isTrue(stub.called);
+  });
 });
