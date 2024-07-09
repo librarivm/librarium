@@ -40,7 +40,7 @@ test.group('Services / UserService', (group) => {
     };
     const item: User = await UserFactory.merge(attributes).make();
     const userId: number = $users.length + 1;
-    const user: User & { id: number } = {
+    const user = {
       ...item,
       username: attributes.email,
       id: userId,
@@ -63,7 +63,7 @@ test.group('Services / UserService', (group) => {
 
   test('it should verify the credentials of an existing user', async ({ assert }) => {
     // Arrangements
-    const user: User & { id: number } = {
+    const user = {
       ...(sample($users) as User),
       id: $users.length,
     };

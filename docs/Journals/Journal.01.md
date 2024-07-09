@@ -98,6 +98,7 @@
 
 **TO DO**:
 
+* Setup ci before push
 * RBAC: revisit `*.{list,store,show}` if `role.permissions` is allowed for the route.
 * RBAC: revisit `*.{update,archive,destroy}` as `auth.id` in `users.each.id`
 * Add user routes
