@@ -94,12 +94,13 @@
 * Test flukes: sometimes a file will fail a test on CI but not on local
   * What seemed to work: touch the file and send it to CI again. Will miraculously work again 🤷.
 * Added unit test for `RolService.install` method
+* Integrated RBAC and Authorizations (roles, permissions)
 
 **TO DO**:
 
-* Integrate RBAC and Authorizations (roles, permissions)
-  * revisit `*.{list,store,show}` if `role.permissions` is allowed for the route.
-  * revisit `*.{update,archive,destroy}` as `auth.id` in `users.each.id`
+* RBAC: revisit `*.{list,store,show}` if `role.permissions` is allowed for the route.
+* RBAC: revisit `*.{update,archive,destroy}` as `auth.id` in `users.each.id`
+* Add user routes
 * Create README.md
 * Setup initial `librarivm/ui` repository.
   * Decided to have the front-end to a separate repository.

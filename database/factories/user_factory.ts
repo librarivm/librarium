@@ -1,3 +1,4 @@
+import { RoleFactory } from '#database/factories/role_factory';
 import User from '#models/user';
 import factory from '@adonisjs/lucid/factories';
 
@@ -17,4 +18,5 @@ export const UserFactory = factory
       password: 'password',
     };
   })
+  .relation('roles', () => RoleFactory)
   .build();
