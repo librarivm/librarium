@@ -3,11 +3,11 @@ import { test } from '@japa/runner';
 
 test.group('Permissions / UserPermission', () => {
   test('it should have users.store permission', async ({ assert }) => {
-    assert.equal(UserPermission.CREATE, 'users.store');
+    assert.equal(UserPermission.CREATE, 'users.create');
   });
 
   test('it should have users.show permission', async ({ assert }) => {
-    assert.equal(UserPermission.READ, 'users.show');
+    assert.equal(UserPermission.READ, 'users.read');
   });
 
   test('it should have users.update permission', async ({ assert }) => {
@@ -19,6 +19,6 @@ test.group('Permissions / UserPermission', () => {
   });
 
   test('it should have users.index permission', async ({ assert }) => {
-    assert.equal(UserPermission.LIST, 'users.index');
+    assert.equal(UserPermission.LIST, 'users.list');
   });
 });

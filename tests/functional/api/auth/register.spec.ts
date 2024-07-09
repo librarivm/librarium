@@ -1,7 +1,6 @@
 import { UserFactory } from '#database/factories/user_factory';
 import User from '#models/user';
 import { CredentialsAttributes } from '#services/user_service';
-import { faker } from '@faker-js/faker';
 import { ApiResponse } from '@japa/api-client';
 import { test } from '@japa/runner';
 
@@ -52,14 +51,15 @@ test.group(API_URL_NAME, (group) => {
 
   test('it should throw error when email already exists', async ({ assert, client, route }) => {
     // Arrangements
-    const user: User = await UserFactory.merge({
-      email: faker.internet.email().toLowerCase(),
+    const email: string = 'my.constant@email.com';
+    await UserFactory.merge({
+      email: email,
     }).create();
 
     const credentials: CredentialsAttributes & { password_confirmation: string } = {
       password: 'password',
       password_confirmation: 'password',
-      email: user.email,
+      email: email,
     };
 
     // Actions

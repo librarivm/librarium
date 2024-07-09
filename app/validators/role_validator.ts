@@ -9,14 +9,14 @@ const roleValidator = (id?: number) =>
     slug: vine.string().unique(async (db: Database, value: string, field): Promise<boolean> => {
       const matched = await db
         .from('roles')
-        .select('id')
+        .select('id', 'slug')
         .if(
           isNil(id),
           (query) => {
             query.where('slug', value).orWhere('slug', kebabCase(field.data.name));
           },
           (query) => {
-            query.whereNot('id', id as number);
+            query.whereNot('id', id as number).where('slug', value);
           }
         )
         .first();

@@ -1,7 +1,7 @@
-import { RoleFactory } from '#database/factories/role_factory';
 import { UserFactory } from '#database/factories/user_factory';
 import Role from '#models/role';
 import User from '#models/user';
+import { SuperadminRole } from '#roles/superadmin_role';
 import { HttpQueries } from '#services/service';
 import { ApiResponse } from '@japa/api-client';
 import { test } from '@japa/runner';
@@ -19,8 +19,9 @@ test.group(API_URL_NAME, (group) => {
 
   group.setup(async () => {
     await Role.truncate();
-    $roles = await RoleFactory.createMany(10);
-    $user = await UserFactory.create();
+
+    $user = await UserFactory.with('roles', 1, (role) => role.apply(SuperadminRole.CODE)).create();
+    $roles = $roles.concat($user.roles);
   });
 
   test('it should return a paginated list of roles', async ({ client, route }) => {

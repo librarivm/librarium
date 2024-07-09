@@ -1,3 +1,4 @@
+import RolePolicy from '#policies/role_policy';
 import RoleService, { RoleAttributes } from '#services/role_service';
 import { createRoleValidator, updateRoleValidator } from '#validators/role_validator';
 import { inject } from '@adonisjs/core';
@@ -10,7 +11,11 @@ export default class RolesController {
   /**
    * Display a list of resource
    */
-  async index({ response }: HttpContext) {
+  async index({ bouncer, response }: HttpContext) {
+    if (await bouncer.with(RolePolicy).denies('list')) {
+      return response.notFound();
+    }
+
     return response.ok(await this.$service.list());
   }
 
@@ -18,7 +23,11 @@ export default class RolesController {
    * Handle form submission for the create action
    */
 
-  async store({ request, response }: HttpContext) {
+  async store({ bouncer, request, response }: HttpContext) {
+    if (await bouncer.with(RolePolicy).denies('create')) {
+      return response.forbidden();
+    }
+
     const attributes: RoleAttributes = await request.validateUsing(createRoleValidator);
     return response.created(await this.$service.store(attributes));
   }
@@ -26,14 +35,22 @@ export default class RolesController {
   /**
    * Show individual record
    */
-  async show({ params, response }: HttpContext) {
+  async show({ bouncer, params, response }: HttpContext) {
+    if (await bouncer.with(RolePolicy).denies('show')) {
+      return response.notFound();
+    }
+
     return response.ok(await this.$service.findOrFail(params.id));
   }
 
   /**
    * Handle form submission for the edit action
    */
-  async update({ params, request, response }: HttpContext) {
+  async update({ bouncer, params, request, response }: HttpContext) {
+    if (await bouncer.with(RolePolicy).denies('update')) {
+      return response.forbidden();
+    }
+
     const attributes: RoleAttributes = await request.validateUsing(updateRoleValidator(params.id));
     return response.ok(await this.$service.update(params.id, attributes));
   }
@@ -41,7 +58,11 @@ export default class RolesController {
   /**
    * Soft delete record
    */
-  async archive({ params, response }: HttpContext) {
+  async archive({ bouncer, params, response }: HttpContext) {
+    if (await bouncer.with(RolePolicy).denies('archive')) {
+      return response.forbidden();
+    }
+
     await this.$service.archive(params.id);
     return response.noContent();
   }
@@ -49,7 +70,11 @@ export default class RolesController {
   /**
    * Delete record
    */
-  async destroy({ params, response }: HttpContext) {
+  async destroy({ bouncer, params, response }: HttpContext) {
+    if (await bouncer.with(RolePolicy).denies('destroy')) {
+      return response.forbidden();
+    }
+
     await this.$service.delete(params.id);
 
     return response.noContent();

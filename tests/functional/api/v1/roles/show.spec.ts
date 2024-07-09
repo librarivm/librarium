@@ -2,6 +2,7 @@ import { RoleFactory } from '#database/factories/role_factory';
 import { UserFactory } from '#database/factories/user_factory';
 import Role from '#models/role';
 import User from '#models/user';
+import { SuperadminRole } from '#roles/superadmin_role';
 import { HttpQueries } from '#services/service';
 import { faker } from '@faker-js/faker';
 import { ApiResponse } from '@japa/api-client';
@@ -31,7 +32,7 @@ test.group(API_URL_NAME, (group) => {
       $roles.push(role);
     }
 
-    $user = await UserFactory.create();
+    $user = await UserFactory.with('roles', 1, (role) => role.apply(SuperadminRole.CODE)).create();
   });
 
   test('it should find and return a role by id', async ({ client, route }) => {

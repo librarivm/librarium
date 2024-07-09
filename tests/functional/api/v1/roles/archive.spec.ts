@@ -3,6 +3,7 @@ import { UserFactory } from '#database/factories/user_factory';
 import Permission from '#models/permission';
 import Role from '#models/role';
 import User from '#models/user';
+import { SuperadminRole } from '#roles/superadmin_role';
 import RoleService from '#services/role_service';
 import { ExtractScopes } from '@adonisjs/lucid/types/model';
 import { ApiResponse } from '@japa/api-client';
@@ -18,7 +19,7 @@ test.group(API_URL_NAME, (group) => {
     await Role.truncate();
     await Permission.truncate();
 
-    $user = await UserFactory.create();
+    $user = await UserFactory.with('roles', 1, (role) => role.apply(SuperadminRole.CODE)).create();
     $service = new RoleService();
   });
 

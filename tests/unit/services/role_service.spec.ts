@@ -1,4 +1,5 @@
 import { RoleFactory } from '#database/factories/role_factory';
+import Permission from '#models/permission';
 import Role from '#models/role';
 import RoleService, { RoleAttributes } from '#services/role_service';
 import { Service } from '#services/service';
@@ -190,7 +191,18 @@ test.group('Services / RoleService', (group) => {
     // Arrangements
     const roles: Role[] = await RoleFactory.makeMany(10);
 
+    $sandbox.stub(Permission, 'query').callsFake(() => ({
+      whereIn: () => Promise.resolve([]),
+    }));
     $sandbox.stub(RoleService.prototype, 'roles').resolves(roles);
+    $sandbox.stub($service.getModel(), 'query').callsFake(() => ({
+      where: () => ({
+        first: () => Promise.resolve(),
+      }),
+    }));
+    $sandbox.stub(Role.prototype, 'related').callsFake(() => ({
+      sync: () => Promise.resolve(),
+    }));
     const stub: SinonStub<any, any> = $sandbox.stub(Role.prototype, 'save').resolvesThis();
 
     // Actions

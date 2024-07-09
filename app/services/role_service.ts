@@ -1,11 +1,13 @@
+import Permission from '#models/permission';
 import Role from '#models/role';
+import { SuperPermission } from '#permissions/super_permission';
 import { RoleConstants } from '#roles/.role';
 import { Service } from '#services/service';
 import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
 import { ExtractScopes, ModelPaginatorContract } from '@adonisjs/lucid/types/model';
+import { ChainableContract } from '@adonisjs/lucid/types/querybuilder';
 import isArray from 'lodash/isArray.js';
-import kebabCase from 'lodash/kebabCase.js';
 import { DateTime } from 'luxon';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -14,7 +16,7 @@ export type RoleAttributes = {
   name: string;
   slug?: string;
   description?: string;
-  permissions?: number[] | any[];
+  permissions?: number[] | any[] | '*';
   users?: number[] | any[];
 };
 
@@ -69,7 +71,7 @@ export default class RoleService extends Service {
     let role: Role = model;
 
     role.name = attributes.name;
-    role.slug = kebabCase(attributes.name);
+    role.slug = attributes.slug as string;
     role.description = attributes.description;
 
     role = await role.save();
@@ -180,7 +182,20 @@ export default class RoleService extends Service {
 
       if (!exists) {
         console.log('  ✔ Installing role:', role.slug);
-        await this.save(new this.model(), role);
+
+        if (role.permissions === SuperPermission.ALL) {
+          role.permissions = [SuperPermission.ALL];
+        }
+
+        const permissions: Permission[] = await Permission.query().whereIn(
+          'code',
+          role.permissions as unknown as ChainableContract
+        );
+
+        await this.save(new this.model(), {
+          ...role,
+          permissions: permissions.map((permission: Permission) => permission.id),
+        });
       }
     }
   }

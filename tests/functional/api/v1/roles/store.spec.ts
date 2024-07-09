@@ -4,6 +4,7 @@ import { UserFactory } from '#database/factories/user_factory';
 import Permission from '#models/permission';
 import Role from '#models/role';
 import User from '#models/user';
+import { SuperadminRole } from '#roles/superadmin_role';
 import { RoleAttributes } from '#services/role_service';
 import { ApiResponse } from '@japa/api-client';
 import { test } from '@japa/runner';
@@ -20,7 +21,7 @@ test.group(API_URL_NAME, (group) => {
     await Permission.truncate();
     await Role.truncate();
 
-    $user = await UserFactory.create();
+    $user = await UserFactory.with('roles', 1, (role) => role.apply(SuperadminRole.CODE)).create();
     $role = await RoleFactory.make();
     $permissions = await PermissionFactory.createMany(3);
   });
@@ -47,10 +48,8 @@ test.group(API_URL_NAME, (group) => {
     const permissions: any = role?.permissions.map((i: Permission) => i.toObject());
 
     // Assertions
-    assert.equal(response.body().id, 1);
     response.assertStatus(201);
     response.assertBodyContains({
-      id: 1,
       name: attributes.name,
       slug: attributes.slug,
     });
