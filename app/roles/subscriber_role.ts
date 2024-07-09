@@ -1,6 +1,6 @@
-import { RoleContract } from '#roles/roles';
+import { RoleConstants } from '#roles/.role';
 
-export const SubscriberRole: RoleContract = {
+export const SubscriberRole: RoleConstants = {
   NAME: 'Subscriber',
   CODE: 'subscriber',
   DESCRIPTION: 'somebody who can only manage their profile and view resources',

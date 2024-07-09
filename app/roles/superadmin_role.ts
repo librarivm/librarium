@@ -1,6 +1,6 @@
-import { RoleContract } from '#roles/roles';
+import { RoleConstants } from '#roles/.role';
 
-export const SuperadminRole: RoleContract = {
+export const SuperadminRole: RoleConstants = {
   NAME: 'Super Administrator',
   CODE: 'superadmin',
   DESCRIPTION: 'somebody with full access to all application features without restrictions',

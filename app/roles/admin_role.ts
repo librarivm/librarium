@@ -1,7 +1,7 @@
 import { UserPermission } from '#permissions/user_permission';
-import { RoleContract } from '#roles/roles';
+import { RoleConstants } from '#roles/.role';
 
-export const AdminRole: RoleContract = {
+export const AdminRole: RoleConstants = {
   NAME: 'Administrator',
   CODE: 'admin',
   DESCRIPTION: 'somebody who has access to all the administration features',

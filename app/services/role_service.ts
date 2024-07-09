@@ -1,5 +1,5 @@
 import Role from '#models/role';
-import { RoleContract } from '#roles/roles';
+import { RoleConstants } from '#roles/.role';
 import { Service } from '#services/service';
 import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
@@ -153,7 +153,7 @@ export default class RoleService extends Service {
 
     for (const file of files) {
       const module = await import(path.resolve(this.path(), file));
-      const ROLE: RoleContract = Object.values(module)?.[0] as RoleContract;
+      const ROLE: RoleConstants = Object.values(module)?.[0] as RoleConstants;
 
       roles.push({
         name: ROLE.NAME,
