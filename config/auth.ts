@@ -1,6 +1,6 @@
 import { defineConfig } from '@adonisjs/auth';
 import { tokensGuard, tokensUserProvider } from '@adonisjs/auth/access_tokens';
-import type { Authenticators, InferAuthEvents } from '@adonisjs/auth/types';
+import type { Authenticators as BaseAuthenticators, InferAuthEvents } from '@adonisjs/auth/types';
 
 const authConfig = defineConfig({
   default: 'api',
@@ -25,5 +25,5 @@ declare module '@adonisjs/auth/types' {
 }
 
 declare module '@adonisjs/core/types' {
-  interface EventsList extends InferAuthEvents<Authenticators> {}
+  interface EventsList extends InferAuthEvents<BaseAuthenticators> {}
 }

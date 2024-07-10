@@ -11,7 +11,8 @@
     "test": "node ace test",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "healthcheck": "npm run typecheck && npm run lint && npm run format && npm run test"
   },
   "imports": {
     "#controllers/*": "./app/controllers/*.js",

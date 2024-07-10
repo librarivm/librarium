@@ -5,13 +5,12 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ 'main' ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ 'main' ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -33,7 +32,6 @@ jobs:
       - run: npm ci
       - run: npm run build --if-present
       - run: node ace generate:key
-      - run: npm run typecheck
-      - run: npm test
+      - run: npm run healthcheck
       - name: Cleanup tmp folder
         run: rm -rf tmp
