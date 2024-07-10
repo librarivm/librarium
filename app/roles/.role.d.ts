@@ -4,5 +4,5 @@ export type RoleConstants = {
   NAME: string;
   CODE: string;
   DESCRIPTION: string;
-  PERMISSIONS: PermissionConstants[] | string[] | '*';
+  PERMISSIONS: PermissionConstants[] | (string | undefined)[] | '*';
 };

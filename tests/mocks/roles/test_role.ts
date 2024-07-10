@@ -1,11 +1,12 @@
+import { LibraryPermission } from '#permissions/library_permission';
 import { RolePermission } from '#permissions/role_permission';
 import { UserPermission } from '#permissions/user_permission';
 import { RoleConstants } from '#roles/.role';
 
-export const AdminRole: RoleConstants = {
-  NAME: 'Administrator',
-  CODE: 'admin',
-  DESCRIPTION: 'somebody who has access to all the administration features',
+export const TestRole: RoleConstants = {
+  NAME: 'Tester',
+  CODE: 'tester',
+  DESCRIPTION: 'Test account should implement all permissions explicitly',
   PERMISSIONS: [
     UserPermission.CREATE,
     UserPermission.READ,
@@ -19,5 +20,12 @@ export const AdminRole: RoleConstants = {
     RolePermission.DELETE,
     RolePermission.LIST,
     RolePermission.ARCHIVE,
+
+    LibraryPermission.CREATE,
+    LibraryPermission.READ,
+    LibraryPermission.UPDATE,
+    LibraryPermission.DELETE,
+    LibraryPermission.LIST,
+    LibraryPermission.ARCHIVE,
   ],
 } as const;

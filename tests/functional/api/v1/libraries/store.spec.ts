@@ -5,6 +5,7 @@ import Library from '#models/library';
 import Type from '#models/type';
 import User from '#models/user';
 import { LibraryAttributes } from '#services/library_service';
+import { createSuperadminUser, resetForAuthenticatedUser } from '#tests/helpers';
 import { ApiResponse } from '@japa/api-client';
 import { test } from '@japa/runner';
 
@@ -14,7 +15,8 @@ test.group(API_URL_NAME, (group) => {
   let $user: User;
 
   group.setup(async () => {
-    $user = await UserFactory.create();
+    await resetForAuthenticatedUser();
+    $user = await createSuperadminUser();
     await Library.truncate();
   });
 

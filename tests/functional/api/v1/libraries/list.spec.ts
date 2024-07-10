@@ -2,7 +2,7 @@ import { LibraryFactory } from '#database/factories/library_factory';
 import Library from '#models/library';
 import User from '#models/user';
 import { HttpQueries } from '#services/service';
-import { createAuthenticatedUser } from '#tests/helpers';
+import { createSuperadminUser } from '#tests/helpers';
 import { ApiResponse } from '@japa/api-client';
 import { test } from '@japa/runner';
 import camelCase from 'lodash/camelCase.js';
@@ -20,7 +20,7 @@ test.group(API_URL_NAME, (group) => {
   group.setup(async () => {
     await Library.truncate();
     $libraries = await LibraryFactory.with('user').with('type').createMany(10);
-    $user = await createAuthenticatedUser();
+    $user = await createSuperadminUser();
   });
 
   test('it should return a paginated list of libraries', async ({ client, route }) => {

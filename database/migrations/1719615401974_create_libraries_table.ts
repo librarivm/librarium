@@ -11,7 +11,13 @@ export default class extends BaseSchema {
       table.string('slug').unique();
       table.text('metadata', 'longtext').nullable();
       table.boolean('is_private').defaultTo(false);
-      table.integer('user_id').notNullable().unsigned().references('id').inTable('users');
+      table
+        .integer('user_id')
+        .notNullable()
+        .unsigned()
+        .references('id')
+        .inTable('users')
+        .onDelete('CASCADE');
       table.integer('type_id').notNullable().unsigned().references('id').inTable('types');
       table.timestamp('created_at');
       table.timestamp('updated_at');

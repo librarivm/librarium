@@ -7,11 +7,7 @@ import { test } from '@japa/runner';
 
 const API_URL_NAME: string = 'auth.login';
 
-test.group(API_URL_NAME, (group) => {
-  group.each.setup(async () => {
-    await User.truncate();
-  });
-
+test.group(API_URL_NAME, () => {
   test('it should login an existing user successfully', async ({ client, route, assert }) => {
     // Arrangements
     const credentials: CredentialsAttributes = {

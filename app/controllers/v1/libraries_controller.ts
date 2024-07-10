@@ -23,7 +23,11 @@ export default class LibrariesController {
    * Handle form submission for the `create` action
    */
 
-  async store({ request, response }: HttpContext) {
+  async store({ bouncer, request, response }: HttpContext) {
+    if (await bouncer.with(LibraryPolicy).denies('create')) {
+      return response.forbidden();
+    }
+
     const attributes: LibraryAttributes = await request.validateUsing(createLibraryValidator);
     return response.created(await this.$service.store(attributes));
   }

@@ -1,44 +1,27 @@
 import { PermissionFactory } from '#database/factories/permission_factory';
 import { RoleFactory } from '#database/factories/role_factory';
-import { UserFactory } from '#database/factories/user_factory';
 import Permission from '#models/permission';
 import Role from '#models/role';
 import User from '#models/user';
 import { RolePermission } from '#permissions/role_permission';
-import { AdminRole } from '#roles/admin_role';
-import PermissionService from '#services/permission_service';
-import RoleService, { RoleAttributes } from '#services/role_service';
+import { RoleAttributes } from '#services/role_service';
+import {
+  createAuthenticatedUser,
+  createUnauthenticatedUser,
+  resetForAuthenticatedUser,
+} from '#tests/helpers';
 import { faker } from '@faker-js/faker';
 import { ApiResponse } from '@japa/api-client';
 import { test } from '@japa/runner';
 
 test.group('Policies / RolePolicy', (group) => {
-  let $permission: PermissionService;
-  let $role: RoleService;
   let $user: User;
   let $unauthorized: User;
 
   group.each.setup(async () => {
-    await Role.truncate();
-    await User.truncate();
-
-    $permission = new PermissionService();
-    $role = new RoleService();
-
-    await $permission.install();
-    await $role.install();
-
-    $user = await UserFactory.create();
-    const role: Role | null = await Role.query()
-      .preload('permissions')
-      .where('slug', AdminRole.CODE)
-      .first();
-
-    if (role) {
-      await $user.related('roles').sync([role.id]);
-    }
-
-    $unauthorized = await UserFactory.create();
+    await resetForAuthenticatedUser();
+    $user = await createAuthenticatedUser();
+    $unauthorized = await createUnauthenticatedUser();
   });
 
   test(`it should allow to retrieve for users with "${RolePermission.LIST} permission`, async ({

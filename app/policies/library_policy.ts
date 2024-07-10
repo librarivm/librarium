@@ -7,4 +7,8 @@ export default class LibraryPolicy extends BasePolicy {
   list(user: User): AuthorizerResponse {
     return user.isPermittedTo(LibraryPermission.LIST);
   }
+
+  create(user: User): AuthorizerResponse {
+    return user.isPermittedTo(LibraryPermission.CREATE);
+  }
 }
