@@ -101,11 +101,11 @@ export default class LibraryService extends Service {
   /**
    * Trash a resource by updating the deleted_at column.
    *
-   * @param {number} id - The ID of the resource.
+   * @param {number | Library} model - The model or ID of the resource.
    * @returns {Promise<void>}
    */
-  async archive(id: number): Promise<void> {
-    const library: Library = await this.model.findOrFail(id);
+  async archive(model: number | Library): Promise<void> {
+    const library: Library = model instanceof Library ? model : await this.model.find(model);
 
     library.deletedAt = DateTime.local();
 
@@ -115,11 +115,11 @@ export default class LibraryService extends Service {
   /**
    * Permanently delete a resource by ID.
    *
-   * @param {number} id - The ID of the resource.
+   * @param {number | Library} model - The model or ID of the resource.
    * @returns {Promise<void>}
    */
-  async delete(id: number): Promise<void> {
-    const library = await this.model.findOrFail(id);
+  async delete(model: number | Library): Promise<void> {
+    const library: Library = model instanceof Library ? model : await this.model.find(model);
     await library.delete();
   }
 }

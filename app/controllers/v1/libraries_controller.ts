@@ -65,16 +65,29 @@ export default class LibrariesController {
   /**
    * Soft delete record
    */
-  async archive({ params, response }: HttpContext) {
-    await this.$service.archive(params.id);
+  async archive({ bouncer, params, response }: HttpContext) {
+    const library: Library = await this.$service.findOrFail(params.id);
+
+    if (await bouncer.with(LibraryPolicy).denies('archive', library)) {
+      return response.forbidden();
+    }
+
+    await this.$service.archive(library);
+
     return response.noContent();
   }
 
   /**
    * Delete record
    */
-  async destroy({ params, response }: HttpContext) {
-    await this.$service.delete(params.id);
+  async destroy({ bouncer, params, response }: HttpContext) {
+    const library: Library = await this.$service.findOrFail(params.id);
+
+    if (await bouncer.with(LibraryPolicy).denies('destroy', library)) {
+      return response.forbidden();
+    }
+
+    await this.$service.delete(library);
 
     return response.noContent();
   }

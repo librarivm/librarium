@@ -40,6 +40,7 @@ export default class LibraryPolicy extends BasePolicy {
   /**
    * Checks if the user is permitted to update a resource.
    * @param {User} user - The user to check permissions for.
+   * @param {Library} library - The library to check if user owned.
    * @returns {AuthorizerResponse} - The response indicating if the user is permitted.
    */
   update(user: User, library: Library): AuthorizerResponse {
@@ -48,5 +49,33 @@ export default class LibraryPolicy extends BasePolicy {
     }
 
     return user.owns(library);
+  }
+
+  /**
+   * Checks if the user is permitted to archive a resource.
+   * @param {User} user - The user to check permissions for.
+   * @param {Library} library - The library to check if user owned.
+   * @returns {AuthorizerResponse} - The response indicating if the user is permitted.
+   */
+  archive(user: User, library: Library): AuthorizerResponse {
+    if (user.isSuperAdmin()) {
+      return true;
+    }
+
+    return user.owns(library) && user.isPermittedTo(LibraryPermission.ARCHIVE as string);
+  }
+
+  /**
+   * Checks if the user is permitted to delete a resource.
+   * @param {User} user - The user to check permissions for.
+   * @param {Library} library - The library to check if user owned.
+   * @returns {AuthorizerResponse} - The response indicating if the user is permitted.
+   */
+  destroy(user: User, library: Library): AuthorizerResponse {
+    if (user.isSuperAdmin()) {
+      return true;
+    }
+
+    return user.owns(library) && user.isPermittedTo(LibraryPermission.DELETE);
   }
 }

@@ -119,4 +119,46 @@ test.group('Policies / LibraryPolicy', (group) => {
     unauthorized.assertStatus(403);
     authorized.assertStatus(200);
   });
+
+  test(`it should allow to archive for users with "${LibraryPermission.ARCHIVE}" permission`, async ({
+    client,
+    route,
+  }) => {
+    // Arrangements
+    const library: Library = await LibraryFactory.merge({ userId: $user.id }).with('type').create();
+
+    // Actions
+    const unauthorized: ApiResponse = await client
+      .delete(route('libraries.archive', { id: library.id }))
+      .loginAs($unauthorized);
+
+    const authorized: ApiResponse = await client
+      .delete(route('libraries.archive', { id: library.id }))
+      .loginAs($user);
+
+    // Assertions
+    unauthorized.assertStatus(403);
+    authorized.assertStatus(204);
+  });
+
+  test(`it should allow to delete for users with "${LibraryPermission.DELETE}" permission`, async ({
+    client,
+    route,
+  }) => {
+    // Arrangements
+    const library: Library = await LibraryFactory.merge({ userId: $user.id }).with('type').create();
+
+    // Actions
+    const unauthorized: ApiResponse = await client
+      .delete(route('libraries.destroy', { id: library.id }))
+      .loginAs($unauthorized);
+
+    const authorized: ApiResponse = await client
+      .delete(route('libraries.destroy', { id: library.id }))
+      .loginAs($user);
+
+    // Assertions
+    unauthorized.assertStatus(403);
+    authorized.assertStatus(204);
+  });
 });
