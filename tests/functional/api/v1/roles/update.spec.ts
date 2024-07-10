@@ -1,11 +1,10 @@
 import { PermissionFactory } from '#database/factories/permission_factory';
 import { RoleFactory } from '#database/factories/role_factory';
-import { UserFactory } from '#database/factories/user_factory';
 import Permission from '#models/permission';
 import Role from '#models/role';
 import User from '#models/user';
-import { SuperadminRole } from '#roles/superadmin_role';
 import { RoleAttributes } from '#services/role_service';
+import { createSuperadminUser } from '#tests/helpers';
 import { faker } from '@faker-js/faker';
 import { ApiResponse } from '@japa/api-client';
 import { test } from '@japa/runner';
@@ -21,7 +20,7 @@ test.group(API_URL_NAME, (group) => {
     await Permission.truncate();
     await Role.truncate();
 
-    $user = await UserFactory.with('roles', 1, (role) => role.apply(SuperadminRole.CODE)).create();
+    $user = await createSuperadminUser();
     $permissions = await PermissionFactory.createMany(3);
   });
 

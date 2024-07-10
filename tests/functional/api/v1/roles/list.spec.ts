@@ -1,8 +1,7 @@
-import { UserFactory } from '#database/factories/user_factory';
 import Role from '#models/role';
 import User from '#models/user';
-import { SuperadminRole } from '#roles/superadmin_role';
 import { HttpQueries } from '#services/service';
+import { createSuperadminUser } from '#tests/helpers';
 import { ApiResponse } from '@japa/api-client';
 import { test } from '@japa/runner';
 import camelCase from 'lodash/camelCase.js';
@@ -17,10 +16,10 @@ test.group(API_URL_NAME, (group) => {
   let $roles: Role[] = [];
   let $user: User;
 
-  group.setup(async () => {
+  group.each.setup(async () => {
     await Role.truncate();
 
-    $user = await UserFactory.with('roles', 1, (role) => role.apply(SuperadminRole.CODE)).create();
+    $user = await createSuperadminUser();
     $roles = $roles.concat($user.roles);
   });
 

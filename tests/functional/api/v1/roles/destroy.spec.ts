@@ -1,9 +1,8 @@
 import { RoleFactory } from '#database/factories/role_factory';
-import { UserFactory } from '#database/factories/user_factory';
 import Permission from '#models/permission';
 import Role from '#models/role';
 import User from '#models/user';
-import { SuperadminRole } from '#roles/superadmin_role';
+import { createSuperadminUser } from '#tests/helpers';
 import { ApiResponse } from '@japa/api-client';
 import { test } from '@japa/runner';
 
@@ -15,7 +14,8 @@ test.group(API_URL_NAME, (group) => {
   group.each.setup(async () => {
     await Role.truncate();
     await Permission.truncate();
-    $user = await UserFactory.with('roles', 1, (role) => role.apply(SuperadminRole.CODE)).create();
+
+    $user = await createSuperadminUser();
   });
 
   test('it should permanently delete a role successfully', async ({ client, route, assert }) => {

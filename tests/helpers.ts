@@ -8,6 +8,7 @@ import { TestRole } from '#tests/mocks/roles/test_role';
 
 export const resetForAuthenticatedUser = async () => {
   await Role.truncate();
+  await Permission.truncate();
 };
 
 export const createAuthenticatedUser = async (role: string = TestRole.CODE) => {
