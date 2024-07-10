@@ -5,7 +5,7 @@ import { AuthorizerResponse } from '@adonisjs/bouncer/types';
 
 export default class RolePolicy extends BasePolicy {
   list(user: User): AuthorizerResponse {
-    return user.isPermittedTo(RolePermission.READ);
+    return user.isPermittedTo(RolePermission.LIST);
   }
 
   create(user: User): AuthorizerResponse {
