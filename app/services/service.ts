@@ -1,7 +1,6 @@
 import { inject } from '@adonisjs/core';
 import { HttpContext, Request } from '@adonisjs/core/http';
 import { BaseModel, ModelQueryBuilder } from '@adonisjs/lucid/orm';
-import isArray from 'lodash/isArray.js';
 import isNil from 'lodash/isNil.js';
 import isString from 'lodash/isString.js';
 
@@ -18,6 +17,7 @@ export type HttpQueries = {
 
 @inject()
 export abstract class Service {
+  supportedColumnKeys: string[] = [];
   protected declare request: Request | any;
   protected declare qs: HttpQueries | null;
   protected declare model: typeof BaseModel | any;
@@ -91,8 +91,18 @@ export abstract class Service {
     return !isNil(this.qs?.order_by);
   }
 
-  getOrderBy(): string | any {
-    return this.qs?.order_by;
+  getSupportedColumnKeys() {
+    return this.supportedColumnKeys;
+  }
+
+  getSupportedOrderBy(): string | string[] | any {
+    if (!this.qs?.order_by) {
+      return [];
+    }
+
+    return Object.values(
+      isString(this.qs?.order_by) ? [[this.qs?.order_by, 'asc']] : this.qs?.order_by
+    ).filter(([key]: any) => this.supportedColumnKeys.includes(key));
   }
 
   hasWithPreload(): boolean {
@@ -126,16 +136,17 @@ export abstract class Service {
       builder
         .if(this.hasSearch(), (query: ModelQueryBuilder): void => {
           // TODO: write better search/scout
-          query.where('slug', 'LIKE', `%${this.getSearch()}%`);
+          const columns: string[] = this.getSupportedColumnKeys();
+          const first: string | undefined = columns.shift();
+          first && query.where(first, 'LIKE', `%${this.getSearch()}%`);
+          columns.forEach((column: string) => {
+            query.orWhere(column, 'LIKE', `%${this.getSearch()}%`);
+          });
         })
         .if(this.hasOrderBy(), (query: ModelQueryBuilder): void => {
-          if (isArray(this.getOrderBy())) {
-            this.getOrderBy().forEach(([column, order]: HttpQueriesOrderBy) => {
-              query.orderBy(column, order);
-            });
-          } else if (isString(this.getOrderBy())) {
-            query.orderBy(this.getOrderBy());
-          }
+          this.getSupportedOrderBy().forEach(([column, order]: HttpQueriesOrderBy) => {
+            query.orderBy(column, order);
+          });
         })
     );
   }

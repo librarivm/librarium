@@ -3,6 +3,7 @@ import { Service } from '#services/service';
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens';
 import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
+import { ExtractScopes, ModelPaginatorContract } from '@adonisjs/lucid/types/model';
 
 export type UserAuthAttributes = {
   email: string;
@@ -19,9 +20,29 @@ export type CredentialsAttributes =
 
 @inject()
 export default class UserService extends Service {
+  supportedColumnKeys: string[] = [
+    'first_name',
+    'last_name',
+    'username',
+    'email',
+    'created_at',
+    'updated_at',
+  ];
+
   constructor(ctx?: HttpContext) {
     super(ctx);
     this.setModel(User);
+  }
+
+  /**
+   * List resources with pagination.
+   *
+   * @returns {Promise<ModelPaginatorContract<User>>} Paginated results.
+   */
+  async list(): Promise<ModelPaginatorContract<User>> {
+    return this.withQueryAware(
+      this.model.query().apply((scopes: ExtractScopes<typeof User>) => scopes.notSoftDeleted())
+    ).paginate(this.getPage(), this.getPageCount());
   }
 
   /**
