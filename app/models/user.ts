@@ -6,8 +6,8 @@ import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens';
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid';
 import { compose } from '@adonisjs/core/helpers';
 import hash from '@adonisjs/core/services/hash';
-import { BaseModel, beforeFetch, beforeFind, column, manyToMany } from '@adonisjs/lucid/orm';
-import type { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model';
+import { BaseModel, beforeFetch, beforeFind, column, manyToMany, scope } from '@adonisjs/lucid/orm';
+import type { LucidModel, ModelQueryBuilderContract } from '@adonisjs/lucid/types/model';
 import type { ManyToMany } from '@adonisjs/lucid/types/relations';
 import { DateTime } from 'luxon';
 
@@ -18,6 +18,14 @@ const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
 
 export default class User extends compose(BaseModel, AuthFinder) {
   static accessTokens = DbAccessTokensProvider.forModel(User);
+
+  static notSoftDeleted = scope((query: ModelQueryBuilderContract<LucidModel>): void => {
+    query.whereNull('deleted_at');
+  });
+
+  static softDeleted = scope((query: ModelQueryBuilderContract<LucidModel>): void => {
+    query.whereNotNull('deleted_at');
+  });
 
   @column({ isPrimary: true })
   declare id: number;

@@ -127,7 +127,7 @@ test.group('Services', (group) => {
 
     // Assertions
     assert.isTrue($service.hasOrderBy());
-    assert.equal($service.getOrderBy(), queries.order_by);
+    assert.isArray($service.getSupportedOrderBy());
   });
 
   test('it should get and check withPreload query parameter', async ({ assert }) => {

@@ -111,6 +111,8 @@
 - Added RBAC(libraries): owners can only view, archive, delete their own resources
 - Added RBAC(roles): owners can only view, archive, delete their own resources
 - Done: RBAC: revisit `*.{update,archive,destroy}` as `auth.id` in `users.each.id`
+- Added unit tests for all permissions
+- Added `users.index` endpoint and its functional tests
 
 **TO DO**:
 

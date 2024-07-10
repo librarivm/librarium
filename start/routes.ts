@@ -11,6 +11,7 @@ const RegisterController = () => import('#controllers/auth/register_controller')
 const LoginController = () => import('#controllers/auth/login_controller');
 const MeController = () => import('#controllers/auth/me_controller');
 import RolesController from '#controllers/v1/roles_controller';
+import UsersController from '#controllers/v1/users_controller';
 import { middleware } from '#start/kernel';
 import router from '@adonisjs/core/services/router';
 
@@ -37,6 +38,7 @@ router
 
 router
   .group(() => {
+    router.api('users', UsersController);
     router.api('libraries', LibrariesController);
     router.api('roles', RolesController);
   })
