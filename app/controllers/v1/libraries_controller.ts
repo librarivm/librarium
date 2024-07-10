@@ -1,3 +1,4 @@
+import LibraryPolicy from '#policies/library_policy';
 import LibraryService, { LibraryAttributes } from '#services/library_service';
 import { createLibraryValidator, updateLibraryValidator } from '#validators/library_validator';
 import { inject } from '@adonisjs/core';
@@ -10,12 +11,16 @@ export default class LibrariesController {
   /**
    * Display a list of resource
    */
-  async index({ response }: HttpContext) {
+  async index({ bouncer, response }: HttpContext) {
+    if (await bouncer.with(LibraryPolicy).denies('list')) {
+      return response.notFound();
+    }
+
     return response.ok(await this.$service.list());
   }
 
   /**
-   * Handle form submission for the create action
+   * Handle form submission for the `create` action
    */
 
   async store({ request, response }: HttpContext) {
