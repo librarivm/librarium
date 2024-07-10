@@ -104,10 +104,16 @@
 - Set up CI health checks
 - RBAC: revisit `*.{list,store,show}` if `role.permissions` is allowed for the route.
 
+## Jul 11, 2024
+
+**DONE**:
+
+- Added RBAC(libraries): owners can only view, archive, delete their own resources
+- Added RBAC(roles): owners can only view, archive, delete their own resources
+- Done: RBAC: revisit `*.{update,archive,destroy}` as `auth.id` in `users.each.id`
+
 **TO DO**:
 
-- RBAC: owners can only view their own resources
-- RBAC: revisit `*.{update,archive,destroy}` as `auth.id` in `users.each.id`
 - Add user routes
 - Create README.md
 - Setup initial `librarivm/ui` repository.
