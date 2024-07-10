@@ -1,11 +1,13 @@
 import Permission from '#models/permission';
 import Role from '#models/role';
+import { SuperPermission } from '#permissions/super_permission';
 import { SuperadminRole } from '#roles/superadmin_role';
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens';
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid';
 import { compose } from '@adonisjs/core/helpers';
 import hash from '@adonisjs/core/services/hash';
-import { BaseModel, column, manyToMany } from '@adonisjs/lucid/orm';
+import { afterFetch, BaseModel, beforeFind, column, manyToMany } from '@adonisjs/lucid/orm';
+import type { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model';
 import type { ManyToMany } from '@adonisjs/lucid/types/relations';
 import { DateTime } from 'luxon';
 
@@ -47,25 +49,37 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @manyToMany(() => Role)
   declare roles: ManyToMany<typeof Role>;
 
+  @beforeFind()
+  @afterFetch()
+  static async preloadRoles(query: ModelQueryBuilderContract<typeof User>) {
+    query.preload('roles');
+  }
+
   /**
    * Checks if the user is permitted based on the given permission code.
    *
    * @param code - The permission code to check.
-   * @returns A promise that resolves to a boolean indicating if the user has the permission.
+   * @returns A boolean indicating if the user has the permission.
    */
-  async isPermittedTo(code: string): Promise<boolean> {
-    const roles = await this.related('roles' as any)
-      .query()
-      .preload('permissions' as any);
+  isPermittedTo(code: string): boolean {
+    return this.roles.some((role: any) =>
+      role.permissions.some(
+        (permission: Permission) =>
+          permission.code === code || permission.code === SuperPermission.ALL
+      )
+    );
+  }
 
-    if (roles.map((role: any) => role.slug).includes(SuperadminRole.CODE)) {
-      return true;
-    }
+  isSuperAdmin(): boolean {
+    return this.roles.some((role: Role): boolean => role.slug === SuperadminRole.CODE);
+  }
 
-    const permissions = roles
-      .map((role: any) => role.permissions.map((permission: Permission) => permission.code))
-      .flat();
-
-    return permissions.includes(code) || permissions.includes('*');
+  /**
+   * Check if the given resource is owned by the user.
+   * @param resource - The resource to check if user owns.
+   * @returns A boolean indicating if the user owns the resource.
+   */
+  owns(resource: Partial<{ userId: number }>): boolean {
+    return this.id === resource.userId;
   }
 }
