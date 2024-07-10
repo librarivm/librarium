@@ -12,7 +12,7 @@ import unzip from 'lodash/unzip.js';
 
 const API_URL_NAME: string = 'roles.index';
 
-test.group(API_URL_NAME, (group) => {
+test.group(`v1.${API_URL_NAME}`, (group) => {
   let $roles: Role[] = [];
   let $user: User;
 

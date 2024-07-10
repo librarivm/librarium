@@ -11,7 +11,7 @@ import { test } from '@japa/runner';
 
 const API_URL_NAME: string = 'libraries.store';
 
-test.group(API_URL_NAME, (group) => {
+test.group(`v1.${API_URL_NAME}`, (group) => {
   let $user: User;
 
   group.setup(async () => {

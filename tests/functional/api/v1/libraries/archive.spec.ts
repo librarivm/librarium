@@ -1,20 +1,22 @@
 import { LibraryFactory } from '#database/factories/library_factory';
-import { UserFactory } from '#database/factories/user_factory';
 import Library from '#models/library';
 import User from '#models/user';
 import LibraryService from '#services/library_service';
+import { createSuperadminUser, resetForAuthenticatedUser } from '#tests/helpers';
 import { ExtractScopes } from '@adonisjs/lucid/types/model';
 import { ApiResponse } from '@japa/api-client';
 import { test } from '@japa/runner';
 
 const API_URL_NAME: string = 'libraries.archive';
 
-test.group(API_URL_NAME, (group) => {
+test.group(`v1.${API_URL_NAME}`, (group) => {
   let $user: User;
   let $service: LibraryService;
 
   group.each.setup(async () => {
-    $user = await UserFactory.create();
+    await Library.truncate();
+    await resetForAuthenticatedUser();
+    $user = await createSuperadminUser();
     $service = new LibraryService();
   });
 

@@ -10,7 +10,7 @@ import kebabCase from 'lodash/kebabCase.js';
 
 const API_URL_NAME: string = 'libraries.update';
 
-test.group(API_URL_NAME, (group) => {
+test.group(`v1.${API_URL_NAME}`, (group) => {
   let $user: User;
 
   group.each.setup(async () => {

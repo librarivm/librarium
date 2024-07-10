@@ -1,18 +1,19 @@
 import { LibraryFactory } from '#database/factories/library_factory';
-import { UserFactory } from '#database/factories/user_factory';
 import Library from '#models/library';
 import User from '#models/user';
+import { createSuperadminUser, resetForAuthenticatedUser } from '#tests/helpers';
 import { ApiResponse } from '@japa/api-client';
 import { test } from '@japa/runner';
 
 const API_URL_NAME: string = 'libraries.destroy';
 
-test.group(API_URL_NAME, (group) => {
+test.group(`v1.${API_URL_NAME}`, (group) => {
   let $user: User;
 
   group.each.setup(async () => {
     await Library.truncate();
-    $user = await UserFactory.create();
+    await resetForAuthenticatedUser();
+    $user = await createSuperadminUser();
   });
 
   test('it should permanently delete a library successfully', async ({ client, route, assert }) => {

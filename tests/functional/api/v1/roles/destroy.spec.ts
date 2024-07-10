@@ -8,7 +8,7 @@ import { test } from '@japa/runner';
 
 const API_URL_NAME: string = 'roles.destroy';
 
-test.group(API_URL_NAME, (group) => {
+test.group(`v1.${API_URL_NAME}`, (group) => {
   let $user: User;
 
   group.each.setup(async () => {

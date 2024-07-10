@@ -9,7 +9,7 @@ import sample from 'lodash/sample.js';
 
 const API_URL_NAME: string = 'libraries.show';
 
-test.group(API_URL_NAME, (group) => {
+test.group(`v1.${API_URL_NAME}`, (group) => {
   let $libraries: Library[] = [];
   let $user: User;
 
