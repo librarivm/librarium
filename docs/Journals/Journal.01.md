@@ -101,11 +101,12 @@
 
 - Integrated RBAC and Authorizations (roles, permissions)
 - Refactored a lot of the functional tests to handle role-based authorization
+- Set up CI health checks
+- RBAC: revisit `*.{list,store,show}` if `role.permissions` is allowed for the route.
 
 **TO DO**:
 
-- Setup ci before push (git hooks)
-- RBAC: revisit `*.{list,store,show}` if `role.permissions` is allowed for the route.
+- RBAC: owners can only view their own resources
 - RBAC: revisit `*.{update,archive,destroy}` as `auth.id` in `users.each.id`
 - Add user routes
 - Create README.md

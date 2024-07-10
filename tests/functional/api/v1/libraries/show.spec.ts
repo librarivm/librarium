@@ -1,8 +1,8 @@
 import { LibraryFactory } from '#database/factories/library_factory';
-import { UserFactory } from '#database/factories/user_factory';
 import Library from '#models/library';
 import User from '#models/user';
 import { HttpQueries } from '#services/service';
+import { createSuperadminUser, resetForAuthenticatedUser } from '#tests/helpers';
 import { ApiResponse } from '@japa/api-client';
 import { test } from '@japa/runner';
 import sample from 'lodash/sample.js';
@@ -16,7 +16,8 @@ test.group(API_URL_NAME, (group) => {
   group.setup(async () => {
     await Library.truncate();
     $libraries = await LibraryFactory.with('user').with('type').createMany(10);
-    $user = await UserFactory.create();
+    await resetForAuthenticatedUser();
+    $user = await createSuperadminUser();
   });
 
   test('it should find and return a library by id', async ({ client, route }) => {

@@ -16,7 +16,7 @@ const libraryValidator = (id?: number) =>
             query.where('slug', value).orWhere('slug', kebabCase(field.data.name));
           },
           (query) => {
-            query.whereNot('id', id as number);
+            query.whereNot('id', id as number).where('slug', value);
           }
         )
         .first();

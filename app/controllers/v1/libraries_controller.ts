@@ -1,3 +1,4 @@
+import Library from '#models/library';
 import LibraryPolicy from '#policies/library_policy';
 import LibraryService, { LibraryAttributes } from '#services/library_service';
 import { createLibraryValidator, updateLibraryValidator } from '#validators/library_validator';
@@ -22,7 +23,6 @@ export default class LibrariesController {
   /**
    * Handle form submission for the `create` action
    */
-
   async store({ bouncer, request, response }: HttpContext) {
     if (await bouncer.with(LibraryPolicy).denies('create')) {
       return response.forbidden();
@@ -35,18 +35,31 @@ export default class LibrariesController {
   /**
    * Show individual record
    */
-  async show({ response, params }: HttpContext) {
-    return response.ok(await this.$service.findOrFail(params.id));
+  async show({ bouncer, response, params }: HttpContext) {
+    const library: Library = await this.$service.findOrFail(params.id);
+
+    if (await bouncer.with(LibraryPolicy).denies('show', library)) {
+      return response.notFound();
+    }
+
+    return response.ok(library);
   }
 
   /**
    * Handle form submission for the edit action
    */
-  async update({ params, request, response }: HttpContext) {
+  async update({ bouncer, params, request, response }: HttpContext) {
+    const library: Library = await this.$service.findOrFail(params.id);
+
+    if (await bouncer.with(LibraryPolicy).denies('update', library)) {
+      return response.forbidden();
+    }
+
     const attributes: LibraryAttributes = await request.validateUsing(
       updateLibraryValidator(params.id)
     );
-    return response.ok(await this.$service.update(params.id, attributes));
+
+    return response.ok(await this.$service.update(library, attributes));
   }
 
   /**

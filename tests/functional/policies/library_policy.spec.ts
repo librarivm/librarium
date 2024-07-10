@@ -10,6 +10,7 @@ import {
   createUnauthenticatedUser,
   resetForAuthenticatedUser,
 } from '#tests/helpers';
+import { faker } from '@faker-js/faker';
 import { ApiResponse } from '@japa/api-client';
 import { test } from '@japa/runner';
 
@@ -66,5 +67,56 @@ test.group('Policies / LibraryPolicy', (group) => {
     // Assertions
     unauthorized.assertStatus(403);
     authorized.assertStatus(201);
+  });
+
+  test(`it should allow to read for users with "${LibraryPermission.READ}" permission`, async ({
+    client,
+    route,
+  }) => {
+    // Arrangements
+    const library: Library = await LibraryFactory.merge({ userId: $user.id }).with('type').create();
+
+    // Actions
+    const unauthorized: ApiResponse = await client
+      .get(route('libraries.show', { id: library.id }))
+      .loginAs($unauthorized);
+    const authorized: ApiResponse = await client
+      .get(route('libraries.show', { id: library.id }))
+      .loginAs($user);
+
+    // Assertions
+    unauthorized.assertStatus(404);
+    authorized.assertStatus(200);
+  });
+
+  test(`it should allow to update for users with "${LibraryPermission.UPDATE}" permission`, async ({
+    client,
+    route,
+  }) => {
+    // Arrangements
+    const library: Library = await LibraryFactory.merge({ userId: $user.id }).with('type').create();
+    const attributes: LibraryAttributes = {
+      ...library.serialize(),
+      isPrivate: library.isPrivate,
+      typeId: library.typeId,
+      userId: $user.id,
+      name: library.name,
+      description: faker.lorem.sentence(),
+    };
+
+    // Actions
+    const unauthorized: ApiResponse = await client
+      .put(route('libraries.update', { id: library.id }))
+      .json(attributes)
+      .loginAs($unauthorized);
+
+    const authorized: ApiResponse = await client
+      .put(route('libraries.update', { id: library.id }))
+      .json(attributes)
+      .loginAs($user);
+
+    // Assertions
+    unauthorized.assertStatus(403);
+    authorized.assertStatus(200);
   });
 });
