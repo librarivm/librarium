@@ -10,7 +10,7 @@ export default class RolePolicy extends BasePolicy {
    * @returns {AuthorizerResponse} - The response indicating if the user is permitted.
    */
   list(user: User): AuthorizerResponse {
-    return user.isPermittedTo(RolePermission.LIST);
+    return user.isSuperAdmin() || user.isPermittedTo(RolePermission.LIST);
   }
 
   /**
@@ -19,7 +19,7 @@ export default class RolePolicy extends BasePolicy {
    * @returns {AuthorizerResponse} - The response indicating if the user is permitted.
    */
   create(user: User): AuthorizerResponse {
-    return user.isPermittedTo(RolePermission.CREATE);
+    return user.isSuperAdmin() || user.isPermittedTo(RolePermission.CREATE);
   }
 
   /**
@@ -28,7 +28,7 @@ export default class RolePolicy extends BasePolicy {
    * @returns {AuthorizerResponse} - The response indicating if the user is permitted.
    */
   show(user: User): AuthorizerResponse {
-    return user.isPermittedTo(RolePermission.READ);
+    return user.isSuperAdmin() || user.isPermittedTo(RolePermission.READ);
   }
 
   /**
@@ -37,7 +37,7 @@ export default class RolePolicy extends BasePolicy {
    * @returns {AuthorizerResponse} - The response indicating if the user is permitted.
    */
   update(user: User): AuthorizerResponse {
-    return user.isPermittedTo(RolePermission.UPDATE);
+    return user.isSuperAdmin() || user.isPermittedTo(RolePermission.UPDATE);
   }
 
   /**
@@ -46,7 +46,7 @@ export default class RolePolicy extends BasePolicy {
    * @returns {AuthorizerResponse} - The response indicating if the user is permitted.
    */
   archive(user: User): AuthorizerResponse {
-    return user.isPermittedTo(RolePermission.ARCHIVE as string);
+    return user.isSuperAdmin() || user.isPermittedTo(RolePermission.ARCHIVE as string);
   }
 
   /**
@@ -55,6 +55,6 @@ export default class RolePolicy extends BasePolicy {
    * @returns {AuthorizerResponse} - The response indicating if the user is permitted.
    */
   destroy(user: User): AuthorizerResponse {
-    return user.isPermittedTo(RolePermission.DELETE);
+    return user.isSuperAdmin() || user.isPermittedTo(RolePermission.DELETE);
   }
 }

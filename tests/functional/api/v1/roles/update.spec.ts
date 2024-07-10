@@ -4,7 +4,7 @@ import Permission from '#models/permission';
 import Role from '#models/role';
 import User from '#models/user';
 import { RoleAttributes } from '#services/role_service';
-import { createSuperadminUser } from '#tests/helpers';
+import { createSuperadminUser, resetForAuthenticatedUser } from '#tests/helpers';
 import { faker } from '@faker-js/faker';
 import { ApiResponse } from '@japa/api-client';
 import { test } from '@japa/runner';
@@ -17,9 +17,7 @@ test.group(API_URL_NAME, (group) => {
   let $permissions: Permission[];
 
   group.each.setup(async () => {
-    await Permission.truncate();
-    await Role.truncate();
-
+    await resetForAuthenticatedUser();
     $user = await createSuperadminUser();
     $permissions = await PermissionFactory.createMany(3);
   });

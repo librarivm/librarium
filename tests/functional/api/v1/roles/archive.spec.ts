@@ -1,9 +1,8 @@
 import { RoleFactory } from '#database/factories/role_factory';
-import Permission from '#models/permission';
 import Role from '#models/role';
 import User from '#models/user';
 import RoleService from '#services/role_service';
-import { createSuperadminUser } from '#tests/helpers';
+import { createSuperadminUser, resetForAuthenticatedUser } from '#tests/helpers';
 import { ExtractScopes } from '@adonisjs/lucid/types/model';
 import { ApiResponse } from '@japa/api-client';
 import { test } from '@japa/runner';
@@ -15,9 +14,7 @@ test.group(API_URL_NAME, (group) => {
   let $service: RoleService;
 
   group.each.setup(async () => {
-    await Role.truncate();
-    await Permission.truncate();
-
+    await resetForAuthenticatedUser();
     $user = await createSuperadminUser();
     $service = new RoleService();
   });

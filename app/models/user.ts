@@ -6,7 +6,7 @@ import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens';
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid';
 import { compose } from '@adonisjs/core/helpers';
 import hash from '@adonisjs/core/services/hash';
-import { afterFetch, BaseModel, beforeFind, column, manyToMany } from '@adonisjs/lucid/orm';
+import { BaseModel, beforeFetch, beforeFind, column, manyToMany } from '@adonisjs/lucid/orm';
 import type { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model';
 import type { ManyToMany } from '@adonisjs/lucid/types/relations';
 import { DateTime } from 'luxon';
@@ -49,8 +49,8 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @manyToMany(() => Role)
   declare roles: ManyToMany<typeof Role>;
 
+  @beforeFetch()
   @beforeFind()
-  @afterFetch()
   static async preloadRoles(query: ModelQueryBuilderContract<typeof User>) {
     query.preload('roles');
   }
