@@ -105,7 +105,7 @@ export default class LibraryService extends Service {
    * @returns {Promise<void>}
    */
   async archive(model: number | Library): Promise<void> {
-    const library: Library = model instanceof Library ? model : await this.model.find(model);
+    const library: Library = model instanceof Library ? model : await this.model.findOrFail(model);
 
     library.deletedAt = DateTime.local();
 
@@ -119,7 +119,7 @@ export default class LibraryService extends Service {
    * @returns {Promise<void>}
    */
   async delete(model: number | Library): Promise<void> {
-    const library: Library = model instanceof Library ? model : await this.model.find(model);
+    const library: Library = model instanceof Library ? model : await this.model.findOrFail(model);
     await library.delete();
   }
 }
