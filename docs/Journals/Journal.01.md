@@ -94,11 +94,17 @@
 * Test flukes: sometimes a file will fail a test on CI but not on local
   * What seemed to work: touch the file and send it to CI again. Will miraculously work again 🤷.
 * Added unit test for `RolService.install` method
+
+## Jul 10, 2024
+
+**DONE**:
+
 * Integrated RBAC and Authorizations (roles, permissions)
+* Refactored a lot of the functional tests to handle role-based authorization
 
 **TO DO**:
 
-* Setup ci before push
+* Setup ci before push (git hooks)
 * RBAC: revisit `*.{list,store,show}` if `role.permissions` is allowed for the route.
 * RBAC: revisit `*.{update,archive,destroy}` as `auth.id` in `users.each.id`
 * Add user routes
