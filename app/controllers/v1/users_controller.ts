@@ -1,4 +1,5 @@
-import UserService from '#services/user_service';
+import UserService, { UserAttributes } from '#services/user_service';
+import { createUserValidator } from '#validators/user_validator';
 import { inject } from '@adonisjs/core';
 import type { HttpContext } from '@adonisjs/core/http';
 
@@ -16,7 +17,10 @@ export default class UsersController {
   /**
    * Handle form submission for the create action
    */
-  // async store({ request }: HttpContext) {}
+  async store({ request, response }: HttpContext) {
+    const attributes: UserAttributes = await request.validateUsing(createUserValidator);
+    return response.created(await this.$service.store(attributes));
+  }
 
   /**
    * Show individual record

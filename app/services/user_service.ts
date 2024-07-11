@@ -8,15 +8,19 @@ import { ExtractScopes, ModelPaginatorContract } from '@adonisjs/lucid/types/mod
 export type UserAuthAttributes = {
   email: string;
   password: string;
-  firstName?: string | null;
-  middleName?: string | null;
-  lastName?: string | null;
+  firstName?: string;
+  middleName?: string;
+  lastName?: string;
   username?: string;
 };
 
 export type CredentialsAttributes =
   | { email: string; password: string; username?: never }
   | { username: string; password: string; email?: never };
+
+export type UserAttributes = UserAuthAttributes & {
+  [key: string]: any;
+};
 
 @inject()
 export default class UserService extends Service {
@@ -43,6 +47,38 @@ export default class UserService extends Service {
     return this.withQueryAware(
       this.model.query().apply((scopes: ExtractScopes<typeof User>) => scopes.notSoftDeleted())
     ).paginate(this.getPage(), this.getPageCount());
+  }
+
+  /**
+   * Create or update a resource.
+   *
+   * @param {User} model - The model to use to save the resource.
+   * @param {UserAttributes} attributes - The attributes for the new resource.
+   * @returns {Promise<User>} The created resource.
+   */
+  async save(model: User, attributes: UserAttributes): Promise<User> {
+    let user: User = model;
+
+    user.firstName = attributes.firstName;
+    user.middleName = attributes.middleName;
+    user.lastName = attributes.lastName;
+    user.email = attributes.email;
+    user.username = attributes.username ?? attributes.email;
+    user.password = attributes.password;
+
+    user = await user.save();
+
+    return user;
+  }
+
+  /**
+   * Create an existing resource.
+   *
+   * @param {UserAttributes} attributes - The new attributes for the resource.
+   * @returns {Promise<User>} The updated resource.
+   */
+  async store(attributes: UserAttributes): Promise<User> {
+    return this.save(new this.model(), attributes);
   }
 
   /**
@@ -78,10 +114,6 @@ export default class UserService extends Service {
    */
   async removeCurrentToken(user: User | any): Promise<void> {
     await this.tokens().delete(user, user.currentAccessToken.identifier);
-  }
-
-  save(model: any, attributes: any): Promise<any> {
-    return Promise.resolve({ model, attributes });
   }
 
   /**
