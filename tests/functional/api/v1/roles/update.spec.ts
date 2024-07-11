@@ -16,7 +16,7 @@ test.group(`v1.${API_URL_NAME}`, (group) => {
   let $user: User;
   let $permissions: Permission[];
 
-  group.each.setup(async () => {
+  group.setup(async () => {
     await resetForAuthenticatedUser();
     $user = await createSuperadminUser();
     $permissions = await PermissionFactory.createMany(3);
