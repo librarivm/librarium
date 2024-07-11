@@ -13,8 +13,8 @@ export const UserFactory = factory
       email: `fake.${faker.number.int()}.${faker.internet.email({
         firstName,
         lastName,
-      })}`,
-      username: faker.internet.userName(),
+      })}`.toLowerCase(),
+      username: faker.internet.userName().toLowerCase(),
       password: 'password',
     };
   })

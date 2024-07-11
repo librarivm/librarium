@@ -59,4 +59,54 @@ test.group(`v1.${API_URL_NAME}`, (group) => {
     response.assertStatus(422);
     response.assertBodyContains({ errors: [{ rule: 'required', field: 'email' }] });
   });
+
+  test('it should return 422 if email already exists', async ({ client, route }) => {
+    // Arrangements
+    const user: User = await UserFactory.create();
+    const item: User = await UserFactory.merge({
+      email: user.email,
+    }).make();
+    const attributes: Partial<UserAttributes> = {
+      ...item.serialize(),
+      email: user.email,
+      password: 'password',
+    };
+
+    // Actions
+    const response: ApiResponse = await client
+      .post(route(API_URL_NAME))
+      .json(attributes)
+      .loginAs($user);
+
+    // Assertions
+    response.assertStatus(422);
+    response.assertBodyContains({
+      errors: [{ rule: 'database.unique', field: 'email' }],
+    });
+  });
+
+  test('it should return 422 if username already exists', async ({ client, route }) => {
+    // Arrangements
+    const user: User = await UserFactory.create();
+    const item: User = await UserFactory.merge({
+      username: user.username,
+    }).make();
+    const attributes: Partial<UserAttributes> = {
+      ...item.serialize(),
+      username: user.username,
+      password: 'password',
+    };
+
+    // Actions
+    const response: ApiResponse = await client
+      .post(route(API_URL_NAME))
+      .json(attributes)
+      .loginAs($user);
+
+    // Assertions
+    response.assertStatus(422);
+    response.assertBodyContains({
+      errors: [{ rule: 'database.unique', field: 'username' }],
+    });
+  });
 });
