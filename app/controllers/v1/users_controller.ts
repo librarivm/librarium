@@ -25,7 +25,9 @@ export default class UsersController {
   /**
    * Show individual record
    */
-  // async show({ params }: HttpContext) {}
+  async show({ params, response }: HttpContext) {
+    return response.ok(await this.$service.findOrFail(params.id));
+  }
 
   /**
    * Handle form submission for the edit action
