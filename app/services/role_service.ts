@@ -24,6 +24,10 @@ export const ROLES_PATH: string = path.resolve('app', 'roles');
 
 @inject()
 export default class RoleService extends Service {
+  supportedColumnKeys: string[] = ['name', 'slug', 'description', 'created_at', 'updated_at'];
+
+  preloads: string[] = ['users', 'permissions'];
+
   constructor(ctx?: HttpContext) {
     super(ctx);
     this.setModel(Role);

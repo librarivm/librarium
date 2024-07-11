@@ -18,6 +18,7 @@ export type HttpQueries = {
 @inject()
 export abstract class Service {
   supportedColumnKeys: string[] = [];
+  preloads: string[] = [];
   protected declare request: Request | any;
   protected declare qs: HttpQueries | null;
   protected declare model: typeof BaseModel | any;
@@ -166,8 +167,14 @@ export abstract class Service {
         : [...this.getWithPreload()];
 
       preloads.map(async (preload: string) => {
-        query.preload(preload);
+        if (this.isValidPreload(preload)) {
+          query.preload(preload);
+        }
       });
     });
+  }
+
+  isValidPreload(preload: string): boolean {
+    return this.preloads.includes(preload);
   }
 }

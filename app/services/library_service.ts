@@ -20,6 +20,8 @@ export type LibraryAttributes = {
 export default class LibraryService extends Service {
   supportedColumnKeys: string[] = ['name', 'description', 'slug', 'created_at', 'updated_at'];
 
+  preloads: string[] = ['user', 'type'];
+
   constructor(ctx?: HttpContext) {
     super(ctx);
     this.setModel(Library);

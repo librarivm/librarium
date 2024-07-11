@@ -33,6 +33,8 @@ export default class UserService extends Service {
     'updated_at',
   ];
 
+  preloads: string[] = ['roles'];
+
   constructor(ctx?: HttpContext) {
     super(ctx);
     this.setModel(User);
@@ -47,6 +49,26 @@ export default class UserService extends Service {
     return this.withQueryAware(
       this.model.query().apply((scopes: ExtractScopes<typeof User>) => scopes.notSoftDeleted())
     ).paginate(this.getPage(), this.getPageCount());
+  }
+
+  /**
+   * Find a resource by ID.
+   *
+   * @param {number} id - The ID of the resource.
+   * @returns {Promise<User|null>} The resource if found, otherwise null.
+   */
+  async find(id: number): Promise<User | null> {
+    return await this.model.find(id);
+  }
+
+  /**
+   * Find a resource by ID.
+   *
+   * @param {number} id - The ID of the resource.
+   * @returns {Promise<User|null>} The resource if found, otherwise null.
+   */
+  async findOrFail(id: number): Promise<User | any> {
+    return this.withPreload(this.model.query().where('id', id)).firstOrFail();
   }
 
   /**
