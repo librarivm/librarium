@@ -2,6 +2,7 @@ import { UserFactory } from '#database/factories/user_factory';
 import User from '#models/user';
 import { UserAttributes } from '#services/user_service';
 import { createSuperadminUser, resetForAuthenticatedUser } from '#tests/helpers';
+import hash from '@adonisjs/core/services/hash';
 import { ApiResponse } from '@japa/api-client';
 import { test } from '@japa/runner';
 
@@ -38,6 +39,27 @@ test.group(`v1.${API_URL_NAME}`, (group) => {
       username: attributes.username,
       firstName: attributes.firstName,
     });
+  });
+
+  test('it should store password as hashed', async ({ client, route, assert }) => {
+    // Arrangements
+    const item: User = await UserFactory.make();
+    const attributes: Partial<UserAttributes> = {
+      ...item.serialize(),
+      password: 'password',
+    };
+
+    // Actions
+    const response: ApiResponse = await client
+      .post(route(API_URL_NAME))
+      .json(attributes)
+      .loginAs($user);
+
+    // Assertions
+    response.assertStatus(201);
+
+    const user: User = await User.findByOrFail('email', item.email);
+    assert.isTrue(await hash.verify(user.password, 'password'), 'Password is not hashed correctly');
   });
 
   test('it should return 422 error for incorrect data', async ({ client, route }) => {

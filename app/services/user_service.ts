@@ -104,6 +104,19 @@ export default class UserService extends Service {
   }
 
   /**
+   * Update an existing resource.
+   *
+   * @param {number | User} model - The model or ID of the resource.
+   * @param {UserAttributes} attributes - The new attributes for the resource.
+   * @returns {Promise<User>} The updated resource.
+   */
+  async update(model: number | User, attributes: UserAttributes): Promise<User> {
+    const user: User = model instanceof User ? model : await this.model.find(model);
+
+    return this.save(user, attributes);
+  }
+
+  /**
    * Registers a new user with the provided attributes
    * @param {UserAuthAttributes} attributes - The attributes for the new user
    * @returns {Promise<User>} The newly created user

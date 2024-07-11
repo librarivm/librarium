@@ -113,6 +113,14 @@
 - Done: RBAC: revisit `*.{update,archive,destroy}` as `auth.id` in `users.each.id`
 - Added unit tests for all permissions
 - Added `users.index` endpoint and its functional tests
+- Added `users.show` endpoint and its functional tests
+- Added `users.store` endpoint and its functional tests
+
+## Jul 12, 2024
+
+- Added `users.update` endpoint and its functional tests
+
+**DONE**:
 
 **TO DO**:
 

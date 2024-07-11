@@ -1,5 +1,5 @@
 import UserService, { UserAttributes } from '#services/user_service';
-import { createUserValidator } from '#validators/user_validator';
+import { createUserValidator, updateUserValidator } from '#validators/user_validator';
 import { inject } from '@adonisjs/core';
 import type { HttpContext } from '@adonisjs/core/http';
 
@@ -18,8 +18,8 @@ export default class UsersController {
    * Handle form submission for the create action
    */
   async store({ request, response }: HttpContext) {
-    const attributes: UserAttributes = await request.validateUsing(createUserValidator);
-    return response.created(await this.$service.store(attributes));
+    const attributes: Partial<UserAttributes> = await request.validateUsing(createUserValidator);
+    return response.created(await this.$service.store(attributes as UserAttributes));
   }
 
   /**
@@ -32,7 +32,12 @@ export default class UsersController {
   /**
    * Handle form submission for the edit action
    */
-  // async update({ params, request }: HttpContext) {}
+  async update({ params, request, response }: HttpContext) {
+    const attributes: Partial<UserAttributes> = await request.validateUsing(
+      updateUserValidator(params.id)
+    );
+    return response.ok(await this.$service.update(params.id, attributes as UserAttributes));
+  }
 
   /**
    * Delete record

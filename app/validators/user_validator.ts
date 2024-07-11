@@ -45,7 +45,9 @@ export const userValidator = (id?: number) =>
 
       return !matched;
     }),
-    password: vine.string().minLength(8),
+    password: isNil(id) ? vine.string().minLength(8) : vine.string().minLength(8).optional(),
   });
 
 export const createUserValidator = vine.compile(userValidator());
+
+export const updateUserValidator = (id: number) => vine.compile(userValidator(id).clone());
