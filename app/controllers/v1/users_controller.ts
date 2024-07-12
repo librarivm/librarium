@@ -1,3 +1,4 @@
+import User from '#models/user';
 import UserService, { UserAttributes } from '#services/user_service';
 import { createUserValidator, updateUserValidator } from '#validators/user_validator';
 import { inject } from '@adonisjs/core';
@@ -37,6 +38,17 @@ export default class UsersController {
       updateUserValidator(params.id)
     );
     return response.ok(await this.$service.update(params.id, attributes as UserAttributes));
+  }
+
+  /**
+   * Soft delete record
+   */
+  async archive({ params, response }: HttpContext) {
+    const user: User = await this.$service.findOrFail(params.id);
+
+    await this.$service.archive(user);
+
+    return response.noContent();
   }
 
   /**

@@ -54,8 +54,16 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null;
 
+  @column.dateTime()
+  declare deletedAt: DateTime | null;
+
   @manyToMany(() => Role)
   declare roles: ManyToMany<typeof Role>;
+
+  @beforeFind()
+  static withoutSoftDeletes(query: ModelQueryBuilderContract<typeof User>): void {
+    query.whereNull('deleted_at');
+  }
 
   @beforeFetch()
   @beforeFind()
