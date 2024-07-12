@@ -1,0 +1,19 @@
+meta {
+  name: users.show
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{site_url}}/api/v1/users/{{user_id}}?with=roles
+  body: none
+  auth: inherit
+}
+
+params:query {
+  with: roles
+}
+
+vars:pre-request {
+  user_id: 1
+}

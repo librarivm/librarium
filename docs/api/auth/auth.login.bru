@@ -1,0 +1,28 @@
+meta {
+  name: auth.login
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{site_url}}/api/v1/auth/login
+  body: formUrlEncoded
+  auth: none
+}
+
+body:json {
+  {
+    "email": "john.dionisio1@gmail.com",
+    "password": "Admin@1000"
+  }
+}
+
+body:form-urlencoded {
+  email: test@gmail.com
+  password: password
+}
+
+vars:post-response {
+  access_token: res.body?.token?.token
+  user: res.body.user
+}

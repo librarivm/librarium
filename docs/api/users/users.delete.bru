@@ -1,0 +1,11 @@
+meta {
+  name: users.delete
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{site_url}}/api/v1/users/{{user_id}}
+  body: none
+  auth: none
+}

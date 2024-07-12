@@ -1,0 +1,19 @@
+meta {
+  name: users.store
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{site_url}}/api/v1/users
+  body: formUrlEncoded
+  auth: inherit
+}
+
+body:form-urlencoded {
+  first_name: Johnny
+  last_name: Test
+  email: johnny.test.dev+11@gmail.com
+  password: Admin@1000
+  username: johnny.test.11
+}

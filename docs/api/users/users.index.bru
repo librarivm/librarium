@@ -1,0 +1,16 @@
+meta {
+  name: users.index
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{site_url}}/api/v1/users?per_page=5
+  body: none
+  auth: inherit
+}
+
+params:query {
+  per_page: 5
+  ~with: roles
+}

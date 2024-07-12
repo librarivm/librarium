@@ -1,0 +1,16 @@
+meta {
+  name: roles.index
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{site_url}}/api/v1/roles?per_page=50
+  body: none
+  auth: inherit
+}
+
+params:query {
+  per_page: 50
+  ~with: roles
+}

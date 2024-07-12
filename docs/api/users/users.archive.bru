@@ -1,0 +1,15 @@
+meta {
+  name: users.archive
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{site_url}}/api/v1/users/{{user_id}}/archive
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  user_id: 20
+}
