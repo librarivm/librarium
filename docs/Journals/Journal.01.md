@@ -125,10 +125,15 @@
 - Added `users.destroy` endpoint and its functional tests
 - Added user policy and its functional tests
 - Updated `createAuthenticatedUser` parameter to require Permissions
+- Create service method to convert snake_case to camelCase.
 
 **TO DO**:
 
 - Create README.md
+  - Center logo
+  - add section for Bruno
+- Add docs/api (bruno)
+- Add default user role on registration
 - Setup initial `librarivm/ui` repository.
   - Decided to have the front-end to a separate repository.
   - They'd just be deployed and set up from one installer.
@@ -136,5 +141,14 @@
 - Add media endpoints
 - Add media policies
 - Add plugins support?
-
 - Caching system
+
+Resources:
+
+- resource migration
+- resource factory
+- resource seeder
+- resource service
+- resource model
+- resource routes
+- resource policy

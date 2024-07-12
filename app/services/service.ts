@@ -1,8 +1,11 @@
 import { inject } from '@adonisjs/core';
 import { HttpContext, Request } from '@adonisjs/core/http';
 import { BaseModel, ModelQueryBuilder } from '@adonisjs/lucid/orm';
+import camelCase from 'lodash/camelCase.js';
 import isNil from 'lodash/isNil.js';
+import isPlainObject from 'lodash/isPlainObject.js';
 import isString from 'lodash/isString.js';
+import reduce from 'lodash/reduce.js';
 
 export type HttpQueriesOrderBy = [column: string, order: 'asc' | 'desc'];
 
@@ -174,7 +177,33 @@ export abstract class Service {
     });
   }
 
+  /**
+   * Checks if the provided preload string is valid.
+   *
+   * This method takes a preload string and checks whether it is included in the
+   * list of preloads. It returns true if the preload string is found in the list,
+   * indicating it is a valid preload. Otherwise, it returns false.
+   *
+   * @param {string} preload - The preload string to be validated.
+   * @returns {boolean} - Returns true if the preload string is valid, otherwise false.
+   */
   isValidPreload(preload: string): boolean {
     return this.preloads.includes(preload);
+  }
+
+  toCamelCaseKeys(attributes: string | { [key: string]: any }): string | { [key: string]: any } {
+    if (isPlainObject(attributes)) {
+      return reduce(
+        attributes as unknown as string[],
+        (result: { [key: string]: any }, value: string, key: string | number) => {
+          const camelKey: string = camelCase(key.toString());
+          result[camelKey] = this.toCamelCaseKeys(value);
+          return result;
+        },
+        {}
+      );
+    }
+
+    return attributes;
   }
 }

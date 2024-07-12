@@ -4,6 +4,7 @@ import SandboxModel from '#tests/mocks/models/sandbox_model';
 import { ModelQueryBuilder } from '@adonisjs/lucid/orm';
 import { faker } from '@faker-js/faker';
 import { test } from '@japa/runner';
+import camelCase from 'lodash/camelCase.js';
 import { SinonStub } from 'sinon';
 
 class TestService extends Service {
@@ -178,5 +179,20 @@ test.group('Services', (group) => {
     assert.isTrue(model.query().if.calledOnce);
     assert.isTrue(hasWithPreloadStub.calledOnce);
     assert.equal(query, ModelQueryBuilder);
+  });
+
+  test('it should accept and return the query builder when invoking withPreload', async ({
+    assert,
+  }) => {
+    // Arrangements
+    const text: string = `${faker.lorem.word()}_${faker.lorem.word()}`;
+    const seed: { [p: string]: string } = { [text]: text };
+    const expected: { [p: string]: string } = { [camelCase(text)]: text };
+
+    // Actions
+    const actual: string | { [p: string]: string } = $service.toCamelCaseKeys(seed);
+
+    // Assertions
+    assert.deepEqual(actual, expected);
   });
 });
