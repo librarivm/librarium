@@ -9,7 +9,7 @@ import { DateTime } from 'luxon';
 export type LibraryAttributes = {
   name: string;
   slug?: string;
-  description?: string;
+  description?: string | null;
   metadata?: JSON | { [key: string]: any } | string | null;
   isPrivate: boolean;
   userId: number;

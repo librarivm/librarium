@@ -15,8 +15,8 @@ import path from 'node:path';
 export type RoleAttributes = {
   name: string;
   slug?: string;
-  description?: string;
-  permissions?: number[] | any[] | '*';
+  description?: string | null;
+  permissions?: number[] | any[] | '*' | null;
   users?: number[] | any[];
 };
 

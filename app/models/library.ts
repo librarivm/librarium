@@ -33,7 +33,7 @@ export default class Library extends BaseModel {
   declare slug: string;
 
   @column()
-  declare description: string | undefined;
+  declare description?: string | null;
 
   @column()
   declare isPrivate: boolean;

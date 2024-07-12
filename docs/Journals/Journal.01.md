@@ -135,8 +135,8 @@
 - Archived options in `resource.index`
   - allow for:
     ```ts
-    route('resource.index', { with_archived: true })
-    route('resource.index', { only_archived: true })
+    route('resource.index', { with_archived: true });
+    route('resource.index', { only_archived: true });
     ```
 - Create README.md
   - Center logo

@@ -1,7 +1,7 @@
 import { UserFactory } from '#database/factories/user_factory';
 import User from '#models/user';
 import { Service } from '#services/service';
-import UserService, { CredentialsAttributes, UserAuthAttributes } from '#services/user_service';
+import UserService, { CredentialsAttributes } from '#services/user_service';
 import SandboxModel from '#tests/mocks/models/sandbox_model';
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens';
 import { faker } from '@faker-js/faker';
@@ -34,8 +34,8 @@ test.group('Services / UserService', (group) => {
   // Authentication
   test('it should register a new user successfully', async ({ assert }) => {
     // Arrangements
-    const attributes: UserAuthAttributes = {
-      email: faker.internet.email(),
+    const attributes = {
+      email: faker.internet.email().toLowerCase(),
       password: 'password',
     };
     const item: User = await UserFactory.merge(attributes).make();
@@ -46,10 +46,8 @@ test.group('Services / UserService', (group) => {
       id: userId,
     };
 
-    const stub: SinonStub<any, any> = $sandbox
-      .stub(User, 'create')
-      .withArgs(attributes)
-      .resolves(user);
+    const merged = { ...attributes, username: attributes.email };
+    const stub: SinonStub<any, any> = $sandbox.stub(User, 'create').withArgs(merged).resolves(user);
 
     // Actions
     const registered: User = await $service.register(attributes);
@@ -58,7 +56,7 @@ test.group('Services / UserService', (group) => {
     assert.equal(registered.email, attributes.email);
     assert.equal(registered.username, attributes.email);
     assert.exists(registered.id, 'User ID must be set in the stub');
-    assert.isTrue(stub.calledOnceWithExactly(attributes));
+    assert.isTrue(stub.calledOnceWithExactly(merged));
   });
 
   test('it should verify the credentials of an existing user', async ({ assert }) => {

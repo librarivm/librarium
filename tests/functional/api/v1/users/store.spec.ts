@@ -60,7 +60,10 @@ test.group(`v1.${API_URL_NAME}`, (group) => {
     response.assertStatus(201);
 
     const user: User = await User.findByOrFail('email', item.email);
-    assert.isTrue(await hash.verify(user.password, 'password'), 'Password is not hashed correctly');
+    assert.isTrue(
+      await hash.verify(user.password as string, 'password'),
+      'Password is not hashed correctly'
+    );
   });
 
   test('it should store a user with normalized email successfully', async ({

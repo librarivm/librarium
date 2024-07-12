@@ -24,7 +24,7 @@ export default class Role extends BaseModel {
   declare slug: string;
 
   @column()
-  declare description: string | undefined;
+  declare description?: string | null;
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime;

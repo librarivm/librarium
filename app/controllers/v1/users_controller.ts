@@ -27,7 +27,7 @@ export default class UsersController {
       return response.forbidden();
     }
 
-    const attributes: Partial<UserAttributes> = await request.validateUsing(createUserValidator);
+    const attributes: UserAttributes = await request.validateUsing(createUserValidator);
     return response.created(await this.$service.store(attributes as UserAttributes));
   }
 
@@ -50,9 +50,7 @@ export default class UsersController {
       return response.forbidden();
     }
 
-    const attributes: Partial<UserAttributes> = await request.validateUsing(
-      updateUserValidator(params.id)
-    );
+    const attributes: UserAttributes = await request.validateUsing(updateUserValidator(params.id));
     return response.ok(await this.$service.update(params.id, attributes as UserAttributes));
   }
 

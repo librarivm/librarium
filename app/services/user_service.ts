@@ -9,17 +9,18 @@ import { DateTime } from 'luxon';
 export type UserAuthAttributes = {
   email: string;
   password: string;
-  firstName?: string;
-  middleName?: string;
-  lastName?: string;
-  username?: string;
+  firstName?: string | null;
+  middleName?: string | null;
+  lastName?: string | null;
+  username?: string | null;
 };
 
 export type CredentialsAttributes =
   | { email: string; password: string; username?: never }
   | { username: string; password: string; email?: never };
 
-export type UserAttributes = UserAuthAttributes & {
+export type UserAttributes = Omit<UserAuthAttributes, 'password'> & {
+  password?: string;
   [key: string]: any;
 };
 
@@ -149,7 +150,7 @@ export default class UserService extends Service {
    * @returns {Promise<User>} The newly created user
    */
   async register(attributes: UserAuthAttributes): Promise<User> {
-    attributes = this.toCamelCaseKeys(attributes) as UserAttributes;
+    attributes = this.toCamelCaseKeys(attributes) as UserAuthAttributes;
     return await this.model.create(this.mergeAttributes(attributes));
   }
 
@@ -182,9 +183,9 @@ export default class UserService extends Service {
   /**
    * Merges the provided attributes with default values
    * @param {UserAuthAttributes} attributes - The attributes to merge
-   * @returns {UserAuthAttributes} The merged attributes
+   * @returns {UserAuthAttributes | UserAttributes} The merged attributes
    */
-  private mergeAttributes(attributes: UserAuthAttributes): UserAuthAttributes {
+  private mergeAttributes(attributes: UserAuthAttributes): UserAuthAttributes | UserAttributes {
     if (!attributes.hasOwnProperty('username')) {
       attributes = Object.assign(attributes, { username: attributes.email });
     }
