@@ -81,6 +81,7 @@ export default class UserService extends Service {
    */
   async save(model: User, attributes: UserAttributes): Promise<User> {
     let user: User = model;
+    attributes = this.toCamelCaseKeys(attributes) as UserAttributes;
 
     user.firstName = attributes.firstName;
     user.middleName = attributes.middleName;
@@ -148,6 +149,7 @@ export default class UserService extends Service {
    * @returns {Promise<User>} The newly created user
    */
   async register(attributes: UserAuthAttributes): Promise<User> {
+    attributes = this.toCamelCaseKeys(attributes) as UserAttributes;
     return await this.model.create(this.mergeAttributes(attributes));
   }
 
