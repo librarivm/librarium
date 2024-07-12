@@ -23,8 +23,8 @@ const libraryValidator = (id?: number) =>
 
       return !matched;
     }),
-    description: vine.string().escape().optional(),
-    metadata: vine.string().optional(),
+    description: vine.string().escape().optional().nullable(),
+    metadata: vine.string().optional().nullable(),
     isPrivate: vine.boolean(),
     userId: vine.number(),
     typeId: vine.number(),

@@ -10,7 +10,7 @@ export const registerValidator = vine.compile(
     email: vine
       .string()
       .email()
-      .normalizeEmail({ gmail_remove_dots: false })
+      .normalizeEmail({ gmail_remove_dots: false, gmail_remove_subaddress: false })
       .unique(async (db: Database, value: string): Promise<boolean> => {
         const matched = await db.from('users').select('id').where('email', value).first();
         return !matched;
@@ -21,7 +21,10 @@ export const registerValidator = vine.compile(
 
 export const loginValidator = vine.compile(
   vine.object({
-    email: vine.string().email().normalizeEmail({ gmail_remove_dots: false }),
+    email: vine
+      .string()
+      .email()
+      .normalizeEmail({ gmail_remove_dots: false, gmail_remove_subaddress: false }),
     password: passwordSchema.getProperties().password,
   })
 );

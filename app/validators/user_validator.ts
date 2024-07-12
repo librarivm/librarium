@@ -2,15 +2,20 @@ import { Database } from '@adonisjs/lucid/database';
 import vine from '@vinejs/vine';
 import isNil from 'lodash/isNil.js';
 
+vine.convertEmptyStringsToNull = false;
+
 export const userValidator = (id?: number) =>
   vine.object({
-    firstName: vine.string().optional(),
-    middleName: vine.string().optional(),
-    lastName: vine.string().optional(),
+    first_name: vine.string().optional().nullable(),
+    middle_name: vine.string().optional().nullable(),
+    last_name: vine.string().optional().nullable(),
+    firstName: vine.string().optional().nullable(),
+    middleName: vine.string().optional().nullable(),
+    lastName: vine.string().optional().nullable(),
     email: vine
       .string()
       .email()
-      .normalizeEmail({ gmail_remove_dots: false })
+      .normalizeEmail({ gmail_remove_dots: false, gmail_remove_subaddress: false })
       .unique(async (db: Database, value: string): Promise<boolean> => {
         const matched = await db
           .from('users')

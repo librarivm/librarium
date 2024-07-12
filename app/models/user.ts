@@ -31,13 +31,13 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare id: number;
 
   @column()
-  declare firstName: string | undefined;
+  declare firstName?: string | null;
 
   @column()
-  declare middleName: string | undefined;
+  declare middleName?: string | null;
 
   @column()
-  declare lastName: string | undefined;
+  declare lastName?: string | null;
 
   @column()
   declare email: string;

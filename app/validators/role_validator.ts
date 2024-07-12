@@ -23,7 +23,7 @@ const roleValidator = (id?: number) =>
 
       return !matched;
     }),
-    description: vine.string().escape().optional(),
+    description: vine.string().escape().optional().nullable(),
     users: vine.array(vine.number()).optional(),
     permissions: vine.array(vine.number()).notEmpty(),
   });
