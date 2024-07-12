@@ -118,14 +118,15 @@
 
 ## Jul 12, 2024
 
-- Added `users.update` endpoint and its functional tests
-
 **DONE**:
+
+- Added `users.update` endpoint and its functional tests
+- Added `users.archive` endpoint and its functional tests
+- Added `users.destroy` endpoint and its functional tests
+- Added user policy and its functional tests
 
 **TO DO**:
 
-- Add user routes
-- Add user policies
 - Create README.md
 - Setup initial `librarivm/ui` repository.
   - Decided to have the front-end to a separate repository.
@@ -134,4 +135,5 @@
 - Add media endpoints
 - Add media policies
 - Add plugins support?
+
 - Caching system
