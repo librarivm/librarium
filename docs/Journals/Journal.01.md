@@ -124,6 +124,7 @@
 - Added `users.archive` endpoint and its functional tests
 - Added `users.destroy` endpoint and its functional tests
 - Added user policy and its functional tests
+- Updated `createAuthenticatedUser` parameter to require Permissions
 
 **TO DO**:
 

@@ -20,7 +20,7 @@ test.group('Policies / RolePolicy', (group) => {
 
   group.each.setup(async () => {
     await resetForAuthenticatedUser();
-    $user = await createAuthenticatedUser();
+    $user = await createAuthenticatedUser([RolePermission]);
     $unauthorized = await createUnauthenticatedUser();
   });
 

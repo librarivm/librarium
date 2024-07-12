@@ -20,7 +20,7 @@ test.group('Policies / LibraryPolicy', (group) => {
 
   group.setup(async () => {
     await resetForAuthenticatedUser();
-    $user = await createAuthenticatedUser();
+    $user = await createAuthenticatedUser([LibraryPermission]);
     $unauthorized = await createUnauthenticatedUser();
   });
 
