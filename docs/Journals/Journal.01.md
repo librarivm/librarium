@@ -126,9 +126,18 @@
 - Added user policy and its functional tests
 - Updated `createAuthenticatedUser` parameter to require Permissions
 - Create service method to convert snake_case to camelCase.
+- Fixed issue: empty middleName is not being saved by setting validator to `nullable`
 
 **TO DO**:
 
+- Add `permissions.list`
+- Restore function `resource.restore`
+- Archived options in `resource.index`
+  - allow for:
+    ```ts
+    route('resource.index', { with_archived: true })
+    route('resource.index', { only_archived: true })
+    ```
 - Create README.md
   - Center logo
   - add section for Bruno
