@@ -20,8 +20,10 @@ export default class LoginController {
       return response.ok({ user, token });
     } catch (error: any | unknown) {
       if (error?.code === 'E_INVALID_CREDENTIALS') {
-        throw new InvalidCredentialsException();
+        const err: InvalidCredentialsException = new InvalidCredentialsException();
+        response.abort({ errors: [{ message: err.message }] }, err.status);
       }
+
       throw error;
     }
   }
