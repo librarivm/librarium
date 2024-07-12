@@ -54,5 +54,9 @@ export default class UsersController {
   /**
    * Delete record
    */
-  // async destroy({ params }: HttpContext) {}
+  async destroy({ params, response }: HttpContext) {
+    await this.$service.delete(params.id);
+
+    return response.noContent();
+  }
 }

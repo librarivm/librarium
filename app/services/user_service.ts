@@ -132,6 +132,17 @@ export default class UserService extends Service {
   }
 
   /**
+   * Permanently delete a resource by ID.
+   *
+   * @param {number} id - The ID of the resource.
+   * @returns {Promise<void>}
+   */
+  async delete(id: number): Promise<void> {
+    const user: User = await this.model.findOrFail(id);
+    await user.delete();
+  }
+
+  /**
    * Registers a new user with the provided attributes
    * @param {UserAuthAttributes} attributes - The attributes for the new user
    * @returns {Promise<User>} The newly created user
