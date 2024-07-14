@@ -7,12 +7,7 @@ import { test } from '@japa/runner';
 import camelCase from 'lodash/camelCase.js';
 import { SinonStub } from 'sinon';
 
-class TestService extends Service {
-  // @ts-ignore
-  async save(model: any, attributes: any) {
-    return Promise.resolve({ model, attributes });
-  }
-}
+class TestService extends Service {}
 
 test.group('Services', (group) => {
   let $service: TestService;
