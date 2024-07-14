@@ -130,6 +130,7 @@
 
 **TO DO**:
 
+- Add collection class to transform data and generate links
 - Add `permissions.list`
 - Restore function `resource.restore`
 - Archived options in `resource.index`
@@ -151,6 +152,7 @@
 - Add media policies
 - Add plugins support?
 - Caching system
+- Queued jobs
 
 Resources:
 

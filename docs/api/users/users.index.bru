@@ -5,12 +5,15 @@ meta {
 }
 
 get {
-  url: {{site_url}}/api/v1/users?per_page=5
+  url: {{site_url}}/api/v1/users?per_page=3&page=1
   body: none
   auth: inherit
 }
 
 params:query {
-  per_page: 5
+  per_page: 3
+  page: 1
   ~with: roles
+  ~with_archived: false
+  ~only_archived: false
 }

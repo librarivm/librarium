@@ -9,6 +9,9 @@ export default class Test extends BaseModel {
   declare name: string;
 
   @column()
+  declare code: string;
+
+  @column()
   declare description: string;
 
   @column.dateTime({ autoCreate: true })

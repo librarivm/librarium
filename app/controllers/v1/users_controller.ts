@@ -3,6 +3,7 @@ import UserService, { UserAttributes } from '#services/user_service';
 import { createUserValidator, updateUserValidator } from '#validators/user_validator';
 import { inject } from '@adonisjs/core';
 import type { HttpContext } from '@adonisjs/core/http';
+import UserResource from '#collections/user_resource';
 
 @inject()
 export default class UsersController {
@@ -16,11 +17,11 @@ export default class UsersController {
       return response.notFound();
     }
 
-    return response.ok(await this.$service.list());
+    return response.ok(UserResource.collection(await this.$service.list()));
   }
 
   /**
-   * Handle form submission for the create action
+   * Handle form submission for the 'create' action
    */
   async store({ bouncer, request, response }: HttpContext) {
     if (await bouncer.with(UserPolicy).denies('create')) {
