@@ -7,4 +7,5 @@ export const LibraryPermission: PermissionConstants = {
   DELETE: 'libraries.delete',
   LIST: 'libraries.list',
   ARCHIVE: 'libraries.archive',
+  RESTORE: 'libraries.restore',
 } as const;

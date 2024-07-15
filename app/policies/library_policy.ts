@@ -66,6 +66,20 @@ export default class LibraryPolicy extends BasePolicy {
   }
 
   /**
+   * Checks if the user is permitted to restore a resource.
+   * @param {User} user - The user to check permissions for.
+   * @param {Library} library - The library to check if user owned.
+   * @returns {AuthorizerResponse} - The response indicating if the user is permitted.
+   */
+  restore(user: User, library: Library): AuthorizerResponse {
+    if (user.isSuperAdmin()) {
+      return true;
+    }
+
+    return user.owns(library) && user.isPermittedTo(LibraryPermission.RESTORE as string);
+  }
+
+  /**
    * Checks if the user is permitted to delete a resource.
    * @param {User} user - The user to check permissions for.
    * @param {Library} library - The library to check if user owned.

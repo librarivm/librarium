@@ -117,6 +117,20 @@ export default class LibraryService extends Service {
   }
 
   /**
+   * Restore a resource by updating the deleted_at column to null.
+   *
+   * @param {number | Library} model - The model or ID of the resource.
+   * @returns {Promise<void>}
+   */
+  async restore(model: number | Library): Promise<void> {
+    const library: Library = model instanceof Library ? model : await this.model.findOrFail(model);
+
+    library.deletedAt = null;
+
+    await library.save();
+  }
+
+  /**
    * Permanently delete a resource by ID.
    *
    * @param {number | Library} model - The model or ID of the resource.

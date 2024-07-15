@@ -78,6 +78,21 @@ export default class LibrariesController {
   }
 
   /**
+   * Restore record
+   */
+  async restore({ bouncer, params, response }: HttpContext) {
+    const library: Library = await this.$service.findOrFail(params.id);
+
+    if (await bouncer.with(LibraryPolicy).denies('restore', library)) {
+      return response.forbidden();
+    }
+
+    await this.$service.restore(library);
+
+    return response.noContent();
+  }
+
+  /**
    * Delete record
    */
   async destroy({ bouncer, params, response }: HttpContext) {

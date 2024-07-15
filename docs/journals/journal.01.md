@@ -138,11 +138,10 @@
 - Renamed collection to resource
 - Add `users.restore` and its functional and policy tests
 - Add `roles.restore` and its functional and policy tests
+- Add `libraries.restore` and its functional and policy tests
 
 ## TO DO
 
-- Restore function `resource.restore`
-  - libraries
 - Archived options in `resource.index`
   - allow for:
     ```ts
