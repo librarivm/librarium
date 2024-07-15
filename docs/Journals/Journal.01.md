@@ -135,8 +135,9 @@
 - Add collection class to transform data and generate links
 - Add `permissions.all`
 - Add policy `permissions.all`
+- Renamed collection to resource
 
-**TO DO**:
+## TO DO
 
 - Restore function `resource.restore`
 - Archived options in `resource.index`

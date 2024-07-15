@@ -1,4 +1,4 @@
-import Resource, { AllowedKeys } from '#collections/resource';
+import Resource, { AllowedKeys, CollectionMetadata } from '#resources/resource';
 import { PermissionAttributes } from '#services/permission_service';
 
 export default class PermissionResource extends Resource<PermissionAttributes> {
@@ -13,9 +13,9 @@ export default class PermissionResource extends Resource<PermissionAttributes> {
     return 'permissions';
   }
 
-  meta(options: { items: any[] }): { [key: string]: any } {
+  meta(_query?: Partial<CollectionMetadata>, items?: any[]): CollectionMetadata {
     return {
-      total: options.items.length,
+      total: items?.length ?? 0,
     };
   }
 

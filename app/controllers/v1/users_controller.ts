@@ -1,9 +1,9 @@
 import UserPolicy from '#policies/user_policy';
+import UserResource from '#resources/user_resource';
 import UserService, { UserAttributes } from '#services/user_service';
+import type { HttpContext } from '@adonisjs/core/http';
 import { createUserValidator, updateUserValidator } from '#validators/user_validator';
 import { inject } from '@adonisjs/core';
-import type { HttpContext } from '@adonisjs/core/http';
-import UserResource from '#collections/user_resource';
 
 @inject()
 export default class UsersController {

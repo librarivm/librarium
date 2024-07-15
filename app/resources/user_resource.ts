@@ -1,4 +1,4 @@
-import Resource from '#collections/resource';
+import Resource from '#resources/resource';
 import { UserAttributes } from '#services/user_service';
 
 export default class UserResource extends Resource<UserAttributes> {

@@ -2,7 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http';
 import PermissionService from '#services/permission_service';
 import Permission from '#models/permission';
 import { inject } from '@adonisjs/core';
-import PermissionResource from '#collections/permission_resource';
+import PermissionResource from '#resources/permission_resource';
 import PermissionPolicy from '#policies/permission_policy';
 
 @inject()

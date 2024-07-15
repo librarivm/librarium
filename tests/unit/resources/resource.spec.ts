@@ -1,9 +1,16 @@
-import Resource, { CollectionItem, CollectionLink, CollectionLinks } from '#collections/resource';
-import kebabCase from 'lodash/kebabCase.js';
-import sample from 'lodash/sample.js';
 import { test } from '@japa/runner';
+import Resource, {
+  AllowedKeys,
+  CollectionMetadata,
+  ResourceCollection,
+  ResourceItem,
+  ResourceLink,
+  ResourceLinks,
+} from '#resources/resource';
 import Test from '#tests/mocks/models/mock_model';
+import kebabCase from 'lodash/kebabCase.js';
 import { TestFactory } from '#tests/mocks/factories/test_factory';
+import sample from 'lodash/sample.js';
 
 type TestAttributes = {
   id?: string | number;
@@ -15,94 +22,130 @@ type TestAttributes = {
 
 class TestResource extends Resource<TestAttributes> {
   prepare(item: Test): TestAttributes {
-    return { ...item, slug: kebabCase(item.code) };
+    return {
+      name: item.name,
+      code: item.code,
+      description: item.description,
+      slug: kebabCase(item.code),
+    };
   }
 
   type(): string {
     return 'tests';
   }
+
+  getRelatedLinks(): AllowedKeys[] {
+    return ['self'];
+  }
 }
 
 test.group('Collections / Resource', (group) => {
-  let $items: TestAttributes[];
-  let $collection: TestResource;
+  let $items: Test[];
+  let $item: Test;
   let $collectionLength: number = 10;
 
   group.setup(async () => {
-    $items = await TestFactory.makeMany(10);
-    $collection = new TestResource($items);
+    $items = await TestFactory.makeMany($collectionLength);
+    $item = sample($items) as Test;
   });
 
-  test('it should accept an array of resources upon instantiation', async ({ assert }) => {
+  test('it should accept and get a resource model upon instantiation', async ({ assert }) => {
+    // Arrangements
+    const collection: TestResource = new TestResource($item);
+
     // Actions
-    const collection: TestResource = new TestResource($items);
-    const items: TestAttributes[] = collection.items();
+    const actual: TestAttributes = collection.get();
 
     // Assertions
-    assert.isArray(items);
-    assert.lengthOf(items, $collectionLength);
+    assert.isObject(actual);
+    assert.isTrue('name' in actual);
+    assert.isTrue('links' in actual);
+  });
+
+  test('it should return the prepared items with links via `get` method', async ({ assert }) => {
+    // Arrangements
+    const collection: TestResource = new TestResource($item);
+
+    // Actions
+    const actual: ResourceItem<TestAttributes> = collection.get();
+
+    // Assertions
+    assert.isObject(actual);
+    assert.isTrue(actual.hasOwnProperty('name'));
+    assert.isTrue(actual.hasOwnProperty('code'));
+    assert.isTrue(actual.hasOwnProperty('slug'));
+    assert.isTrue(actual.hasOwnProperty('description'));
+    assert.isTrue(actual.hasOwnProperty('links'));
+    assert.isTrue(actual.links?.hasOwnProperty('self'));
+    assert.isFalse(actual.links?.hasOwnProperty('archive'));
   });
 
   test('it should return the transformed item when invoking prepare', async ({ assert }) => {
     // Arrangements
+    const collection: TestResource = new TestResource($item);
     const expected: Test = sample($items) as Test;
 
     // Actions
-    const actual: TestAttributes = $collection.prepare(expected);
+    const actual: TestAttributes = collection.prepare(expected);
 
     // Assertions
     assert.equal(actual.code, expected.code);
     assert.equal(actual.slug, kebabCase(expected.code));
   });
 
-  test('it should generate links for each item', async ({ assert }) => {
+  test('it should generate links for the item', async ({ assert }) => {
     // Arrangements
-    const item: Test = sample($items) as Test;
-    const collection: TestResource = new TestResource($items);
+    const collection: TestResource = new TestResource($item);
 
     // Actions
-    const links: CollectionLinks = collection.links(item);
+    const links: ResourceLinks = collection.links($item);
 
     // Assertions
     assert.isObject(links);
-    Object.values(links).forEach((link?: CollectionLink) => {
-      assert.isTrue(link?.hasOwnProperty('rel'));
-      assert.isTrue(link?.hasOwnProperty('method'));
-      assert.isTrue(link?.hasOwnProperty('href'));
-      assert.isTrue(link?.hasOwnProperty('type'));
-      assert.isTrue(link?.hasOwnProperty('id'));
+    Object.values(links).forEach((link?: ResourceLink) => {
+      assert.property(link, 'rel');
+      assert.property(link, 'method');
+      assert.property(link, 'href');
+      assert.property(link, 'type');
+      assert.property(link, 'id');
     });
   });
 
-  test('it should return the prepared items with links via `get` method', async ({ assert }) => {
+  test('it should retrieved the modified meta object via `meta` method', async ({ assert }) => {
+    // Arrangements
+    const collection: TestResource = new TestResource($item);
+
     // Actions
-    const data: TestAttributes[] = $collection.get();
+    const meta: CollectionMetadata = collection.meta();
 
     // Assertions
-    assert.isArray(data);
-    data.forEach((item: TestAttributes) => {
-      assert.isTrue(item.hasOwnProperty('name'));
-      assert.isTrue(item.hasOwnProperty('code'));
-      assert.isTrue(item.hasOwnProperty('slug'));
-      assert.isTrue(item.hasOwnProperty('description'));
-      assert.isTrue(item.hasOwnProperty('links'));
-    });
+    assert.isObject(meta);
+    assert.property(meta, 'total');
+    assert.property(meta, 'perPage');
+    assert.property(meta, 'perPage');
+    assert.property(meta, 'currentPage');
+    assert.property(meta, 'lastPage');
+    assert.property(meta, 'firstPage');
+    assert.property(meta, 'firstPageUrl');
+    assert.property(meta, 'lastPageUrl');
+    assert.property(meta, 'nextPageUrl');
+    assert.property(meta, 'previousPageUrl');
   });
 
   test('it should return the prepared items with links via static `collection` method', async ({
     assert,
   }) => {
     // Actions
-    const collection = TestResource.collection($items);
+    const collection: ResourceCollection<TestAttributes> = TestResource.collection($items);
 
     // Assertions
     assert.isArray(collection.data);
-    collection.data.forEach((item: CollectionItem) => {
-      assert.isTrue(item.hasOwnProperty('links'));
-      assert.isTrue(item.hasOwnProperty('name'));
-      assert.isTrue(item.hasOwnProperty('code'));
-      assert.isTrue(item.hasOwnProperty('slug'));
-      assert.isTrue(item.hasOwnProperty('description'));
+    collection.data.forEach((item: ResourceItem<TestAttributes>) => {
+      assert.property(item, 'links');
+      assert.property(item, 'name');
+      assert.property(item, 'code');
+      assert.property(item, 'slug');
+      assert.property(item, 'description');
     });
   });
 });
