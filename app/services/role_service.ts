@@ -125,6 +125,20 @@ export default class RoleService extends Service {
   }
 
   /**
+   * Restore a resource by updating the deleted_at column to null.
+   *
+   * @param {number | Role} model - The model or ID of the resource.
+   * @returns {Promise<void>}
+   */
+  async restore(model: number | Role): Promise<void> {
+    const role: Role = model instanceof Role ? model : await this.model.findOrFail(model);
+
+    role.deletedAt = null;
+
+    await role.save();
+  }
+
+  /**
    * Permanently delete a resource by ID.
    *
    * @param {number} id - The ID of the resource.

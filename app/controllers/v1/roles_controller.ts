@@ -68,6 +68,19 @@ export default class RolesController {
   }
 
   /**
+   * Restore record
+   */
+  async restore({ bouncer, params, response }: HttpContext) {
+    if (await bouncer.with(RolePolicy).denies('restore')) {
+      return response.forbidden();
+    }
+
+    await this.$service.restore(params.id);
+
+    return response.noContent();
+  }
+
+  /**
    * Delete record
    */
   async destroy({ bouncer, params, response }: HttpContext) {

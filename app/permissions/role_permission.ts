@@ -7,4 +7,5 @@ export const RolePermission: PermissionConstants = {
   DELETE: 'roles.delete',
   LIST: 'roles.list',
   ARCHIVE: 'roles.archive',
+  RESTORE: 'roles.restore',
 } as const;

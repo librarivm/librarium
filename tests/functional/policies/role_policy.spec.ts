@@ -135,6 +135,27 @@ test.group('Policies / RolePolicy', (group) => {
     authorized.assertStatus(204);
   });
 
+  test(`it should allow to restore for users with "${RolePermission.RESTORE}" permission`, async ({
+    client,
+    route,
+  }) => {
+    // Arrangements
+    const role: Role = await RoleFactory.create();
+
+    // Actions
+    const unauthorized: ApiResponse = await client
+      .patch(route('roles.restore', { id: role.id }))
+      .loginAs($unauthorized);
+
+    const authorized: ApiResponse = await client
+      .patch(route('roles.restore', { id: role.id }))
+      .loginAs($user);
+
+    // Assertions
+    unauthorized.assertStatus(403);
+    authorized.assertStatus(204);
+  });
+
   test(`it should allow to delete for users with "${RolePermission.DELETE}" permission`, async ({
     client,
     route,
