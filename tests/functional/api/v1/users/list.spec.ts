@@ -21,6 +21,7 @@ test.group(`v1.${API_URL_NAME}`, (group) => {
   group.setup(async () => {
     await User.truncate();
     await resetForAuthenticatedUser();
+    $users = [];
     $users = await UserFactory.createMany(10);
     $user = await createSuperadminUser();
     $users = $users.concat([$user]);
@@ -101,8 +102,10 @@ test.group(`v1.${API_URL_NAME}`, (group) => {
 
   test('it should return a list of only archived users', async ({ client, route, assert }) => {
     // Arrangements
-    const queries: HttpQueries = { per_page: 10, page: 1, only_archived: true };
-    Object.values(sampleSize($users, 5)).forEach((user: User) => {
+    const items: User[] = await UserFactory.createMany(10);
+    $users = $users.concat(items);
+    const queries: HttpQueries = { per_page: $users.length, page: 1, only_archived: true };
+    Object.values(sampleSize(items, 5)).forEach((user: User) => {
       user.deletedAt = DateTime.local();
       user.save();
     });
@@ -121,8 +124,10 @@ test.group(`v1.${API_URL_NAME}`, (group) => {
 
   test('it should return a list of users and archived ones', async ({ client, route, assert }) => {
     // Arrangements
-    const queries: HttpQueries = { per_page: 10, page: 1, with_archived: true };
-    Object.values(sampleSize($users, 5)).forEach((user: User) => {
+    const items: User[] = await UserFactory.createMany(10);
+    $users = $users.concat(items);
+    const queries: HttpQueries = { per_page: $users.length, page: 1, with_archived: true };
+    Object.values(sampleSize(items, 5)).forEach((user: User) => {
       user.deletedAt = DateTime.local();
       user.save();
     });
@@ -133,6 +138,6 @@ test.group(`v1.${API_URL_NAME}`, (group) => {
 
     // Assertions
     response.assertStatus(200);
-    assert.lengthOf(collection.data, 10);
+    assert.lengthOf(collection.data, $users.length);
   });
 });
