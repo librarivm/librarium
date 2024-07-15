@@ -1,15 +1,17 @@
-import { LibraryFactory } from '#database/factories/library_factory';
 import Library from '#models/library';
 import User from '#models/user';
-import { HttpQueries } from '#services/service';
-import { createSuperadminUser, resetForAuthenticatedUser } from '#tests/helpers';
-import { ApiResponse } from '@japa/api-client';
-import { test } from '@japa/runner';
 import camelCase from 'lodash/camelCase.js';
 import orderBy from 'lodash/orderBy.js';
 import sample from 'lodash/sample.js';
+import sampleSize from 'lodash/sampleSize.js';
 import sortBy from 'lodash/sortBy.js';
 import unzip from 'lodash/unzip.js';
+import { ApiResponse } from '@japa/api-client';
+import { DateTime } from 'luxon';
+import { HttpQueries } from '#services/service';
+import { LibraryFactory } from '#database/factories/library_factory';
+import { createSuperadminUser, resetForAuthenticatedUser } from '#tests/helpers';
+import { test } from '@japa/runner';
 
 const API_URL_NAME: string = 'libraries.index';
 
@@ -90,5 +92,46 @@ test.group(`v1.${API_URL_NAME}`, (group) => {
       meta: { perPage: queries.per_page },
       data: [{ name: item.name, id: item.id, slug: item.slug }],
     });
+  });
+
+  test('it should return a list of only archived libraries', async ({ client, route, assert }) => {
+    // Arrangements
+    const queries: HttpQueries = { per_page: 10, page: 1, only_archived: true };
+    Object.values(sampleSize($libraries, 5)).forEach((library: Library) => {
+      library.deletedAt = DateTime.local();
+      library.save();
+    });
+
+    // Actions
+    const response: ApiResponse = await client.get(route(API_URL_NAME)).qs(queries).loginAs($user);
+    const collection = response.body();
+
+    // Assertions
+    response.assertStatus(200);
+    assert.lengthOf(collection.data, 5);
+    collection.data.forEach((data: Library) => {
+      assert.isNotNull(data.deletedAt);
+    });
+  });
+
+  test('it should return a list of libraries and archived ones', async ({
+    client,
+    route,
+    assert,
+  }) => {
+    // Arrangements
+    const queries: HttpQueries = { per_page: 10, page: 1, with_archived: true };
+    Object.values(sampleSize($libraries, 5)).forEach((library: Library) => {
+      library.deletedAt = DateTime.local();
+      library.save();
+    });
+
+    // Actions
+    const response: ApiResponse = await client.get(route(API_URL_NAME)).qs(queries).loginAs($user);
+    const collection = response.body();
+
+    // Assertions
+    response.assertStatus(200);
+    assert.lengthOf(collection.data, 10);
   });
 });

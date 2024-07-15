@@ -23,6 +23,10 @@ export default class Library extends BaseModel {
     query.whereNotNull('deleted_at');
   });
 
+  static orSoftDeleted = scope((query: ModelQueryBuilderContract<LucidModel>): void => {
+    query.orWhereNotNull('deleted_at');
+  });
+
   @column({ isPrimary: true })
   declare id: number;
 

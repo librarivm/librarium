@@ -15,6 +15,8 @@ export type HttpQueries = {
   order_by?: string | { [key: number]: HttpQueriesOrderBy };
   q?: string;
   with?: string | string[];
+  with_archived?: string | boolean;
+  only_archived?: string | boolean;
   [key: string]: any;
 };
 
@@ -135,9 +137,27 @@ export abstract class Service {
    * @param {ModelQueryBuilder} builder - The model query builder instance to enhance.
    * @returns {typeof BaseModel | any} - The enhanced model query builder with search and ordering applied.
    */
-  withQueryAware(builder: ModelQueryBuilder): typeof BaseModel | any {
+  withQueryAware<T extends typeof BaseModel>(builder: ModelQueryBuilder): T | any {
     return this.withPreload(
       builder
+        .if(
+          this.isOnlyArchived(),
+          (query: ModelQueryBuilder): void => {
+            if (this.onlyArchived()) {
+              query.apply((scopes) => scopes.softDeleted());
+            } else {
+              query.apply((scopes) => scopes.notSoftDeleted());
+            }
+          },
+          (query: ModelQueryBuilder): void => {
+            query.apply((scopes) => scopes.notSoftDeleted());
+          }
+        )
+        .if(this.isWithArchived(), (query: ModelQueryBuilder): void => {
+          if (this.withArchived()) {
+            query.apply((scopes) => scopes.orSoftDeleted());
+          }
+        })
         .if(this.hasSearch(), (query: ModelQueryBuilder): void => {
           // TODO: write better search/scout
           const columns: string[] = this.getSupportedColumnKeys();
@@ -205,5 +225,41 @@ export abstract class Service {
     }
 
     return attributes;
+  }
+
+  /**
+   * Check query value of `only_archived`.
+   *
+   * @returns {boolean} - Returns true if the query string has `only_archived`.
+   */
+  isOnlyArchived(): boolean {
+    return 'only_archived' in (this.qs || {});
+  }
+
+  /**
+   * Check if `only_archived` is true or false.
+   *
+   * @returns {boolean} - Returns true if the query string has `only_archived`.
+   */
+  onlyArchived(): boolean {
+    return this.qs?.only_archived === 'true' || this.qs?.only_archived === true;
+  }
+
+  /**
+   * Check query value of `with_archived`.
+   *
+   * @returns {boolean} - Returns true if the query string has `with_archived`.
+   */
+  isWithArchived(): boolean {
+    return 'with_archived' in (this.qs || {});
+  }
+
+  /**
+   * Check if `with_archived` is true or false.
+   *
+   * @returns {boolean} - Returns true if the query string has `with_archived`.
+   */
+  withArchived(): boolean {
+    return this.qs?.with_archived === 'true' || this.qs?.with_archived === true;
   }
 }
