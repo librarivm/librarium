@@ -47,7 +47,7 @@ export default abstract class Resource<T> {
    * @template T
    * @template R
    * @param {(Partial<{ rows: any[] }> & T) | any} query - The query result containing rows and pagination info.
-   * @returns {CollectionResource<T>} The collection resource.
+   * @returns {ResourceCollection<T>} The collection resource.
    */
   static collection<T, R extends Resource<T>>(
     this: new (item: Partial<T>) => R,
