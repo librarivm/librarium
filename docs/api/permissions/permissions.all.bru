@@ -1,0 +1,11 @@
+meta {
+  name: permissions.all
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{site_url}}/api/v1/permissions
+  body: none
+  auth: inherit
+}

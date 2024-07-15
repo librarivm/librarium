@@ -128,10 +128,16 @@
 - Create service method to convert snake_case to camelCase.
 - Fixed issue: empty middleName is not being saved by setting validator to `nullable`
 
-**TO DO**:
+## Jul 15, 2024
+
+**DONE**:
 
 - Add collection class to transform data and generate links
-- Add `permissions.list`
+- Add `permissions.all`
+- Add policy `permissions.all`
+
+**TO DO**:
+
 - Restore function `resource.restore`
 - Archived options in `resource.index`
   - allow for:

@@ -8,3 +8,7 @@ export type PermissionConstants = {
   OWNED?: string;
   [key: string]: string;
 };
+
+export type CustomPermissionConstants = {
+  [key: string]: string;
+};

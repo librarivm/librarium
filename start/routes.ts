@@ -7,13 +7,15 @@
 |
 */
 
-const RegisterController = () => import('#controllers/auth/register_controller');
-const LoginController = () => import('#controllers/auth/login_controller');
-const MeController = () => import('#controllers/auth/me_controller');
+const GetAllPermissions = () => import('#controllers/v1/permissions/get_all_permissions');
 import RolesController from '#controllers/v1/roles_controller';
 import UsersController from '#controllers/v1/users_controller';
 import { middleware } from '#start/kernel';
 import router from '@adonisjs/core/services/router';
+
+const RegisterController = () => import('#controllers/auth/register_controller');
+const LoginController = () => import('#controllers/auth/login_controller');
+const MeController = () => import('#controllers/auth/me_controller');
 
 const LibrariesController = () => import('#controllers/v1/libraries_controller');
 
@@ -35,6 +37,13 @@ router
     router.get('/me', [MeController]).as('auth.me').use(middleware.auth());
   })
   .prefix('api/v1/auth');
+
+router
+  .group(() => {
+    router.get('permissions', [GetAllPermissions]).as('permissions.all');
+  })
+  .use(middleware.auth())
+  .prefix('api/v1');
 
 router
   .group(() => {

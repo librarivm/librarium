@@ -20,6 +20,15 @@ export default class PermissionService extends Service {
   }
 
   /**
+   * Get all resources.
+   *
+   * @returns {Promise<Permission[]>} array of permission results.
+   */
+  async all(): Promise<Permission[]> {
+    return this.model.query();
+  }
+
+  /**
    * Returns the path to the permissions enum files.
    *
    * @returns {string} The path to the permissions enum files.

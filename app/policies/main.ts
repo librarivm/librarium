@@ -13,6 +13,7 @@
 */
 
 export const policies = {
+  PermissionPolicy: () => import('#policies/permission_policy'),
   UserPolicy: () => import('#policies/user_policy'),
   LibraryPolicy: () => import('#policies/library_policy'),
   RolePolicy: () => import('#policies/role_policy'),

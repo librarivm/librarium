@@ -2,7 +2,7 @@ import { UserFactory } from '#database/factories/user_factory';
 import Permission from '#models/permission';
 import Role from '#models/role';
 import User from '#models/user';
-import { PermissionConstants } from '#permissions/.permission';
+import { CustomPermissionConstants, PermissionConstants } from '#permissions/.permission';
 import { SuperadminRole } from '#roles/superadmin_role';
 import PermissionService from '#services/permission_service';
 
@@ -11,7 +11,9 @@ export const resetForAuthenticatedUser = async () => {
   await Permission.truncate();
 };
 
-export const createAuthenticatedUser = async (permissions: PermissionConstants[]) => {
+export const createAuthenticatedUser = async (
+  permissions: PermissionConstants[] | CustomPermissionConstants[]
+) => {
   const user: User = await UserFactory.with('roles', 1).create();
 
   const service: PermissionService = new PermissionService();

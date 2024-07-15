@@ -1,4 +1,5 @@
 import type { LucidModel } from '@adonisjs/lucid/types/model';
+import isEmpty from 'lodash/isEmpty.js';
 
 export type CollectionItem = Partial<LucidModel> | { [key: string]: any };
 
@@ -17,7 +18,7 @@ export type CollectionLink = {
 };
 
 export default abstract class Resource<T> {
-  relatedLinks: string[] = ['self', 'update', 'archive', 'restore', 'destroy'];
+  relatedLinks: AllowedKeys[] = ['self', 'update', 'archive', 'restore', 'destroy'];
   readonly #items: T[];
 
   /**
@@ -39,23 +40,31 @@ export default abstract class Resource<T> {
     this: new (items: Partial<T>[]) => R,
     query: (Partial<{ rows: any[] }> & T) | any
   ): CollectionResource<T> {
-    const items: T[] = (query.rows || []).map((r: any) => r.serialize());
+    const rows: T[] = 'rows' in query ? query.rows : query || [];
+    const items: T[] = rows.map((r: any) => r.serialize());
     const instance: R = new this(items);
 
     return {
-      meta: {
-        total: query.total ?? items.length,
-        perPage: query.perPage,
-        currentPage: query.currentPage,
-        lastPage: query.lastPage,
-        firstPage: query.firstPage,
-        firstPageUrl: '/?page=1',
-        lastPageUrl: '/?page=' + (query.lastPage ?? ''),
-        nextPageUrl: query.currentPage < query.lastPage ? `/?page=${query.currentPage + 1}` : null,
-        previousPageUrl: query.currentPage > 1 ? `/?page=${query.currentPage - 1}` : null,
-      },
+      meta: !isEmpty(instance.meta({ query, items }))
+        ? instance.meta({ query, items })
+        : {
+            total: query.total ?? items.length,
+            perPage: query.perPage,
+            currentPage: query.currentPage,
+            lastPage: query.lastPage,
+            firstPage: query.firstPage,
+            firstPageUrl: '/?page=1',
+            lastPageUrl: '/?page=' + (query.lastPage ?? ''),
+            nextPageUrl:
+              query.currentPage < query.lastPage ? `/?page=${query.currentPage + 1}` : null,
+            previousPageUrl: query.currentPage > 1 ? `/?page=${query.currentPage - 1}` : null,
+          },
       data: instance.get(),
     };
+  }
+
+  meta(_opts?: { query?: any; items?: any[] }): { [key: string]: any } {
+    return {};
   }
 
   /**
@@ -127,8 +136,16 @@ export default abstract class Resource<T> {
           type: this.type(),
         },
       },
-      this.relatedLinks
+      this.getRelatedLinks()
     );
+  }
+
+  /**
+   * Retrieve the related links array.
+   * @returns {AllowedKeys[]} The related links.
+   */
+  getRelatedLinks(): AllowedKeys[] {
+    return this.relatedLinks;
   }
 
   /**
@@ -154,11 +171,11 @@ export default abstract class Resource<T> {
    * @param {any} item - The item to add links to.
    * @returns {any & { links: CollectionLinks }} The item with added links.
    */
-  withLinks(item: T): T & { links: CollectionLinks } {
-    return {
+  withLinks(item: T): T & { links: CollectionLinks | undefined } {
+    return Object.assign({
       ...item,
-      links: this.links(item),
-    };
+      links: isEmpty(this.links(item)) ? undefined : this.links(item),
+    });
   }
 
   /**
