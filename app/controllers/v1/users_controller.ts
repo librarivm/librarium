@@ -40,7 +40,7 @@ export default class UsersController {
       return response.notFound();
     }
 
-    return response.ok(await this.$service.findOrFail(params.id));
+    return response.ok(new UserResource(await this.$service.findOrFail(params.id)).get());
   }
 
   /**

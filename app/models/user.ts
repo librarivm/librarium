@@ -64,7 +64,6 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @manyToMany(() => Role)
   declare roles: ManyToMany<typeof Role>;
 
-  @beforeFind()
   static withoutSoftDeletes(query: ModelQueryBuilderContract<typeof User>): void {
     query.whereNull('deleted_at');
   }

@@ -3,7 +3,7 @@ import { Service } from '#services/service';
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens';
 import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
-import { ModelPaginatorContract } from '@adonisjs/lucid/types/model';
+import { ExtractScopes, ModelPaginatorContract } from '@adonisjs/lucid/types/model';
 import { DateTime } from 'luxon';
 
 export type UserAuthAttributes = {
@@ -71,7 +71,12 @@ export default class UserService extends Service {
    * @returns {Promise<User|null>} The resource if found, otherwise null.
    */
   async findOrFail(id: number): Promise<User | any> {
-    return this.withPreload(this.model.query().where('id', id)).firstOrFail();
+    return this.withPreload(
+      this.model
+        .query()
+        .apply((scope: ExtractScopes<typeof User>) => scope.notSoftDeleted())
+        .where('id', id)
+    ).firstOrFail();
   }
 
   /**

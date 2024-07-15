@@ -5,13 +5,13 @@ meta {
 }
 
 get {
-  url: {{site_url}}/api/v1/users/{{user_id}}?with=roles
+  url: {{site_url}}/api/v1/users/{{user_id}}
   body: none
   auth: inherit
 }
 
 params:query {
-  with: roles
+  ~with: roles
 }
 
 vars:pre-request {

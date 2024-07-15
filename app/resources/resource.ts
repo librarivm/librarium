@@ -39,7 +39,10 @@ export default abstract class Resource<T> {
    * @param {Partial<any>} item - The items to be included in the resource.
    */
   constructor(item: Partial<T>) {
-    this.#item = this.withLinks(this.prepare(item));
+    const resource: Partial<T> & { serialize?: () => any } = item;
+    this.#item = this.withLinks(
+      this.prepare('serialize' in resource ? resource?.serialize?.() : resource)
+    );
   }
 
   /**

@@ -5,7 +5,7 @@ meta {
 }
 
 get {
-  url: {{site_url}}/api/v1/users?per_page=10&page=1&with_archived=false
+  url: {{site_url}}/api/v1/users?per_page=10&page=1&with_archived=true
   body: none
   auth: inherit
 }
@@ -13,7 +13,7 @@ get {
 params:query {
   per_page: 10
   page: 1
-  with_archived: false
-  ~only_archived: false
+  with_archived: true
+  ~only_archived: true
   ~with: roles
 }

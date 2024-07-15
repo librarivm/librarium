@@ -5,7 +5,7 @@ import { RoleConstants } from '#roles/.role';
 import { Service } from '#services/service';
 import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
-import { ModelPaginatorContract } from '@adonisjs/lucid/types/model';
+import { ExtractScopes, ModelPaginatorContract } from '@adonisjs/lucid/types/model';
 import { ChainableContract } from '@adonisjs/lucid/types/querybuilder';
 import isArray from 'lodash/isArray.js';
 import { DateTime } from 'luxon';
@@ -62,7 +62,12 @@ export default class RoleService extends Service {
    * @returns {Promise<Role|null>} The resource if found, otherwise null.
    */
   async findOrFail(id: number): Promise<Role | any> {
-    return this.withPreload(this.model.query().where('id', id)).firstOrFail();
+    return this.withPreload(
+      this.model
+        .query()
+        .apply((scope: ExtractScopes<typeof Role>) => scope.notSoftDeleted())
+        .where('id', id)
+    ).firstOrFail();
   }
 
   /**

@@ -1,0 +1,15 @@
+meta {
+  name: users.restore
+  type: http
+  seq: 7
+}
+
+patch {
+  url: {{site_url}}/api/v1/users/{{user_id}}/restore
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  user_id: 2
+}

@@ -40,7 +40,7 @@ test.group(`v1.${API_URL_NAME}`, (group) => {
     // Assertions
     response.assertStatus(204);
     response.assertBodyNotContains(library.toJSON());
-    assert.isNull(deleted);
+    assert.isNotNull(deleted?.deletedAt);
     assert.exists(inDb);
   });
 });

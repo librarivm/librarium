@@ -4,6 +4,7 @@ import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
 import fs from 'node:fs';
 import path from 'node:path';
+import env from '#start/env';
 
 export type PermissionAttributes = {
   code: string;
@@ -76,7 +77,9 @@ export default class PermissionService extends Service {
       const exists = await this.model.query().where('code', permission.code).first();
 
       if (!exists) {
-        console.log('  ✔ Installing permission:', permission.code);
+        if (env.get('NODE_ENV') === 'development') {
+          console.log('  ✔ Installing permission:', permission.code);
+        }
         await this.model.create(permission);
       }
     }

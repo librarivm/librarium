@@ -1,6 +1,7 @@
 import { RolePermission } from '#permissions/role_permission';
 import { UserPermission } from '#permissions/user_permission';
 import { RoleConstants } from '#roles/.role';
+import { PermissionPermission } from '#permissions/permission_permission';
 
 export const AdminRole: RoleConstants = {
   NAME: 'Administrator',
@@ -12,6 +13,7 @@ export const AdminRole: RoleConstants = {
     UserPermission.UPDATE,
     UserPermission.DELETE,
     UserPermission.LIST,
+    UserPermission.RESTORE,
 
     RolePermission.CREATE,
     RolePermission.READ,
@@ -19,5 +21,8 @@ export const AdminRole: RoleConstants = {
     RolePermission.DELETE,
     RolePermission.LIST,
     RolePermission.ARCHIVE,
+    RolePermission.RESTORE,
+
+    PermissionPermission.ALL,
   ],
 } as const;

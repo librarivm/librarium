@@ -2,7 +2,7 @@ import Library from '#models/library';
 import { Service } from '#services/service';
 import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
-import { ModelPaginatorContract } from '@adonisjs/lucid/types/model';
+import { ExtractScopes, ModelPaginatorContract } from '@adonisjs/lucid/types/model';
 import kebabCase from 'lodash/kebabCase.js';
 import { DateTime } from 'luxon';
 
@@ -56,7 +56,12 @@ export default class LibraryService extends Service {
    * @returns {Promise<Library|null>} The resource if found, otherwise null.
    */
   async findOrFail(id: number): Promise<Library | any> {
-    return this.withPreload(this.model.query().where('id', id)).firstOrFail();
+    return this.withPreload(
+      this.model
+        .query()
+        .apply((scope: ExtractScopes<typeof Library>) => scope.notSoftDeleted())
+        .where('id', id)
+    ).firstOrFail();
   }
 
   /**

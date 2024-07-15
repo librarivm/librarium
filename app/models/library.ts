@@ -4,7 +4,6 @@ import {
   afterFetch,
   afterFind,
   BaseModel,
-  beforeFind,
   beforeSave,
   belongsTo,
   column,
@@ -65,7 +64,6 @@ export default class Library extends BaseModel {
   @column()
   declare metadata: string | { [key: string]: any } | null | undefined;
 
-  @beforeFind()
   static withoutSoftDeletes(query: ModelQueryBuilderContract<typeof Library>): void {
     query.whereNull('deleted_at');
   }
