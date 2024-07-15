@@ -50,6 +50,15 @@ export default class UserPolicy extends BasePolicy {
   }
 
   /**
+   * Checks if the user is permitted to restore a resource.
+   * @param {User} user - The user to check permissions for.
+   * @returns {AuthorizerResponse} - The response indicating if the user is permitted.
+   */
+  restore(user: User): AuthorizerResponse {
+    return user.isSuperAdmin() || user.isPermittedTo(UserPermission.RESTORE as string);
+  }
+
+  /**
    * Checks if the user is permitted to delete a resource.
    * @param {User} user - The user to check permissions for.
    * @returns {AuthorizerResponse} - The response indicating if the user is permitted.

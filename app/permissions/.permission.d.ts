@@ -5,6 +5,7 @@ export type PermissionConstants = {
   LIST: string;
   DELETE: string;
   ARCHIVE?: string;
+  RESTORE?: string;
   OWNED?: string;
   [key: string]: string;
 };

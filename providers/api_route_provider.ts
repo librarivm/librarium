@@ -24,6 +24,7 @@ export default class ApiRouteProvider {
         router.patch(`${name}/:id`, [controller, 'update']).as(`${name}.patch`);
         router.delete(`${name}/:id`, [controller, 'destroy']).as(`${name}.destroy`);
         router.delete(`${name}/:id/archive`, [controller, 'archive']).as(`${name}.archive`);
+        router.patch(`${name}/:id/restore`, [controller, 'restore']).as(`${name}.restore`);
       });
     });
   }

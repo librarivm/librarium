@@ -7,4 +7,5 @@ export const UserPermission: PermissionConstants = {
   DELETE: 'users.delete',
   LIST: 'users.list',
   ARCHIVE: 'users.archive',
+  RESTORE: 'users.restore',
 } as const;

@@ -69,6 +69,19 @@ export default class UsersController {
   }
 
   /**
+   * Restore record
+   */
+  async restore({ bouncer, params, response }: HttpContext) {
+    if (await bouncer.with(UserPolicy).denies('restore')) {
+      return response.forbidden();
+    }
+
+    await this.$service.restore(params.id);
+
+    return response.noContent();
+  }
+
+  /**
    * Delete record
    */
   async destroy({ bouncer, params, response }: HttpContext) {

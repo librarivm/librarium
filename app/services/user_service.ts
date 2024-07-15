@@ -134,6 +134,20 @@ export default class UserService extends Service {
   }
 
   /**
+   * Restore a resource by updating the deleted_at column to null.
+   *
+   * @param {number | User} model - The model or ID of the resource.
+   * @returns {Promise<void>}
+   */
+  async restore(model: number | User): Promise<void> {
+    const user: User = model instanceof User ? model : await this.model.findOrFail(model);
+
+    user.deletedAt = null;
+
+    await user.save();
+  }
+
+  /**
    * Permanently delete a resource by ID.
    *
    * @param {number} id - The ID of the resource.
