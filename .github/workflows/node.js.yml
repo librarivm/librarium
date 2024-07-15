@@ -32,6 +32,8 @@ jobs:
       - run: npm ci
       - run: npm run build --if-present
       - run: node ace generate:key
-      - run: npm run healthcheck
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run test
       - name: Cleanup tmp folder
         run: rm -rf tmp
