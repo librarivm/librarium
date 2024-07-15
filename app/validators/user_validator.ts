@@ -4,6 +4,14 @@ import isNil from 'lodash/isNil.js';
 
 vine.convertEmptyStringsToNull = false;
 
+const emailNormalizationOptions = {
+  gmail_remove_dots: false,
+  gmail_remove_subaddress: false,
+  icloud_remove_subaddress: false,
+  outlookdotcom_remove_subaddress: false,
+  yahoo_remove_subaddress: false,
+};
+
 export const userValidator = (id?: number) =>
   vine.object({
     first_name: vine.string().optional().nullable(),
@@ -15,7 +23,7 @@ export const userValidator = (id?: number) =>
     email: vine
       .string()
       .email()
-      .normalizeEmail({ gmail_remove_dots: false, gmail_remove_subaddress: false })
+      .normalizeEmail(emailNormalizationOptions)
       .unique(async (db: Database, value: string): Promise<boolean> => {
         const matched = await db
           .from('users')

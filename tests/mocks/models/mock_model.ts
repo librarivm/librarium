@@ -1,7 +1,16 @@
-import { BaseModel, column } from '@adonisjs/lucid/orm';
+import { BaseModel, column, scope } from '@adonisjs/lucid/orm';
 import { DateTime } from 'luxon';
+import { LucidModel, ModelQueryBuilderContract } from '@adonisjs/lucid/types/model';
 
 export default class Test extends BaseModel {
+  static notSoftDeleted = scope((query: ModelQueryBuilderContract<LucidModel>): void => {
+    query.whereNull('deleted_at');
+  });
+
+  static softDeleted = scope((query: ModelQueryBuilderContract<LucidModel>): void => {
+    query.whereNotNull('deleted_at');
+  });
+
   @column({ isPrimary: true })
   declare id: number;
 

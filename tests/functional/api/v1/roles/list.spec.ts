@@ -9,6 +9,9 @@ import orderBy from 'lodash/orderBy.js';
 import sample from 'lodash/sample.js';
 import sortBy from 'lodash/sortBy.js';
 import unzip from 'lodash/unzip.js';
+import sampleSize from 'lodash/sampleSize.js';
+import { DateTime } from 'luxon';
+import { RoleFactory } from '#database/factories/role_factory';
 
 const API_URL_NAME: string = 'roles.index';
 
@@ -18,6 +21,7 @@ test.group(`v1.${API_URL_NAME}`, (group) => {
 
   group.each.setup(async () => {
     await Role.truncate();
+    $roles = [];
 
     $user = await createSuperadminUser();
     $roles = $roles.concat($user.roles);
@@ -83,5 +87,46 @@ test.group(`v1.${API_URL_NAME}`, (group) => {
       meta: { perPage: queries.per_page },
       data: [{ name: item.name, id: item.id, slug: item.slug }],
     });
+  });
+
+  test('it should return a list of only archived roles', async ({ client, route, assert }) => {
+    // Arrangements
+    const items: Role[] = await RoleFactory.createMany(5);
+    $roles = $roles.concat(items);
+    const queries: HttpQueries = { per_page: 10, page: 1, only_archived: true };
+    Object.values(sampleSize(items, 2)).forEach((role: Role) => {
+      role.deletedAt = DateTime.local();
+      role.save();
+    });
+
+    // Actions
+    const response: ApiResponse = await client.get(route(API_URL_NAME)).qs(queries).loginAs($user);
+    const collection = response.body();
+
+    // Assertions
+    response.assertStatus(200);
+    assert.lengthOf(collection.data, 2);
+    collection.data.forEach((data: Role) => {
+      assert.isNotNull(data.deletedAt);
+    });
+  });
+
+  test('it should return a list of roles and archived ones', async ({ client, route, assert }) => {
+    // Arrangements
+    const items: Role[] = await RoleFactory.createMany(5);
+    $roles = $roles.concat(items);
+    const queries: HttpQueries = { per_page: 10, page: 1, with_archived: true };
+    Object.values(sampleSize(items, 5)).forEach((role: Role) => {
+      role.deletedAt = DateTime.local();
+      role.save();
+    });
+
+    // Actions
+    const response: ApiResponse = await client.get(route(API_URL_NAME)).qs(queries).loginAs($user);
+    const collection = response.body();
+
+    // Assertions
+    response.assertStatus(200);
+    assert.lengthOf(collection.data, $roles.length);
   });
 });

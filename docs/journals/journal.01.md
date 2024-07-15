@@ -139,6 +139,7 @@
 - Add `users.restore` and its functional and policy tests
 - Add `roles.restore` and its functional and policy tests
 - Add `libraries.restore` and its functional and policy tests
+- Added `with_archived` and `only_archived` querying to `[resource].index` routes.
 
 ## TO DO
 
@@ -148,6 +149,9 @@
     route('resource.index', { with_archived: true });
     route('resource.index', { only_archived: true });
     ```
+- Add ResourceCollection:
+  - roles/permissions
+  - libraries
 - Create README.md
   - Center logo
   - add section for Bruno

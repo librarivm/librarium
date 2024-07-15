@@ -97,7 +97,7 @@ test.group('Services', (group) => {
     assert.deepEqual($service.getQueries(), Object.assign({}, queries, merging));
   });
 
-  test('it should get and check search query parameter', async ({ assert }) => {
+  test('it should get and check search `q` query parameter', async ({ assert }) => {
     // Arrangements
     const queries: HttpQueries = {
       q: faker.lorem.sentence(),
@@ -112,7 +112,7 @@ test.group('Services', (group) => {
     assert.equal($service.getSearch(), queries.q);
   });
 
-  test('it should get and check order_by query parameter', async ({ assert }) => {
+  test('it should get and check `order_by` query parameter', async ({ assert }) => {
     // Arrangements
     const queries: HttpQueries = {
       order_by: faker.lorem.word(),
@@ -126,7 +126,7 @@ test.group('Services', (group) => {
     assert.isArray($service.getSupportedOrderBy());
   });
 
-  test('it should get and check withPreload query parameter', async ({ assert }) => {
+  test('it should get and check withPreload `with` query parameter', async ({ assert }) => {
     // Arrangements
     const queries: HttpQueries = {
       with: [faker.lorem.word(), faker.lorem.word()],
@@ -138,6 +138,34 @@ test.group('Services', (group) => {
     // Assertions
     assert.isTrue($service.hasWithPreload());
     assert.equal($service.getWithPreload(), queries.with);
+  });
+
+  test('it should get and check `only_archived` query parameter', async ({ assert }) => {
+    // Arrangements
+    const queries: HttpQueries = {
+      only_archived: true,
+    };
+
+    // Actions
+    $service.setQueries(queries);
+
+    // Assertions
+    assert.isTrue($service.isOnlyArchived());
+    assert.equal($service.onlyArchived(), queries.only_archived);
+  });
+
+  test('it should get and check `with_archived` query parameter', async ({ assert }) => {
+    // Arrangements
+    const queries: HttpQueries = {
+      with_archived: true,
+    };
+
+    // Actions
+    $service.setQueries(queries);
+
+    // Assertions
+    assert.isTrue($service.isWithArchived());
+    assert.equal($service.withArchived(), queries.with_archived);
   });
 
   test('it should accept and return the query builder when invoking withQueryAware', async ({

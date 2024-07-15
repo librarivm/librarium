@@ -5,7 +5,7 @@ import { RoleConstants } from '#roles/.role';
 import { Service } from '#services/service';
 import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
-import { ExtractScopes, ModelPaginatorContract } from '@adonisjs/lucid/types/model';
+import { ModelPaginatorContract } from '@adonisjs/lucid/types/model';
 import { ChainableContract } from '@adonisjs/lucid/types/querybuilder';
 import isArray from 'lodash/isArray.js';
 import { DateTime } from 'luxon';
@@ -39,9 +39,10 @@ export default class RoleService extends Service {
    * @returns {Promise<ModelPaginatorContract<Role>>} Paginated results.
    */
   async list(): Promise<ModelPaginatorContract<Role>> {
-    return this.withQueryAware(
-      this.model.query().apply((scopes: ExtractScopes<typeof Role>) => scopes.notSoftDeleted())
-    ).paginate(this.getPage(), this.getPageCount());
+    return this.withQueryAware<typeof Role>(this.model.query()).paginate(
+      this.getPage(),
+      this.getPageCount()
+    );
   }
 
   /**

@@ -9,6 +9,8 @@ import orderBy from 'lodash/orderBy.js';
 import sample from 'lodash/sample.js';
 import sortBy from 'lodash/sortBy.js';
 import unzip from 'lodash/unzip.js';
+import sampleSize from 'lodash/sampleSize.js';
+import { DateTime } from 'luxon';
 
 const API_URL_NAME: string = 'users.index';
 
@@ -95,5 +97,42 @@ test.group(`v1.${API_URL_NAME}`, (group) => {
       meta: { perPage: queries.per_page },
       data: [{ firstName: item.firstName, id: item.id, email: item.email }],
     });
+  });
+
+  test('it should return a list of only archived users', async ({ client, route, assert }) => {
+    // Arrangements
+    const queries: HttpQueries = { per_page: 10, page: 1, only_archived: true };
+    Object.values(sampleSize($users, 5)).forEach((user: User) => {
+      user.deletedAt = DateTime.local();
+      user.save();
+    });
+
+    // Actions
+    const response: ApiResponse = await client.get(route(API_URL_NAME)).qs(queries).loginAs($user);
+    const collection = response.body();
+
+    // Assertions
+    response.assertStatus(200);
+    assert.lengthOf(collection.data, 5);
+    collection.data.forEach((data: User) => {
+      assert.isNotNull(data.deletedAt);
+    });
+  });
+
+  test('it should return a list of users and archived ones', async ({ client, route, assert }) => {
+    // Arrangements
+    const queries: HttpQueries = { per_page: 10, page: 1, with_archived: true };
+    Object.values(sampleSize($users, 5)).forEach((user: User) => {
+      user.deletedAt = DateTime.local();
+      user.save();
+    });
+
+    // Actions
+    const response: ApiResponse = await client.get(route(API_URL_NAME)).qs(queries).loginAs($user);
+    const collection = response.body();
+
+    // Assertions
+    response.assertStatus(200);
+    assert.lengthOf(collection.data, 10);
   });
 });
