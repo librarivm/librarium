@@ -1,0 +1,15 @@
+meta {
+  name: roles.restore
+  type: http
+  seq: 7
+}
+
+patch {
+  url: {{site_url}}/api/v1/roles/{{role_id}}/restore
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  role_id: 2
+}

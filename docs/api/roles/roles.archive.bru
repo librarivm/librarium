@@ -1,0 +1,15 @@
+meta {
+  name: roles.archive
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{site_url}}/api/v1/roles/{{role_id}}/archive
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  role_id: 2
+}
