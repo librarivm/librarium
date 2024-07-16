@@ -140,13 +140,15 @@
 - Add `roles.restore` and its functional and policy tests
 - Add `libraries.restore` and its functional and policy tests
 - Added `with_archived` and `only_archived` querying to `[resource].index` routes.
+
+## Jul 16, 2024
+
 - Added RoleResource
+- Updated role + permissions constants unit tests
+- Added LibraryResource
 
 ## TO DO
 
-- Add ResourceCollection [index,show,store,update]:
-  - roles/permissions
-  - libraries
 - Remember me
 - MeController
 - Create README.md

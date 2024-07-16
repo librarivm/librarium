@@ -1,0 +1,15 @@
+meta {
+  name: libraries.restore
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{site_url}}/api/v1/libraries/{{library_id}}/restore
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  library_id: 1
+}

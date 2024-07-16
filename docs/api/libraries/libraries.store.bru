@@ -1,0 +1,32 @@
+meta {
+  name: libraries.store
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{site_url}}/api/v1/libraries
+  body: formUrlEncoded
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Editor",
+    "slug": "editor",
+    "description": "Edit posts",
+    "permissions": [
+      2, 5, 6, 8, 11, 12, 15, 18, 19 
+    ]
+  }
+}
+
+body:form-urlencoded {
+  name: Movie
+  slug: movie
+  description: A film (British English) – also called a movie (American English), motion picture, moving picture, picture, photoplay or (slang) flick – is a work of visual art that simulates experiences and otherwise communicates ideas, stories, perceptions, feelings, beauty, or atmosphere through the use of moving images. These images are generally accompanied by sound and, more rarely, other sensory stimulations.[1] The word "cinema", short for cinematography, is often used to refer to filmmaking and the film industry, and the art form that is the result of it.
+  metadata: 
+  isPrivate: false
+  userId: 1
+  typeId: 1
+}

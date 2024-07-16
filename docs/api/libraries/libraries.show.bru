@@ -1,0 +1,20 @@
+meta {
+  name: libraries.show
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{site_url}}/api/v1/libraries/{{library_id}}?with=user&with=type
+  body: none
+  auth: inherit
+}
+
+params:query {
+  with: user
+  with: type
+}
+
+vars:pre-request {
+  library_id: 2
+}

@@ -1,0 +1,15 @@
+meta {
+  name: libraries.archive
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{site_url}}/api/v1/libraries/{{library_id}}/archive
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  library_id: 2
+}

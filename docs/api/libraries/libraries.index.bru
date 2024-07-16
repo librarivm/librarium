@@ -1,0 +1,18 @@
+meta {
+  name: libraries.index
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{site_url}}/api/v1/libraries?per_page=10&with=user&with=type
+  body: none
+  auth: inherit
+}
+
+params:query {
+  per_page: 10
+  with: user
+  with: type
+  ~with_archived: true
+}

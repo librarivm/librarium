@@ -4,6 +4,7 @@ import LibraryService, { LibraryAttributes } from '#services/library_service';
 import { createLibraryValidator, updateLibraryValidator } from '#validators/library_validator';
 import { inject } from '@adonisjs/core';
 import { HttpContext } from '@adonisjs/core/http';
+import LibraryResource from '#resources/library_resource';
 
 @inject()
 export default class LibrariesController {
@@ -17,7 +18,7 @@ export default class LibrariesController {
       return response.notFound();
     }
 
-    return response.ok(await this.$service.list());
+    return response.ok(LibraryResource.collection(await this.$service.list()));
   }
 
   /**
@@ -29,7 +30,7 @@ export default class LibrariesController {
     }
 
     const attributes: LibraryAttributes = await request.validateUsing(createLibraryValidator);
-    return response.created(await this.$service.store(attributes));
+    return response.created(new LibraryResource(await this.$service.store(attributes)).get());
   }
 
   /**
@@ -42,7 +43,7 @@ export default class LibrariesController {
       return response.notFound();
     }
 
-    return response.ok(library);
+    return response.ok(new LibraryResource(library).get());
   }
 
   /**
@@ -59,7 +60,7 @@ export default class LibrariesController {
       updateLibraryValidator(params.id)
     );
 
-    return response.ok(await this.$service.update(library, attributes));
+    return response.ok(new LibraryResource(await this.$service.update(library, attributes)).get());
   }
 
   /**
