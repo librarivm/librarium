@@ -140,12 +140,15 @@
 - Add `roles.restore` and its functional and policy tests
 - Add `libraries.restore` and its functional and policy tests
 - Added `with_archived` and `only_archived` querying to `[resource].index` routes.
+- Added RoleResource
 
 ## TO DO
 
-- Add ResourceCollection:
+- Add ResourceCollection [index,show,store,update]:
   - roles/permissions
   - libraries
+- Remember me
+- MeController
 - Create README.md
   - Center logo
   - add section for Bruno

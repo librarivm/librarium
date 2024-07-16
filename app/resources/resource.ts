@@ -56,10 +56,19 @@ export default abstract class Resource<T> {
     this: new (item: Partial<T>) => R,
     query: (Partial<{ rows: any[] }> & T) | any
   ): ResourceCollection<T> {
+    if (isEmpty(query)) {
+      return { meta: {}, data: [] };
+    }
+
+    if (query?.data && query?.meta) {
+      return {
+        meta: query?.meta,
+        data: query?.data,
+      };
+    }
+
     const rows: T[] = 'rows' in query ? query.rows : query || [];
-    const items: ResourceItem<T>[] = rows
-      .map((r: any) => new this(r.serialize()))
-      .map((r: any) => r.get());
+    const items: ResourceItem<T>[] = rows.map((r: any) => new this(r)).map((r: any) => r.get());
     const instance: R = new this(items?.[0]);
 
     return {

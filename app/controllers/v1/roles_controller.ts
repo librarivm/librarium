@@ -3,6 +3,7 @@ import RoleService, { RoleAttributes } from '#services/role_service';
 import { createRoleValidator, updateRoleValidator } from '#validators/role_validator';
 import { inject } from '@adonisjs/core';
 import type { HttpContext } from '@adonisjs/core/http';
+import RoleResource from '#resources/role_resource';
 
 @inject()
 export default class RolesController {
@@ -16,7 +17,7 @@ export default class RolesController {
       return response.notFound();
     }
 
-    return response.ok(await this.$service.list());
+    return response.ok(RoleResource.collection(await this.$service.list()));
   }
 
   /**
@@ -29,7 +30,7 @@ export default class RolesController {
     }
 
     const attributes: RoleAttributes = await request.validateUsing(createRoleValidator);
-    return response.created(await this.$service.store(attributes));
+    return response.created(new RoleResource(await this.$service.store(attributes)).get());
   }
 
   /**
@@ -40,7 +41,7 @@ export default class RolesController {
       return response.notFound();
     }
 
-    return response.ok(await this.$service.findOrFail(params.id));
+    return response.ok(new RoleResource(await this.$service.findOrFail(params.id)).get());
   }
 
   /**
@@ -52,7 +53,7 @@ export default class RolesController {
     }
 
     const attributes: RoleAttributes = await request.validateUsing(updateRoleValidator(params.id));
-    return response.ok(await this.$service.update(params.id, attributes));
+    return response.ok(new RoleResource(await this.$service.update(params.id, attributes)).get());
   }
 
   /**
@@ -64,6 +65,7 @@ export default class RolesController {
     }
 
     await this.$service.archive(params.id);
+
     return response.noContent();
   }
 

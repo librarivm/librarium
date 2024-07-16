@@ -29,7 +29,9 @@ export default class UsersController {
     }
 
     const attributes: UserAttributes = await request.validateUsing(createUserValidator);
-    return response.created(await this.$service.store(attributes as UserAttributes));
+    return response.created(
+      new UserResource(await this.$service.store(attributes as UserAttributes)).get()
+    );
   }
 
   /**
@@ -52,7 +54,9 @@ export default class UsersController {
     }
 
     const attributes: UserAttributes = await request.validateUsing(updateUserValidator(params.id));
-    return response.ok(await this.$service.update(params.id, attributes as UserAttributes));
+    return response.ok(
+      new UserResource(await this.$service.update(params.id, attributes as UserAttributes)).get()
+    );
   }
 
   /**
