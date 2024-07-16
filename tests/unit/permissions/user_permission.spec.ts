@@ -21,4 +21,12 @@ test.group('Permissions / UserPermission', () => {
   test('it should have users.index permission', async ({ assert }) => {
     assert.equal(UserPermission.LIST, 'users.list');
   });
+
+  test('it should have users.archive permission', async ({ assert }) => {
+    assert.equal(UserPermission.ARCHIVE, 'users.archive');
+  });
+
+  test('it should have users.restore permission', async ({ assert }) => {
+    assert.equal(UserPermission.RESTORE, 'users.restore');
+  });
 });

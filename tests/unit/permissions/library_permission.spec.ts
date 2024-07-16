@@ -25,4 +25,8 @@ test.group('Permissions / LibraryPermission', () => {
   test('it should have libraries.archive permission', async ({ assert }) => {
     assert.equal(LibraryPermission.ARCHIVE, 'libraries.archive');
   });
+
+  test('it should have libraries.restore permission', async ({ assert }) => {
+    assert.equal(LibraryPermission.RESTORE, 'libraries.restore');
+  });
 });

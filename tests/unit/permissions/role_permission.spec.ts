@@ -21,4 +21,12 @@ test.group('Permissions / RolePermission', () => {
   test('it should have roles.index permission', async ({ assert }) => {
     assert.equal(RolePermission.LIST, 'roles.list');
   });
+
+  test('it should have roles.archive permission', async ({ assert }) => {
+    assert.equal(RolePermission.ARCHIVE, 'roles.archive');
+  });
+
+  test('it should have roles.restore permission', async ({ assert }) => {
+    assert.equal(RolePermission.RESTORE, 'roles.restore');
+  });
 });
