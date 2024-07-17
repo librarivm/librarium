@@ -1,15 +1,16 @@
 import Permission from '#models/permission';
 import Role from '#models/role';
-import { SuperPermission } from '#permissions/super_permission';
-import { SuperadminRole } from '#roles/superadmin_role';
-import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens';
-import { withAuthFinder } from '@adonisjs/auth/mixins/lucid';
-import { compose } from '@adonisjs/core/helpers';
 import hash from '@adonisjs/core/services/hash';
-import { BaseModel, beforeFetch, beforeFind, column, manyToMany, scope } from '@adonisjs/lucid/orm';
+import string from '@adonisjs/core/helpers/string';
 import type { LucidModel, ModelQueryBuilderContract } from '@adonisjs/lucid/types/model';
 import type { ManyToMany } from '@adonisjs/lucid/types/relations';
+import { BaseModel, beforeFetch, beforeFind, column, manyToMany, scope } from '@adonisjs/lucid/orm';
 import { DateTime } from 'luxon';
+import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens';
+import { SuperPermission } from '#permissions/super_permission';
+import { SuperadminRole } from '#roles/superadmin_role';
+import { compose } from '@adonisjs/core/helpers';
+import { withAuthFinder } from '@adonisjs/auth/mixins/lucid';
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
@@ -51,6 +52,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   @column({ serializeAs: null })
   declare password?: string;
+
+  @column()
+  declare rememberToken?: string | null;
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime;
@@ -100,5 +104,12 @@ export default class User extends compose(BaseModel, AuthFinder) {
    */
   owns(resource: Partial<{ userId: number }>): boolean {
     return this.id === resource.userId;
+  }
+
+  async generateRememberToken(): Promise<string> {
+    this.rememberToken = `${this.id}|${crypto.randomUUID() + string.random(32)}`;
+    await this.save();
+
+    return this.rememberToken;
   }
 }

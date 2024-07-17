@@ -146,10 +146,12 @@
 - Added RoleResource
 - Updated role + permissions constants unit tests
 - Added LibraryResource
+- Added `remember_me` store
 
 ## TO DO
 
-- Remember me
+- Continue work on remember me function login_controller login.spec
+  - Remember me middleware: if exists and valid login the user.
 - MeController
 - Create README.md
   - Center logo
@@ -159,6 +161,7 @@
 - Setup initial `librarivm/ui` repository.
   - Decided to have the front-end to a separate repository.
   - They'd just be deployed and set up from one installer.
+- Add type migration, service, model, endpoints, policies
 - Add media service
 - Add media endpoints
 - Add media policies

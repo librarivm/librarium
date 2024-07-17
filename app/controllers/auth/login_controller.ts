@@ -12,10 +12,20 @@ export default class LoginController {
 
   async login({ request, response }: HttpContext) {
     try {
-      const { email, password }: CredentialsAttributes =
-        await request.validateUsing(loginValidator);
-      const user: User = await this.$service.verifyCredentials({ email, password });
+      const { email, password, rememberMe }: CredentialsAttributes = this.$service.toCamelCaseKeys(
+        await request.validateUsing(loginValidator)
+      ) as CredentialsAttributes;
+
+      const user: User = await this.$service.verifyCredentials({
+        email,
+        password,
+      } as CredentialsAttributes);
+
       const token: AccessToken = await this.$service.tokens().create(user);
+
+      if (rememberMe) {
+        response.cookie('remember_me', await user.generateRememberToken(), { httpOnly: true });
+      }
 
       return response.ok({ user, token });
     } catch (error: any | unknown) {

@@ -48,4 +48,28 @@ test.group(API_URL_NAME, () => {
     // Assertions
     response.assertStatus(401);
   });
+
+  test('it should generate and set a `remember_me` cookie if `remember_me` is set to true', async ({
+    client,
+    route,
+  }) => {
+    // Arrangements
+    const credentials: CredentialsAttributes = {
+      email: faker.internet.email().toLowerCase(),
+      password: 'password',
+    };
+
+    const logged: User = await UserFactory.merge(credentials).create();
+
+    // Actions
+    const response: ApiResponse = await client
+      .post(route(API_URL_NAME))
+      .json({ ...credentials, remember_me: true });
+
+    const user: User | null = await User.find(logged.id);
+
+    // Assertions
+    response.assertStatus(200);
+    response.assertCookie('remember_me', user?.rememberToken);
+  });
 });

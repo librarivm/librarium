@@ -16,8 +16,8 @@ export type UserAuthAttributes = {
 };
 
 export type CredentialsAttributes =
-  | { email: string; password: string; username?: never }
-  | { username: string; password: string; email?: never };
+  | { email: string; password: string; username?: never; rememberMe?: string | boolean }
+  | { username: string; password: string; email?: never; rememberMe?: string | boolean };
 
 export type UserAttributes = Omit<UserAuthAttributes, 'password'> & {
   password?: string;
