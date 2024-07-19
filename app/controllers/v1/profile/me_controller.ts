@@ -1,6 +1,11 @@
 import { HttpContext } from '@adonisjs/core/http';
+import { inject } from '@adonisjs/core';
+import ProfileService from '#services/profile_service';
 
+@inject()
 export default class MeController {
+  constructor(protected $service: ProfileService) {}
+
   /**
    * Handles the incoming request to fetch the authenticated user's details.
    *
@@ -10,6 +15,6 @@ export default class MeController {
   async handle({ auth, response }: HttpContext) {
     await auth.check();
 
-    return response.ok(auth.user);
+    return response.ok(this.$service.me());
   }
 }

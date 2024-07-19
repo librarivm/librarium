@@ -27,10 +27,12 @@ export abstract class Service {
   protected declare request: Request | any;
   protected declare qs: HttpQueries | null;
   protected declare model: typeof BaseModel | any;
+  #auth?: any;
   #page?: number | string = 1;
   #pageCount?: number | string = 15;
 
   constructor(protected ctx?: HttpContext) {
+    this.setUpAuth(ctx?.auth);
     this.setUpRequest(ctx?.request);
   }
 
@@ -47,6 +49,14 @@ export abstract class Service {
       this.setPage(this.qs.page);
       this.setPageCount(this.qs.per_page);
     }
+  }
+
+  setUpAuth(auth: any) {
+    this.#auth = auth;
+  }
+
+  auth() {
+    return this.#auth;
   }
 
   setModel(model: typeof BaseModel | any): void {

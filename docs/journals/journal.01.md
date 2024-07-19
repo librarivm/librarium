@@ -148,11 +148,14 @@
 - Added LibraryResource
 - Added `remember_me` store
 
+## Jul 19, 2024
+
+- updated `profile.me` endpoint to use ProfileService
+
 ## TO DO
 
 - Continue work on remember me function login_controller login.spec
   - Remember me middleware: if exists and valid login the user.
-- MeController
 - Create README.md
   - Center logo
   - add section for Bruno
