@@ -10,7 +10,7 @@ export default class ProfileService extends Service {
     this.setModel(User);
   }
 
-  me(): any {
-    return this.auth().user;
+  me(): User | undefined {
+    return this.auth()?.user;
   }
 }

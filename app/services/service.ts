@@ -6,6 +6,8 @@ import isNil from 'lodash/isNil.js';
 import isPlainObject from 'lodash/isPlainObject.js';
 import isString from 'lodash/isString.js';
 import reduce from 'lodash/reduce.js';
+import { Authenticator } from '@adonisjs/auth';
+import { Authenticators } from '@adonisjs/auth/types';
 
 export type HttpQueriesOrderBy = [column: string, order: 'asc' | 'desc'];
 
@@ -27,7 +29,7 @@ export abstract class Service {
   protected declare request: Request | any;
   protected declare qs: HttpQueries | null;
   protected declare model: typeof BaseModel | any;
-  #auth?: any;
+  #auth?: Authenticator<Authenticators>;
   #page?: number | string = 1;
   #pageCount?: number | string = 15;
 
@@ -51,11 +53,11 @@ export abstract class Service {
     }
   }
 
-  setUpAuth(auth: any) {
+  setUpAuth(auth: any): void {
     this.#auth = auth;
   }
 
-  auth() {
+  auth(): Authenticator<Authenticators> | undefined {
     return this.#auth;
   }
 

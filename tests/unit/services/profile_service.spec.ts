@@ -26,9 +26,9 @@ test.group('Services / ProfileService', (group) => {
     $sandbox.stub($service, 'auth').callsFake(() => ({ user: $user }));
 
     // Actions
-    const user: User = $service.me();
+    const user: User | undefined = $service.me();
 
     // Assertions
-    assert.equal(user.email, $user.email);
+    assert.equal(user?.email, $user.email);
   });
 });
