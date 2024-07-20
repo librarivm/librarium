@@ -18,7 +18,14 @@ export type LibraryAttributes = {
 
 @inject()
 export default class LibraryService extends Service {
-  supportedColumnKeys: string[] = ['name', 'description', 'slug', 'created_at', 'updated_at'];
+  supportedColumnKeys: string[] = [
+    'name',
+    'description',
+    'slug',
+    'is_private',
+    'created_at',
+    'updated_at',
+  ];
 
   preloads: string[] = ['user', 'type'];
 
