@@ -1,6 +1,8 @@
 import { HttpContext } from '@adonisjs/core/http';
 import { inject } from '@adonisjs/core';
 import ProfileService from '#services/profile_service';
+import ProfileResource from '#resources/profile_resource';
+import User from '#models/user';
 
 @inject()
 export default class MeController {
@@ -14,7 +16,8 @@ export default class MeController {
    */
   async handle({ auth, response }: HttpContext) {
     await auth.check();
+    const user: User | undefined = this.$service.me();
 
-    return response.ok(this.$service.me());
+    return response.ok(user && new ProfileResource(user).get());
   }
 }

@@ -13,7 +13,7 @@ test.group(`v1.${API_URL_NAME}`, (group) => {
     $user = await createSuperadminUser();
   });
 
-  test('it should return the authenticated user', async ({ client, route }) => {
+  test('it should return the authenticated user', async ({ client, route, assert }) => {
     const response: ApiResponse = await client.get(route(API_URL_NAME)).loginAs($user);
 
     response.assertStatus(200);
@@ -21,6 +21,8 @@ test.group(`v1.${API_URL_NAME}`, (group) => {
       id: $user.id,
       email: $user.email,
     });
+    assert.property(response.body(), 'roles');
+    assert.property(response.body(), 'links');
   });
 
   test('it should return error for an unauthenticated request', async ({ client, route }) => {
