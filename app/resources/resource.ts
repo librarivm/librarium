@@ -5,6 +5,7 @@ export type AllowedKeys = 'self' | 'update' | 'archive' | 'restore' | 'destroy' 
 export type ResourceLink = {
   rel: string;
   method: string;
+  code?: string;
   type: string;
   href?: string;
   id?: string | number;
@@ -135,6 +136,7 @@ export default abstract class Resource<T> {
         self: Object.assign({
           rel: 'self',
           method: 'GET',
+          code: `${this.type()}.read`,
           href: id ? `${this.type()}/${id}` : undefined,
           id: id,
           type: this.type(),
@@ -142,6 +144,7 @@ export default abstract class Resource<T> {
         update: Object.assign({
           rel: 'update',
           method: 'PUT',
+          code: `${this.type()}.update`,
           href: id ? `${this.type()}/${id}` : undefined,
           id: id,
           type: this.type(),
@@ -149,6 +152,7 @@ export default abstract class Resource<T> {
         archive: Object.assign({
           rel: 'archive',
           method: 'DELETE',
+          code: `${this.type()}.archive`,
           href: id ? `${this.type()}/${id}/archive` : undefined,
           id: id,
           type: this.type(),
@@ -156,6 +160,7 @@ export default abstract class Resource<T> {
         restore: Object.assign({
           rel: 'restore',
           method: 'PATCH',
+          code: `${this.type()}.restore`,
           href: id ? `${this.type()}/${id}/restore` : undefined,
           id: id,
           type: this.type(),
@@ -163,6 +168,7 @@ export default abstract class Resource<T> {
         destroy: Object.assign({
           rel: 'destroy',
           method: 'DELETE',
+          code: `${this.type()}.destroy`,
           href: id ? `${this.type()}/${id}` : undefined,
           id: id,
           type: this.type(),

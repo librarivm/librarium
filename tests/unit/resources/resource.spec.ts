@@ -105,6 +105,7 @@ test.group('Collections / Resource', (group) => {
     Object.values(links).forEach((link?: ResourceLink) => {
       assert.property(link, 'rel');
       assert.property(link, 'method');
+      assert.property(link, 'code');
       assert.property(link, 'href');
       assert.property(link, 'type');
       assert.property(link, 'id');
