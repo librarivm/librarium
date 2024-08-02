@@ -154,8 +154,6 @@
 
 ## TO DO
 
-- Continue work on remember me function login_controller login.spec
-  - Remember me middleware: if exists and valid login the user.
 - Create README.md
   - Center logo
   - add section for Bruno
