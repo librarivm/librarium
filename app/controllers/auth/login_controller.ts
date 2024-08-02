@@ -5,6 +5,7 @@ import { loginValidator } from '#validators/auth_validator';
 import { AccessToken } from '@adonisjs/auth/access_tokens';
 import { inject } from '@adonisjs/core';
 import type { HttpContext } from '@adonisjs/core/http';
+import UserResource from '#resources/user_resource';
 
 @inject()
 export default class LoginController {
@@ -27,7 +28,7 @@ export default class LoginController {
         response.cookie('remember_me', await user.generateRememberToken(), { httpOnly: true });
       }
 
-      return response.ok({ user, token });
+      return response.ok({ user: new UserResource(user).get(), token });
     } catch (error: any | unknown) {
       if (error?.code === 'E_INVALID_CREDENTIALS') {
         const err: InvalidCredentialsException = new InvalidCredentialsException();
