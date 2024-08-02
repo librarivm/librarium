@@ -54,6 +54,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare password?: string;
 
   @column()
+  declare avatar?: string;
+
+  @column()
   declare rememberToken?: string | null;
 
   @column.dateTime({ autoCreate: true })
