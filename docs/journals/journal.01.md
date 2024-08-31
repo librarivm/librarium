@@ -154,6 +154,7 @@
 
 ## TO DO
 
+- add email_verified_at column in users table
 - Create README.md
   - Center logo
   - add section for Bruno

@@ -1,12 +1,12 @@
-import { PermissionFactory } from '#database/factories/permission_factory';
-import { UserFactory } from '#database/factories/user_factory';
 import Role from '#models/role';
 import factory from '@adonisjs/lucid/factories';
 import kebabCase from 'lodash/kebabCase.js';
 import startCase from 'lodash/startCase.js';
-import { AdminRole } from '../../app/roles/admin_role.js';
-import { SubscriberRole } from '../../app/roles/subscriber_role.js';
-import { SuperadminRole } from '../../app/roles/superadmin_role.js';
+import { AdminRole } from '#roles/admin_role';
+import { PermissionFactory } from '#database/factories/permission_factory';
+import { SubscriberRole } from '#roles/subscriber_role';
+import { SuperadminRole } from '#roles/superadmin_role';
+import { UserFactory } from '#database/factories/user_factory';
 
 export const RoleFactory = factory
   .define(Role, async ({ faker }) => {
