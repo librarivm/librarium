@@ -7,11 +7,13 @@ import {
   beforeSave,
   belongsTo,
   column,
+  hasMany,
   scope,
 } from '@adonisjs/lucid/orm';
 import type { LucidModel, ModelQueryBuilderContract } from '@adonisjs/lucid/types/model';
-import type { BelongsTo } from '@adonisjs/lucid/types/relations';
+import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations';
 import { DateTime } from 'luxon';
+import Folder from '#models/folder';
 
 export default class Library extends BaseModel {
   static notSoftDeleted = scope((query: ModelQueryBuilderContract<LucidModel>): void => {
@@ -56,13 +58,17 @@ export default class Library extends BaseModel {
   @column.dateTime()
   declare deletedAt: DateTime | null;
 
+  @column()
+  declare metadata: string | { [key: string]: any } | null | undefined;
+
   @belongsTo(() => User)
   declare user: BelongsTo<typeof User>;
 
   @belongsTo(() => Type)
   declare type: BelongsTo<typeof Type>;
-  @column()
-  declare metadata: string | { [key: string]: any } | null | undefined;
+
+  @hasMany(() => Folder)
+  declare folders: HasMany<typeof Folder>;
 
   static withoutSoftDeletes(query: ModelQueryBuilderContract<typeof Library>): void {
     query.whereNull('deleted_at');

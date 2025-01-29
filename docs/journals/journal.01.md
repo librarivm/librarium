@@ -152,18 +152,25 @@
 
 - updated `profile.me` endpoint to use ProfileService
 
-## TO DO
+## Aug, 2024
+
+- Added docs/api (bruno)
+- Added default user role on registration
+- Added type model, migration, seeder, config
+
+## Sep 1, 2024
 
 - add email_verified_at column in users table
+- Add folders table
+
+## TO DO
+
+- Add Folder factory, seeder, service, model, routes, policy
+- Add endpoint to verify email (controllers/auth/verify_email)
 - Create README.md
   - Center logo
   - add section for Bruno
-- Add docs/api (bruno)
-- Add default user role on registration
-- Setup initial `librarivm/ui` repository.
-  - Decided to have the front-end to a separate repository.
-  - They'd just be deployed and set up from one installer.
-- Add type migration, service, model, endpoints, policies
+- Add type service, endpoints, policies
 - Add media service
 - Add media endpoints
 - Add media policies

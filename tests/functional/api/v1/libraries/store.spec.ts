@@ -1,12 +1,14 @@
-import { LibraryFactory } from '#database/factories/library_factory';
-import { TypeFactory } from '#database/factories/type_factory';
-import { UserFactory } from '#database/factories/user_factory';
+import Folder from '#models/folder';
 import Library from '#models/library';
 import Type from '#models/type';
 import User from '#models/user';
-import { LibraryAttributes } from '#services/library_service';
-import { createSuperadminUser, resetForAuthenticatedUser } from '#tests/helpers';
 import { ApiResponse } from '@japa/api-client';
+import { FolderFactory } from '#database/factories/folder_factory';
+import { LibraryAttributes } from '#services/library_service';
+import { LibraryFactory } from '#database/factories/library_factory';
+import { TypeFactory } from '#database/factories/type_factory';
+import { UserFactory } from '#database/factories/user_factory';
+import { createSuperadminUser, resetForAuthenticatedUser } from '#tests/helpers';
 import { test } from '@japa/runner';
 
 const API_URL_NAME: string = 'libraries.store';
@@ -74,7 +76,7 @@ test.group(`v1.${API_URL_NAME}`, (group) => {
       typeId: type.id,
     }).create();
 
-    const attributes: LibraryAttributes = await LibraryFactory.merge({
+    const attributes: Library = await LibraryFactory.merge({
       userId: $user.id,
       typeId: type.id,
       name: library.name,
@@ -90,6 +92,38 @@ test.group(`v1.${API_URL_NAME}`, (group) => {
     response.assertStatus(422);
     response.assertBodyContains({
       errors: [{ rule: 'database.unique', field: 'slug' }],
+    });
+  });
+
+  test('it should create a new library entry with folders', async ({ client, route }) => {
+    // Arrangements
+    const user: User = await UserFactory.create();
+    const type: Type = await TypeFactory.create();
+    const paths: Folder[] = await FolderFactory.makeMany(2);
+    const library: Library = await LibraryFactory.merge({
+      userId: user.id,
+      typeId: type.id,
+    }).make();
+    const attributes: LibraryAttributes = {
+      ...library,
+      folders: paths.map((folder) => folder.path),
+    };
+
+    // Actions
+    const response: ApiResponse = await client
+      .post(route(API_URL_NAME))
+      .json(attributes)
+      .loginAs($user);
+
+    const folders = await Folder.query().where('libraryId', response.body().id);
+
+    console.log(12, folders);
+    // Assertions
+    response.assertStatus(201);
+    response.assertBodyContains({
+      name: attributes.name,
+      slug: attributes.slug,
+      folders: folders,
     });
   });
 });
