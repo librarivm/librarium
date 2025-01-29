@@ -5,6 +5,7 @@ import { HttpContext } from '@adonisjs/core/http';
 import { ExtractScopes, ModelPaginatorContract } from '@adonisjs/lucid/types/model';
 import kebabCase from 'lodash/kebabCase.js';
 import { DateTime } from 'luxon';
+import Folder from '#models/folder';
 
 export type LibraryAttributes = {
   name: string;
@@ -14,6 +15,7 @@ export type LibraryAttributes = {
   isPrivate: boolean;
   userId: number;
   typeId: number;
+  folders?: string[];
 };
 
 @inject()
@@ -27,7 +29,7 @@ export default class LibraryService extends Service {
     'updated_at',
   ];
 
-  preloads: string[] = ['user', 'type'];
+  preloads: string[] = ['user', 'type', 'folders'];
 
   constructor(ctx?: HttpContext) {
     super(ctx);
@@ -89,7 +91,16 @@ export default class LibraryService extends Service {
     library.typeId = attributes.typeId;
     library.metadata = attributes.metadata;
 
-    return await library.save();
+    const saved = await library.save();
+
+    attributes.folders?.forEach((path: string) => {
+      const folder = new Folder();
+      folder.path = path;
+      folder.libraryId = saved.id;
+      folder.save();
+    });
+
+    return saved;
   }
 
   /**

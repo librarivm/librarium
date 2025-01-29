@@ -16,8 +16,4 @@ export default class FolderService extends Service {
   ): Promise<string[] | Buffer[]> {
     return fs.readdirSync(dir, options);
   }
-
-  save(model: any, attributes: any): Promise<any> {
-    return Promise.resolve({ model, attributes });
-  }
 }

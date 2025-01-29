@@ -14,7 +14,9 @@ export default class extends BaseSeeder {
     const users = await User.query().select('id');
     const userId = sample(users.map((user) => user.id));
 
-    const libraries = await LibraryFactory.merge({ typeId, userId }).createMany(10);
+    const libraries = await LibraryFactory.merge({ typeId, userId })
+      .with('folders', 3)
+      .createMany(10);
 
     for (const library of libraries) {
       library.typeId = sample(types.map((item) => item.id)) as number;

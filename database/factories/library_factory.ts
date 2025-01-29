@@ -4,6 +4,7 @@ import kebabCase from 'lodash/kebabCase.js';
 import startCase from 'lodash/startCase.js';
 import { UserFactory } from '#database/factories/user_factory';
 import { TypeFactory } from '#database/factories/type_factory';
+import { FolderFactory } from '#database/factories/folder_factory';
 
 export const LibraryFactory = factory
   .define(Library, async ({ faker }) => {
@@ -17,4 +18,5 @@ export const LibraryFactory = factory
   })
   .relation('user', () => UserFactory)
   .relation('type', () => TypeFactory)
+  .relation('folders', () => FolderFactory)
   .build();
